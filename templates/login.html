@@ -1,0 +1,71 @@
+{% extends "components/login_navi.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    {% block button %}
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+        <button class="login-nav-btn">
+            Register
+        </button>
+    </div>
+    {% endblock %}
+
+<div class="login-bg">
+    <div class="login-container">
+
+        {#        yellow decoration#}
+        <div class="login-container-decoration"></div>
+        <p class="login-title">Login</p>
+
+        {#        a form#}
+        <form action="{{ url_for("user.login") }}" method="POST">
+
+            {#            e-mail#}
+            <div class="mb-3 mt-3">
+                <label for="email" class="form-label">E-mail:</label>
+                <input class="form-control add-input" id="email" placeholder="Enter email" name="email" required>
+            </div>
+
+            {#            password#}
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" class="form-control add-input" id="password" placeholder="Enter password"
+                       name="password" required>
+            </div>
+
+            {#        remember me#}
+            <div class="form-check mb-3">
+                <label class="form-check-label">
+                    <input class="form-check-input mail-notifier-check" type="checkbox" name="remember"
+                           value="rememberme"> Remember me
+                </label>
+            </div>
+
+            {#            flash message#}
+            {% for message in get_flashed_messages() %}
+                <div class="form-group">
+                    <div class="text-danger">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {#            submit button#}
+            <button type="submit" class="login-btn mail-notifier-check">Submit</button>
+
+            {#            register#}
+            <p class="login-reg">If you don't have an account, <a href="{{ url_for("user.register") }}"
+                                                                  class="login-reg-link">register in!</a></p>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
