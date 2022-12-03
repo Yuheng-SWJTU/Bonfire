@@ -14,12 +14,7 @@
 <body>
 <nav class="navbar navbar-expand-md nav-bar">
     <!-- Brand -->
-    <img class="justify-content-start" style="height: 46px; margin-left: 10px" src={{ url_for("static", filename="images/nav-logo.png") }}>
-
-    <!-- Toggler/collapsibe Button -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    <img class="justify-content-start navi-logo" src={{ url_for("static", filename="images/nav-logo.png") }}>
 
     <!-- Navbar links -->
     {% block button %}{% endblock %}

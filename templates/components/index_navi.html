@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="{{ url_for('static', filename='jquery/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/base.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery/jquery_3.5.1.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap@5.1.1.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+    <script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/index_navi.js') }}"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-md nav-bar fixed-top">
+    <!-- Brand -->
+    <img class="justify-content-start navi-logo"
+         src={{ url_for("static", filename="images/nav-logo.png") }}>
+
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler nav-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapsibleNavbar">
+        <svg t="1669992165548" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="2823" width="36" height="36">
+            <path d="M419.037 287.953h413.124c17.673 0 32-14.327 32-32s-14.327-32-32-32H419.037c-17.673 0-32 14.327-32 32s14.327 32 32 32zM419.028 543.17h411.608c17.673 0 32-14.327 32-32s-14.327-32-32-32H419.028c-17.673 0-32 14.327-32 32s14.327 32 32 32zM832.161 735.802H419.037c-17.673 0-32 14.327-32 32s14.327 32 32 32h413.124c17.673 0 32-14.327 32-32s-14.327-32-32-32z"
+                  fill="" p-id="2824"></path>
+            <path d="M256.037 255.953m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="" p-id="2825"></path>
+            <path d="M256.037 510.787m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="" p-id="2826"></path>
+            <path d="M256.037 767.621m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="" p-id="2827"></path>
+        </svg>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse justify-content-end nav-content" id="collapsibleNavbar">
+        <ul class="navbar-nav nav-title layui-nav">
+            <li class="layui-nav-item">
+                <a href="{{ url_for("index.index") }}">Exploring</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:">MyBuilt</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">Camp1</a></dd>
+                    <dd><a href="">Camp2</a></dd>
+                    <hr class="dropdown-divider" style="border-color: black!important;">
+                    <dd>
+                        <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#myModal">Build My Camp</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:">MyCamp</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">Camp1</a></dd>
+                    <dd><a href="">Camp2</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;"><img src="{{ url_for('static', filename='images/avatar.png') }}"
+                                            class="layui-nav-img"></a>
+                <dl class="layui-nav-child">
+                    <dd><p style="color: black; margin-left: 20px">Name</p></dd>
+                    <dd><a href="javascript:;">My profile</a></dd>
+                    <dd><a href="javascript:;">Log out</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">Build My Camp</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+
+                <div class="row modal-body-row">
+                    <div class="col">
+                        <label for="assessment_title" class="form-label form-info">My Camp Name:</label>
+                        <input class="form-control form-input" placeholder="Enter camp name..." id="assessment_title"
+                               name="assessment_title">
+                    </div>
+                </div>
+
+                <div class="row modal-body-row">
+                    <div class="col">
+                        <label for="description" class="form-label form-info">Camp Description:</label>
+                        <textarea class="form-control form-input" rows="3" id="description"
+                                  name="description"></textarea>
+                    </div>
+                </div>
+
+                <div class="row modal-body-row">
+                    <label for="description" class="form-label form-info">Upload a Photo:</label>
+                    <div class="layui-upload">
+                        <div class="layui-upload-list">
+                            <img class="upload-img" id="demo1">
+                            <p id="demoText"></p>
+                        </div>
+                        <div style="width: 320px; margin-bottom: 10px">
+                            <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+                                <div class="layui-progress-bar" lay-percent=""></div>
+                            </div>
+                        </div>
+                        <button type="button" class="login-nav-btn" id="test1">Upload</button>
+                    </div>
+                    <a name="list-progress"> </a>
+                </div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="login-nav-btn" data-bs-dismiss="modal">Build</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% block body %}{% endblock %}
+
+</body>
+</html>
