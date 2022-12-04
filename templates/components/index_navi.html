@@ -16,6 +16,9 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-md nav-bar fixed-top">
+
+    {% block navi_shrink %}{% endblock %}
+
     <!-- Brand -->
     <img class="justify-content-start navi-logo"
          src={{ url_for("static", filename="images/nav-logo.png") }}>
@@ -38,6 +41,9 @@
         <ul class="navbar-nav nav-title layui-nav">
             <li class="layui-nav-item">
                 <a href="{{ url_for("index.index") }}">Exploring</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="{{ url_for("index.index") }}">Favorite</a>
             </li>
             <li class="layui-nav-item">
                 <a href="javascript:">MyBuilt</a>

@@ -1,0 +1,327 @@
+.shrink-btn {
+    margin-left: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    box-shadow: 1px 1px 3px rgb(0 0 0 / 20%);
+    transition: ease 0.3s;
+}
+
+.shrink-btn:hover {
+    box-shadow: 1px 1px 4px rgb(0 0 0 / 30%);
+}
+
+#shrink-svg{
+    transition: ease 0.3s;
+}
+
+#main-body {
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 62px;
+}
+
+@media (max-width: 750px) {
+    #side-menu {
+        z-index: 100;
+        position: fixed;
+        display: flex;
+        background-color: #f2f4f5;
+        height: calc(100vh - 62px);
+        transition: ease .5s;
+        padding-top: 30px;
+        overflow: hidden;
+        flex-direction: column;
+        /*box-shadow: 0 20px 40px 0 rgb(0 0 0 / 30%);*/
+        left: -255px;
+        width: 255px;
+    }
+}
+
+@media (min-width: 751px) {
+    #side-menu {
+        position: fixed;
+        display: flex;
+        width: 255px;
+        background-color: #f2f4f5;
+        height: calc(100vh - 62px);
+        transition: ease .5s;
+        padding-top: 30px;
+        overflow: hidden;
+        flex-direction: column;
+        left: 0;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .container-box {
+        display: flex;
+        position: absolute;
+        justify-content: center;
+        width: 100vw;
+        height: calc(100vh - 62px);
+        right: 0;
+    }
+
+    .center {
+        width: 90vw;
+        height: calc(100vh - 62px);
+    }
+
+}
+
+@media screen and (min-width: 751px) {
+    .container-box {
+        display: flex;
+        position: absolute;
+        justify-content: center;
+        width: calc(100vw - 255px);
+        height: calc(100vh - 62px);
+        transition: width .5s ease;
+        right: 0;
+    }
+
+    .center {
+        width: calc(100vw - 500px);
+        height: calc(100vh - 62px);
+    }
+}
+
+.camp-name{
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.people-info{
+    display:flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item-info-people{
+    display: flex;
+    margin-left: 5px;
+    font-size: 10px;
+    align-items: center;
+    color: gray;
+}
+
+.circle{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.camp-identity{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 10px;
+    color: gray;
+    margin-right: 10px;
+}
+
+.info-people{
+    display: inline;
+}
+
+.add-input{
+    border-color: #886be4;
+    outline: 0;
+}
+
+.add-input:focus{
+    border-color: #886be4;
+    box-shadow: 0 0 0 0.2rem rgba(136, 107, 228, 0.25);
+}
+
+#search-bar {
+    height: 34px;
+    width: inherit;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+#search-btn {
+    background-color: #886be4 !important;
+    display: flex;
+    border-color: unset !important;
+    align-items: center;
+    border-radius: 50%;
+    height: 100%;
+    width: 34px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#search-btn:hover {
+    background-color: #6c4dbd!important;
+}
+
+.side-btn{
+    margin-top: 20px;
+    color: #886be4;
+    height: 34px;
+    width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: white;
+    border-radius: 50px;
+    border-style: solid;
+    border-color: #886be4;
+    border-width: 1px;
+    transition: ease 0.3s;
+}
+
+.side-btn:hover{
+    background-color: #886be4;
+    color: white;
+    border-radius: 50px;
+    border-style: solid;
+    border-color: #886be4;
+    border-width: 1px;
+}
+
+.side-title {
+    position: relative;
+    display: flex;
+    padding-left: 35px;
+    padding-right: 10px;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+#category_list {
+    font-weight: bold;
+    font-size: 14px;
+    color: #6E6E6E;
+}
+
+.side-title-btn {
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    text-align: center;
+    height: 28px;
+    width: 28px;
+    border-radius: 5px;
+    background-color: #FAFAFA;
+    transition: ease .4s;
+}
+
+.side-title-btn:hover{
+    background-color: #EEEEEE;
+}
+
+#side-title-btn1 {
+    right: 40px;
+}
+
+#side-title-btn2 {
+    transition: transform .4s ease;
+}
+
+.side-bottom {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+#side-list {
+    flex-wrap: nowrap;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 0 !important;
+}
+
+.list-items {
+    display: flex;
+    white-space: nowrap;
+    height: 34px;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+    color: #2B2B2B !important;
+    font-size: 14px !important;
+    flex-wrap: wrap;
+    padding-bottom: 28px;
+    margin-bottom: 10px;
+}
+
+.list-items:hover {
+    background-color: #EEEEEE;
+}
+
+/*side list*/
+.side-list2 {
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.side-list3 {
+    flex-wrap: nowrap;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 0 !important;
+    height: calc(100vh - 425px);
+}
+
+.list-items2 {
+    position: relative;
+    display: flex;
+    white-space: nowrap;
+    height: 34px;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+    color: #2B2B2B !important;
+    font-size: 14px !important;
+    margin-bottom: 5px;
+}
+
+/*hover effect*/
+.list-items2:hover {
+    background-color: #EEEEEE !important;
+}
+
+.list-items2:hover #edit-btn {
+    visibility: visible;
+}
+
+.list-items2:hover #delete-btn {
+    visibility: visible;
+}
+
+#delete-btn {
+    visibility: hidden;
+    right: 40px;
+    background-color: transparent !important;
+    transition: visibility .1s ease;
+}
+
+#edit-btn {
+    visibility: hidden;
+    right: 10px;
+    background-color: transparent !important;
+    transition: visibility .1s ease;
+}
+
+/*hover effect*/
+#delete-btn:hover {
+    background-color: #FAFAFA !important;
+}
+
+#edit-btn:hover {
+    background-color: #FAFAFA !important;
+}

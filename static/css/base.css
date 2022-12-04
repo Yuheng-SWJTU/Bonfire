@@ -138,3 +138,9 @@ input {
     width: 320px;
     height: 180px;
 }
+
+.segmentation{
+    color: gray;
+    border-bottom: none !important;
+    background-color: gray;
+}
