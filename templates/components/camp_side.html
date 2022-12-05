@@ -485,3 +485,45 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="category-add">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            {#            head#}
+            <div class="modal-header">
+                <h4 class="modal-title">Add Category</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for("camp.camp") }}">
+
+                {#                content#}
+                <div class="modal-body">
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="module-name" class="form-label add-information">Module Name:</label>
+                            <input class="form-control add-input camp-side-add-input" placeholder="Enter name" id="module-name"
+                                   name="module_name">
+                        </div>
+                    </div>
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="module-color" class="form-label add-information">Color:</label>
+                            <select class="form-select add-input camp-side-add-input" id="module-color" name="module_color">
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="red">Red</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {#                footer#}
+                <div class="modal-footer">
+                    <button type="submit" class="login-nav-btn" data-bs-dismiss="modal">Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
