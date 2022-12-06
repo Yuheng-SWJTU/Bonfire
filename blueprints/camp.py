@@ -20,3 +20,9 @@ def post():
 def show():
     return render_template("show.html")
 
+
+@bp.route("/manage", methods=["GET", "POST"])
+def manage():
+    return render_template("manage.html")
+
+

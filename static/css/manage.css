@@ -1,0 +1,147 @@
+.manage-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 750px) {
+    .manage-input {
+        box-shadow: none !important;
+        width: 95% !important;
+    }
+
+    .builder {
+        width: 95%;
+    }
+
+    .admin {
+        width: 95%;
+    }
+
+    .add-admin-input {
+        width: calc(95% - 90px) !important;
+    }
+
+    .manage-submit-btn {
+        position: absolute;
+        right: 0;
+        margin-right: 0 !important;
+        border-radius: 5px !important;
+    }
+
+    .manage-seg{
+        width: 95%!important;
+    }
+}
+
+@media (min-width: 751px) {
+    .manage-input {
+        box-shadow: none !important;
+        width: 90% !important;
+    }
+
+    .builder {
+        width: 90%;
+    }
+
+    .admin {
+        width: 90%;
+    }
+
+    .add-admin-input {
+        width: calc(90% - 90px) !important;
+    }
+
+    .manage-submit-btn {
+        position: absolute;
+        right: 0;
+        margin-right: 0 !important;
+        border-radius: 5px !important;
+    }
+
+    .manage-seg{
+        width: 90%!important;
+    }
+}
+
+.builder {
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ced4da;
+    padding: 15px;
+    border-radius: 4px;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.admin {
+    display: grid;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ced4da;
+    padding: 15px;
+    border-radius: 4px;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.admin-item {
+    display: flex;
+    align-items: center;
+}
+
+.add-admin-container {
+    display: flex;
+    align-items: center;
+}
+
+.add_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 5px;
+    width: 80px;
+    height: 38px;
+    background-color: #b6a4e6;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: ease 0.3s;
+}
+
+.add_btn:hover {
+    background-color: #8976e0;
+}
+
+#re_upload_background {
+    cursor: pointer;
+}
+
+.manage-container {
+    position: relative;
+    margin-bottom: 100px;
+}
+
+.manage-basic-info{
+    width: 100%;
+    background-color: #f5f5f5;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.manage-box-title{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+    color: #484848;
+}

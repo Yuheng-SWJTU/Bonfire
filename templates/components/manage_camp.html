@@ -1,0 +1,84 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+        <div class="manage-container">
+            <h3 class="manage-title">
+                Camp Management
+            </h3>
+            <form>
+
+                <div class="manage-basic-info">
+                    <p class="manage-box-title">Basic Information</p>
+                    <div class="col">
+                        <label for="camp_name" class="form-info">Camp Name</label>
+                        <input class="form-control form-input manage-input" id="camp_name" name="camp_name">
+                    </div>
+                    <div class="col">
+                        <label for="camp_description" class="form-info">Camp Description</label>
+                        <textarea class="form-control form-input manage-input" id="camp_description"
+                                  name="camp_description"
+                                  rows="5"></textarea>
+                    </div>
+                    <div class="col">
+                        <label for="description" class="form-label form-info">Upload a Photo:</label>
+                        <div class="layui-upload">
+                            <div class="layui-upload-list">
+                                <img class="upload-img" id="re_upload_background">
+                                <p id="re_upload_back_text"></p>
+                            </div>
+                            <div style="width: 320px; margin-bottom: 10px">
+                                <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                                     lay-filter="re_upload_back_progress">
+                                    <div class="layui-progress-bar" lay-percent=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a name="list-progress"> </a>
+                    </div>
+                </div>
+
+                <div class="manage-basic-info">
+                    <p class="manage-box-title">Management Team</p>
+                    <div class="col">
+                        <div class="col">
+                            <p class="form-info">Builder</p>
+                            <div class="builder">
+                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                                <p>Yuheng Liu</p>
+                            </div>
+                        </div>
+                        <p class="form-info">Admin</p>
+                        <div class="admin">
+                            <dia class="admin-item">
+                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                                <p>Yuheng Liu</p>
+                            </dia>
+                            <dia class="admin-item">
+                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                                <p>Yuheng Liu</p>
+                            </dia>
+                            <dia class="admin-item">
+                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                                <p>Yuheng Liu</p>
+                            </dia>
+                            <dia class="admin-item">
+                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                                <p>Yuheng Liu</p>
+                            </dia>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="add_admin" class="form-info">Add Admin</label>
+                        <div class="add-admin-container">
+                            <input class="form-control form-input manage-input add-admin-input" id="add_admin"
+                                   name="add_admin"
+                                   rows="5" placeholder="Enter E-mail to add...">
+                            <div class="add_btn">Add</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-nav-btn manage-submit-btn">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
