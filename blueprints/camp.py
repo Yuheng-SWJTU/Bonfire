@@ -14,3 +14,9 @@ def camp():
 @bp.route("/post", methods=["GET", "POST"])
 def post():
     return render_template("post.html")
+
+
+@bp.route("/show", methods=["GET", "POST"])
+def show():
+    return render_template("show.html")
+

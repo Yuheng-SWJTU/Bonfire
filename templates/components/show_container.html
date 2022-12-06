@@ -1,0 +1,204 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+        <div id="topAnchor"></div>
+        <a href="#topAnchor" class="top-btn">
+            <svg t="1670314077421" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                 p-id="3437" width="24" height="24">
+                <path d="M256 74.666667a53.333333 53.333333 0 1 0 0 106.666666h512a53.333333 53.333333 0 1 0 0-106.666666H256zM549.717333 260.949333a53.333333 53.333333 0 0 0-75.434666 0l-256 256a53.333333 53.333333 0 0 0 75.434666 75.434667l165.12-165.12V896a53.333333 53.333333 0 1 0 106.666667 0V427.605333l164.778667 164.778667a53.333333 53.333333 0 0 0 75.434666-75.434667l-256-256z"
+                      p-id="3438" fill="#828282"></path>
+            </svg>
+        </a>
+
+        <div class="show-title-area">
+            <h4 class="show-title">
+                Test
+            </h4>
+            <span class="badge rounded-pill bg-primary">Default</span>
+            <p class="show-title-content">Post Date:</p>
+            <p class="show-title-content">2022/2/12</p>
+            <hr class="segmentation">
+            <div class="show-title-avatar">
+                <a href="javascript:;">
+                    <img src="{{ url_for('static', filename='images/avatar.png') }}" class="avatar-img">
+                </a>
+                <div class="show-title-avatar-info">
+                    <p class="show-title-avatar-name">YuhengLiu</p>
+                    <p class="show-title-content">This is a description</p>
+                </div>
+            </div>
+
+            <button class="edit-delete-post" id="post-edit-btn">
+                <svg t="1670322324280" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg" p-id="4611" width="24" height="24">
+                    <path d="M257.7 752c2 0 4-0.2 6-0.5L431.9 722c2-0.4 3.9-1.3 5.3-2.8l423.9-423.9c3.9-3.9 3.9-10.2 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2c-1.9 11.1 1.5 21.9 9.4 29.8 6.6 6.4 14.9 9.9 23.8 9.9z m67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"
+                          p-id="4612" fill="#323233"></path>
+                </svg>
+            </button>
+
+            <button class="edit-delete-post" id="post-delete-btn">
+                <svg t="1670322674151" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg" p-id="5930" width="24" height="24">
+                    <path d="M768 384c-19.2 0-32 12.8-32 32l0 377.6c0 25.6-19.2 38.4-38.4 38.4L326.4 832c-25.6 0-38.4-19.2-38.4-38.4L288 416C288 396.8 275.2 384 256 384S224 396.8 224 416l0 377.6c0 57.6 44.8 102.4 102.4 102.4l364.8 0c57.6 0 102.4-44.8 102.4-102.4L793.6 416C800 396.8 787.2 384 768 384z"
+                          p-id="5931"></path>
+                    <path d="M460.8 736l0-320C460.8 396.8 448 384 435.2 384S396.8 396.8 396.8 416l0 320c0 19.2 12.8 32 32 32S460.8 755.2 460.8 736z"
+                          p-id="5932"></path>
+                    <path d="M627.2 736l0-320C627.2 396.8 608 384 588.8 384S563.2 396.8 563.2 416l0 320C563.2 755.2 576 768 588.8 768S627.2 755.2 627.2 736z"
+                          p-id="5933"></path>
+                    <path d="M832 256l-160 0L672 211.2C672 166.4 633.6 128 588.8 128L435.2 128C390.4 128 352 166.4 352 211.2L352 256 192 256C172.8 256 160 268.8 160 288S172.8 320 192 320l640 0c19.2 0 32-12.8 32-32S851.2 256 832 256zM416 211.2C416 198.4 422.4 192 435.2 192l153.6 0c12.8 0 19.2 6.4 19.2 19.2L608 256l-192 0L416 211.2z"
+                          p-id="5934"></path>
+                </svg>
+            </button>
+
+        </div>
+
+        <div class="show-content-area">
+            This is a test
+        </div>
+
+        <hr class="segmentation">
+
+        <div class="comment-input-box" id="commentAnchor">
+            <form>
+                <div class="row modal-body-row">
+                    <div class="col">
+                        <textarea class="comment-input form-control" placeholder="Leave a comment..."
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+
+                <hr class="segmentation">
+
+                <div class="btn-area">
+                    <button class="login-nav-btn">
+                        Comment
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="comment-show-area">
+            <div class="comment-show-info">
+                <p style="margin-left: 10px">10 Comments</p>
+            </div>
+
+            <div class="comment-show-content">
+                <div class="comment-item">
+                    <a class="comment-avatar" href="javascript:;">
+                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
+                    </a>
+                    <div class="comment-info">
+                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
+                        <p class="comment-info-content">This is a test</p>
+                        <p class="show-title-content">2022/2/14</p>
+                    </div>
+                    <button class="delete-comment">
+                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                  p-id="6185" fill="#828282"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="comment-item">
+                    <a class="comment-avatar" href="javascript:;">
+                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
+                    </a>
+                    <div class="comment-info">
+                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
+                        <p class="comment-info-content">This is a test</p>
+                        <p class="show-title-content">2022/2/14</p>
+                    </div>
+                    <button class="delete-comment">
+                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                  p-id="6185" fill="#828282"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="comment-item">
+                    <a class="comment-avatar" href="javascript:;">
+                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
+                    </a>
+                    <div class="comment-info">
+                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
+                        <p class="comment-info-content">This is a test</p>
+                        <p class="show-title-content">2022/2/14</p>
+                    </div>
+                    <button class="delete-comment">
+                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                  p-id="6185" fill="#828282"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="comment-item">
+                    <a class="comment-avatar" href="javascript:;">
+                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
+                    </a>
+                    <div class="comment-info">
+                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
+                        <p class="comment-info-content">This is a test</p>
+                        <p class="show-title-content">2022/2/14</p>
+                    </div>
+                    <button class="delete-comment">
+                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                  p-id="6185" fill="#828282"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="comment-item">
+                    <a class="comment-avatar" href="javascript:;">
+                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
+                    </a>
+                    <div class="comment-info">
+                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
+                        <p class="comment-info-content">This is a test</p>
+                        <p class="show-title-content">2022/2/14</p>
+                    </div>
+                    <button class="delete-comment">
+                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                  p-id="6185" fill="#828282"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="post-area post-area-common show-area-common" id="post-area">
+            <div class="button-area">
+                <div class="like button-area-like">
+                    <svg t="1670236074165" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="2694" width="24" height="24">
+                        <path d="M515.2 67.2c-246.4 0-448 201.6-448 448s201.6 448 448 448 448-201.6 448-448-201.6-448-448-448zM704 563.2l-150.4 153.6c-12.8 12.8-25.6 19.2-41.6 19.2s-28.8-6.4-41.6-19.2l-147.2-153.6C307.2 544 288 515.2 288 476.8c0-67.2 54.4-121.6 118.4-121.6 32 0 60.8 12.8 83.2 35.2l22.4 22.4c9.6-9.6 19.2-22.4 22.4-22.4 22.4-22.4 51.2-35.2 83.2-35.2 67.2 0 118.4 54.4 118.4 121.6 3.2 41.6-12.8 64-32 86.4z"
+                              fill="#ffffff" p-id="2695"></path>
+                    </svg>
+                    <p class="like-info-text">Like</p>
+                    <p class="like-info-num">0</p>
+                </div>
+                <div class="like button-area-like">
+                    <svg t="1670237190507" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="5693" width="18" height="18">
+                        <path d="M956 398.496q-8-23.488-26.496-39.008t-42.496-19.488l-204.992-31.008-92-195.008q-11.008-24-32.992-36.992Q536.032 64 512.032 64t-44.992 12.992q-22.016 12.992-32.992 36.992l-92 195.008-204.992 31.008q-24 4-42.496 19.488t-26.496 39.008-2.496 47.008 22.496 41.504l151.008 154.016-36 218.016q-6.016 40 20 70.496t66.016 30.496q22.016 0 42.016-11.008l180.992-100 180.992 100q20 11.008 42.016 11.008 40 0 66.016-30.496t20-70.496l-36-218.016 151.008-154.016q16.992-18.016 22.496-41.504t-2.496-47.008z"
+                              p-id="5694" fill="#ffffff"></path>
+                    </svg>
+                    <p class="like-info-text">Favorite</p>
+                </div>
+                <a class="like button-area-like button-area-comment" href="#commentAnchor">
+                    <svg t="1670236887355" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="3758" width="18" height="18">
+                        <path d="M512 144.794c-247.162 0-447.527 161.007-447.527 359.62 0 82.45 34.532 158.417 92.605 219.078l-0.264 1.396-22.58 119.482c-4.195 22.198 17.213 40.612 38.534 33.146l114.764-40.186 27.887-9.765c59.339 23.353 126.052 36.469 196.58 36.469 247.162 0 447.527-161.007 447.527-359.62S759.162 144.794 512 144.794z"
+                              p-id="3759" fill="#ffffff"></path>
+                    </svg>
+                    <p class="like-info-text">Comment</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

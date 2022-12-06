@@ -2,7 +2,7 @@
 
 {% block title %}
 
-    Post to Bonfire
+    Title - Bonfire
 
 {% endblock %}
 
@@ -10,12 +10,8 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/camp.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='wangEditor/wangEditor.css') }}">
-    <script src="{{ url_for('static', filename='wangEditor/wangEditor.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='script/post.js') }}"></script>
-    <script type="module">
-        var E = window.wangEditor; // 全局变量
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/show.css') }}">
+    <script src="{{ url_for('static', filename='script/show.js') }}"></script>
 
 {% endblock %}
 
@@ -36,6 +32,6 @@
 
     {% include "components/camp_side.html" %}
 
-    {% include "components/post_container.html" %}
+    {% include "components/show_container.html" %}
 
 {% endblock %}
