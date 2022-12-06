@@ -9,3 +9,8 @@ bp = Blueprint("camp", __name__, url_prefix="/camp")
 @bp.route("/", methods=["GET", "POST"])
 def camp():
     return render_template("camp.html")
+
+
+@bp.route("/post", methods=["GET", "POST"])
+def post():
+    return render_template("post.html")

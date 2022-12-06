@@ -1,0 +1,50 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+        <h3 class="post-page-title">Create a Post</h3>
+        <form>
+            <label for="title" class="post-form-text">Post title:</label>
+            <input class="post-form-input form-control add-input camp-side-add-input" type="text" name="title"
+                   id="title" placeholder="Enter your post title...">
+
+            <div id="editor—wrapper">
+                <div id="toolbar-container"><!-- 工具栏 --></div>
+                <div id="editor-container"><!-- 编辑器 --></div>
+            </div>
+
+            <label for="module-color" class="post-form-text">Choose one Category:</label>
+            <select class="form-select add-input camp-side-add-input camp-side-category post-form-input choose-category"
+                    id="module-color" name="module_color">
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="red">Red</option>
+            </select>
+
+
+            <div class="post-area post-area-common" id="post-area">
+
+                <div class="post-choice">
+                    <div class="form-check" style="margin-right: 10px">
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio1" name="optradio" value="option1"
+                               checked>
+                        Normal
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check" style="margin-right: 10px">
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio1" name="optradio" value="option1">
+                        Notice
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio2" name="optradio" value="option2">
+                        Sticky
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                </div>
+
+                <button class="login-nav-btn post-area-btn" type="submit">Post</button>
+            </div>
+
+        </form>
+    </div>
+</div>

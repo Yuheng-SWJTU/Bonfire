@@ -2,6 +2,10 @@ html{
     scroll-behavior:smooth;
 }
 
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+
 .w {
     width: 1200px;
     margin: auto;
@@ -143,4 +147,26 @@ input {
     color: gray;
     border-bottom: none !important;
     background-color: gray;
+}
+
+.shrink-btn {
+    margin-left: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    box-shadow: 1px 1px 3px rgb(0 0 0 / 20%);
+    transition: ease 0.3s;
+}
+
+.shrink-btn:hover {
+    box-shadow: 1px 1px 4px rgb(0 0 0 / 30%);
+}
+
+#shrink-svg {
+    transition: ease 0.3s;
+}
+
+.btn-close{
+    box-shadow: unset;
 }
