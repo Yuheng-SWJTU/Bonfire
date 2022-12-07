@@ -14,3 +14,8 @@ def login():
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     return render_template("register.html")
+
+
+@bp.route("/profile", methods=["GET", "POST"])
+def profile():
+    return render_template("profile.html")

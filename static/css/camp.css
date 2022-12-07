@@ -71,6 +71,7 @@
         width: calc(100vw - 500px);
         height: calc(100vh - 62px);
         overflow: scroll;
+        overflow-x: hidden;
     }
 }
 

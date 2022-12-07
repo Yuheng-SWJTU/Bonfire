@@ -1,0 +1,100 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+
+        <h4 class="profile-page-title">My Account</h4>
+        <div class="profile-container">
+            <div class="profile-decoration"></div>
+            <div class="avatar-container">
+                <img class="layui-nav-img profile-img" src="{{ url_for("static", filename="images/avatar.png") }}">
+                <p class="profile-username">Yuheng Liu</p>
+            </div>
+            <dic class="profile-info">
+                <div class="profile-info-block">
+                    <div class="profile-info-area">
+                        <p class="profile-info-title">Username</p>
+                        <p class="profile-info-content">YuhengLiu</p>
+                    </div>
+                    <button class="profile-info-button">Edit</button>
+                </div>
+
+                <div class="profile-info-block">
+                    <div class="profile-info-area">
+                        <p class="profile-info-title">E-mail</p>
+                        <p class="profile-info-content">2964992240@qq.com</p>
+                    </div>
+                    <button class="profile-info-button">Edit</button>
+                </div>
+
+                <div class="profile-info-block">
+                    <div class="profile-info-area">
+                        <p class="profile-info-title">Description</p>
+                        <p class="profile-info-content">This is a test.</p>
+                    </div>
+                    <button class="profile-info-button">Edit</button>
+                </div>
+            </dic>
+        </div>
+
+        <hr class="segmentation">
+
+        <h4 class="profile-page-title profile-page-title-basic">Basic Information</h4>
+        <div class="profile-basic-info-area">
+            <div class="profile-basic-info">
+                <div class="profile-basic-info-left">
+                    <div class="profile-basic-info-block">
+                        <div class="profile-basic-info-content">
+                            <p class="profile-info-title">
+                                Gender
+                            </p>
+                            <p class="profile-info-content">
+                                Male
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="profile-basic-info-block">
+                        <div class="profile-basic-info-content">
+                            <p class="profile-info-title">
+                                Birthday
+                            </p>
+                            <p class="profile-info-content">
+                                1999-01-01
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-basic-info-right">
+                    <div class="profile-basic-btn-area">
+                        <button class="profile-basic-info-edit">
+                            Edit
+                        </button>
+                    </div>
+                    <div class="profile-info-location">
+                        <p class="profile-info-title">
+                            Location
+                        </p>
+                        <p class="profile-info-content">
+                            China
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="segmentation" id="profile-seg">
+
+            <div class="my-activity">
+                <div class="my-activity-title">
+                    <p id="my-activity-title">Recent Activity</p>
+                </div>
+                <div class="my-activity-content">
+                    <a class="my-activity-content-title">
+                        Test
+                    </a>
+                    <div class="my-activity-content-area">
+                        <p>This is a description of Test.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
