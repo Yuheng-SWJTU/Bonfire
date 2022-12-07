@@ -1,0 +1,46 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+        <h4 class="profile-page-title">Privacy and Security</h4>
+
+        <hr class="segmentation">
+
+        <p class="privacy-title">
+            Password and authentication
+        </p>
+
+        <div class="privacy-container">
+            <div class="privacy-content">
+                <p class="privacy-little-title">
+                    Two-Factor Authentication
+                </p>
+                <p class="privacy-text">
+                    If you want to change your password, we will use two-factor authentication technology to protect your account security.
+                </p>
+                <button class="profile-basic-info-edit">Change</button>
+            </div>
+            <div class="privacy-img">
+                <img src="{{ url_for("static", filename="images/privacy.png") }}" id="privacy-img">
+            </div>
+        </div>
+
+        <hr class="segmentation">
+
+        <p class="privacy-title">
+            Delete My Account
+        </p>
+        <div class="privacy-container">
+            <div class="privacy-content">
+                <p class="privacy-little-title">
+                    Safety Verification
+                </p>
+                <p class="privacy-text">
+                    This operation cannot be restored after the account is deleted.
+                </p>
+                <button class="profile-basic-info-edit" id="delete-account">Delete</button>
+            </div>
+            <div class="privacy-img">
+                <img src="{{ url_for("static", filename="images/delete.png") }}" id="privacy-img">
+            </div>
+        </div>
+    </div>
+</div>

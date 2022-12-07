@@ -19,3 +19,8 @@ def register():
 @bp.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("profile.html")
+
+
+@bp.route("/privacy", methods=["GET", "POST"])
+def privacy():
+    return render_template("privacy.html")
