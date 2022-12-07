@@ -290,3 +290,25 @@
 #delete-account:hover{
     background-color: #943634;
 }
+
+.lists-block{
+    width: 100%;
+}
+
+@media screen and (max-width: 750px) {
+    #center-box-lists {
+        width: 90vw;
+        height: calc(100vh - 62px);
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 751px) {
+    #center-box-lists {
+        width: 80%;
+        height: calc(100vh - 62px);
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+}

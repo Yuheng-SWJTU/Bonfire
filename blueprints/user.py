@@ -24,3 +24,8 @@ def profile():
 @bp.route("/privacy", methods=["GET", "POST"])
 def privacy():
     return render_template("privacy.html")
+
+
+@bp.route("/favorite", methods=["GET", "POST"])
+def favorite():
+    return render_template("lists.html")
