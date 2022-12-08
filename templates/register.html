@@ -4,7 +4,11 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="{{ url_for('static', filename='script/register.js') }}"></script>
+        <!--    plugins for jquery-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.js"></script>
 
 {% endblock %}
 
@@ -12,72 +16,74 @@
 
     {% block button %}
         <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
-        <button class="login-nav-btn">
-            Login
-        </button>
-    </div>
+            <a class="login-nav-btn" href="{{ url_for("user.login") }}">
+                Login
+            </a>
+        </div>
     {% endblock %}
 
-<div class="login-bg">
-    <div class="login-container">
+    <div class="login-bg">
+        <div class="login-container">
 
-        {#        a yellow decoration#}
-        <div class="login-container-decoration"></div>
-        <p class="login-title">Register</p>
+            {#        a yellow decoration#}
+            <div class="login-container-decoration"></div>
+            <p class="login-title">Register</p>
 
-        {#        a form#}
-        <form method="POST" action="{{ url_for('user.register') }}">
+            {#        a form#}
+            <form method="POST" action="{{ url_for("user.register") }}" id="register_form">
 
-            {#            username#}
-            <div class="mb-3 mt-3">
-                <label for="username" class="form-label">Username:</label>
-                <input class="form-control add-input" id="username" placeholder="Enter username" name="username"
-                       required>
-            </div>
-
-            {#            e-mail#}
-            <div class="mb-3 mt-3">
-                <label for="e_mail" class="form-label">E-mail:</label>
-                <input type="email" class="form-control add-input" id="e_mail" placeholder="Enter e-mail" name="email"
-                       required>
-            </div>
-
-            {#        captcha#}
-            <div class="mb-3">
-                <label for="captcha">Captcha</label>
-                <div class="input-group add-input">
-                    <input type="text" class="form-control" name="captcha" id="captcha" placeholder="Code" required>
-                    <button id="captcha-btn" class="btn btn-outline-secondary input-group-text captcha-btn"
-                            type="button">
-                        Send
-                    </button>
+                {#            username#}
+                <div class="mb-3 mt-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input class="form-control add-input" id="username" placeholder="Enter username" name="username"
+                           required>
                 </div>
-            </div>
 
-            {#        password#}
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control add-input" id="password" placeholder="Enter password"
-                       name="password" required>
-            </div>
+                {#            e-mail#}
+                <div class="mb-3 mt-3">
+                    <label for="e_mail" class="form-label">E-mail:</label>
+                    <input type="email" class="form-control add-input" id="e_mail" placeholder="Enter e-mail"
+                           name="email"
+                           required>
+                </div>
 
-            {#        flash message#}
-            {% for message in get_flashed_messages() %}
-                <div class="form-group">
-                    <div class="text-danger">
-                        {{ message }}
+                {#        captcha#}
+                <div class="mb-3">
+                    <label for="captcha">Captcha</label>
+                    <div class="input-group add-input">
+                        <input type="text" class="form-control" name="captcha" id="captcha" placeholder="Code">
+                        <button id="captcha-btn" class="btn btn-outline-secondary input-group-text captcha-btn"
+                                type="button">
+                            Send
+                        </button>
                     </div>
                 </div>
-            {% endfor %}
 
-            {#        submit button#}
-            <button type="submit" class="login-btn mail-notifier-check">Submit</button>
+                {#        password#}
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control add-input" id="password" placeholder="Enter password"
+                           name="password" required>
+                </div>
 
-            {#        login#}
-            <p class="login-reg">If you have an account, <a href="{{ url_for("user.login") }}" class="login-reg-link">Log
-                in!</a></p>
-        </form>
+                {#        flash message#}
+                {% for message in get_flashed_messages() %}
+                    <div class="form-group">
+                        <div class="text-danger flash">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {#        submit button#}
+                <button type="submit" class="login-btn mail-notifier-check">Submit</button>
+
+                {#        login#}
+                <p class="login-reg">If you have an account, <a href="{{ url_for("user.login") }}"
+                                                                class="login-reg-link">Log
+                    in!</a></p>
+            </form>
+        </div>
     </div>
-</div>
 
 {% endblock %}

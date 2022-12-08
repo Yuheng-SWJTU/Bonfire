@@ -91,6 +91,7 @@ input {
 }
 
 .login-nav-btn:hover{
+    color: white!important;
     background: #6c4dbd;
 }
 
@@ -170,4 +171,13 @@ input {
 
 .btn-close{
     box-shadow: unset;
+}
+
+.error{
+    color: #da0c0c;
+    font-size: 14px;
+}
+
+.flash{
+    font-size: 14px;
 }

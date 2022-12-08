@@ -4,7 +4,11 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="{{ url_for('static', filename='script/login.js') }}"></script>
+    <!--    plugins for jquery-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.js"></script>
 
 {% endblock %}
 
@@ -12,60 +16,60 @@
 
     {% block button %}
         <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
-        <button class="login-nav-btn">
-            Register
-        </button>
-    </div>
+            <a class="login-nav-btn" href="{{ url_for("user.register") }}">
+                Register
+            </a>
+        </div>
     {% endblock %}
 
-<div class="login-bg">
-    <div class="login-container">
+    <div class="login-bg">
+        <div class="login-container">
 
-        {#        yellow decoration#}
-        <div class="login-container-decoration"></div>
-        <p class="login-title">Login</p>
+            {#        yellow decoration#}
+            <div class="login-container-decoration"></div>
+            <p class="login-title">Login</p>
 
-        {#        a form#}
-        <form action="{{ url_for("user.login") }}" method="POST">
+            {#        a form#}
+            <form action="{{ url_for("user.login") }}" method="POST" id="login_form">
 
-            {#            e-mail#}
-            <div class="mb-3 mt-3">
-                <label for="email" class="form-label">E-mail:</label>
-                <input class="form-control add-input" id="email" placeholder="Enter email" name="email" required>
-            </div>
-
-            {#            password#}
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control add-input" id="password" placeholder="Enter password"
-                       name="password" required>
-            </div>
-
-            {#        remember me#}
-            <div class="form-check mb-3">
-                <label class="form-check-label">
-                    <input class="form-check-input mail-notifier-check" type="checkbox" name="remember"
-                           value="rememberme"> Remember me
-                </label>
-            </div>
-
-            {#            flash message#}
-            {% for message in get_flashed_messages() %}
-                <div class="form-group">
-                    <div class="text-danger">
-                        {{ message }}
-                    </div>
+                {#            e-mail#}
+                <div class="mb-3 mt-3">
+                    <label for="email" class="form-label">E-mail:</label>
+                    <input class="form-control add-input" id="email" placeholder="Enter email" name="email" required>
                 </div>
-            {% endfor %}
 
-            {#            submit button#}
-            <button type="submit" class="login-btn mail-notifier-check">Submit</button>
+                {#            password#}
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control add-input" id="password" placeholder="Enter password"
+                           name="password" required>
+                </div>
 
-            {#            register#}
-            <p class="login-reg">If you don't have an account, <a href="{{ url_for("user.register") }}"
-                                                                  class="login-reg-link">register in!</a></p>
-        </form>
+                {#        remember me#}
+                <div class="form-check mb-3">
+                    <label class="form-check-label">
+                        <input class="form-check-input mail-notifier-check" type="checkbox" name="remember"
+                               value="rememberme"> Remember me
+                    </label>
+                </div>
+
+                {#            flash message#}
+                {% for message in get_flashed_messages() %}
+                    <div class="form-group">
+                        <div class="text-danger flash">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {#            submit button#}
+                <button type="submit" class="login-btn mail-notifier-check">Submit</button>
+
+                {#            register#}
+                <p class="login-reg">If you don't have an account, <a href="{{ url_for("user.register") }}"
+                                                                      class="login-reg-link">register in!</a></p>
+            </form>
+        </div>
     </div>
-</div>
 
 {% endblock %}
