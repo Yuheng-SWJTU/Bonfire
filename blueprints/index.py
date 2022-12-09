@@ -23,13 +23,40 @@ def output_html(data, code, headers=None):
 
 class Index(Resource):
     def get(self):
-        return render_template("index.html")
+        # get all camps
+        camps = CampModel.query.all()
+        # Count the people in each camp
+        camp_user = CampUserModel.query.all()
+        users_in_camp = {}
+        for camp in camps:
+            users_in_camp[camp.id] = 0
+        for user in camp_user:
+            users_in_camp[user.camp_id] += 1
+        print(users_in_camp)
+        # store camps in a dictionary
+        camps_list = []
+        camps_dict = {}
+        for camp in camps:
+            camps_dict["camp_id"] = camp.id
+            camps_dict["camp_name"] = camp.name
+            camps_dict["camp_description"] = camp.description
+            camps_dict["camp_background"] = camp.background
+            # get the number of people in the camp
+            camps_dict["users_num"] = users_in_camp[camp.id]
+            camps_list.append(camps_dict)
+            camps_dict = {}
+        # print(camps_list)
+        return render_template("index.html", camps=camps_list)
 
 
 class BuildCamp(Resource):
     def post(self):
         camp_name = request.form.get("camp_name")
         description = request.form.get("description")
+        # if camp_name is exist
+        if CampModel.query.filter_by(name=camp_name).first():
+            flash("This camp name is already exist.")
+            return redirect("/")
         # use form to validate
         form = BuildCampForm(request.form)
         if form.validate():
@@ -59,5 +86,27 @@ class BuildCamp(Resource):
             return redirect("/")
 
 
+class JoinCamp(Resource):
+    def post(self):
+        # handle the request from ajax
+        camp_id = request.form.get("camp_id")
+        # if user is already in the camp
+        if CampUserModel.query.filter_by(camp_id=camp_id, user_id=g.user.id).first():
+            return jsonify({"code": 400, "message": "You are already in the camp."})
+        # create camp_user
+        camp_user = CampUserModel(camp_id=camp_id, user_id=g.user.id, identity="Member")
+        # add camp_user to database
+        db.session.add(camp_user)
+        # try and rollback
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+        users_num = CampUserModel.query.filter_by(camp_id=camp_id).count()
+        return jsonify({"code": 200, "message": "Join camp successfully.", "users_num": users_num})
+
+
 api.add_resource(Index, "/")
 api.add_resource(BuildCamp, "/buildcamp")
+api.add_resource(JoinCamp, "/join_camp")

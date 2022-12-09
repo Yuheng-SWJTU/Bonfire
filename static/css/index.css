@@ -62,7 +62,6 @@
     width: 100%;
     height: 40%;
     border-radius: 12px 12px 0 0;
-    background-image: url("/static/images/container_header.png");
     background-size: cover;
 }
 
@@ -114,9 +113,11 @@
     color: white;
     border-radius: 10px;
     transition: ease 0.3s;
+    cursor: pointer;
 }
 
 .item-info-join:hover{
+    color: white;
     background-color: #836cdd;
 }
 

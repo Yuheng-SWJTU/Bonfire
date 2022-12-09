@@ -1,3 +1,8 @@
+// on load function
+window.onload = function () {
+    closeAlert();
+}
+
 function side() {
     var side = document.getElementById("side-menu");
     var container = document.getElementById("container-box");
@@ -66,4 +71,12 @@ function rotate() {
         container.style.height = "calc(100vh - 485px) !important";
         id.style.transform = "rotate(0deg)";
     }
+}
+
+// function for closing the alert in 5s
+function closeAlert() {
+    // after 5 seconds, the alert will be closed automatically with a fade out effect
+    setTimeout(function () {
+        $(".alert").fadeOut();
+    }, 5000)
 }

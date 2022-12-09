@@ -5,10 +5,19 @@
 {% block head %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script src="{{ url_for('static', filename='script/index.js') }}"></script>
 
 {% endblock %}
 
 {% block body %}
+    {#Alert Message#}
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible fade show alert-bonfire" id="flash">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {#end#}
     <div class="box-container">
         <div class="head-container">
             <img class="head-pho" src="{{ url_for('static', filename='images/container_pho.png') }}">
@@ -37,115 +46,34 @@
 
             <div class="item-container">
 
-                <div class="item">
-                    <div class="item-photo"></div>
-                    <div class="item-content">
-                        <h4 class="item-content-title">
-                            Test
-                        </h4>
-                        <p class="item-content-des">
-                            This is a test description to test the role of the description.
-                        </p>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-people">
-                            <div class="circle bg-success"></div>
-                            <p class="info-people">123,456</p>
-                            <p class="info-people">People</p>
-                        </div>
-                        <button class="item-info-join">
-                            Join
-                        </button>
-                    </div>
-                </div>
+                {% for camp in camps %}
+                    <div class="item">
+                        {% if camp["camp_background"] == "default_camp.png" %}
+                            <div class="item-photo" style="background-image: url('../static/images/default_camp.png');"></div>
+                        {% else %}
+                            <div class="item-photo" style="background-image: url('../static/upload/background/{{ camp["camp_background"] }}');"></div>
+                        {% endif %}
 
-                <div class="item">
-                    <div class="item-photo"></div>
-                    <div class="item-content">
-                        <h4 class="item-content-title">
-                            Test
-                        </h4>
-                        <p class="item-content-des">
-                            This is a test description to test the role of the description.
-                        </p>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-people">
-                            <div class="circle bg-success"></div>
-                            <p class="info-people">123,456</p>
-                            <p class="info-people">People</p>
+                        <div class="item-content">
+                            <h4 class="item-content-title">
+                                {{ camp["camp_name"] }}
+                            </h4>
+                            <p class="item-content-des">
+                                {{ camp["camp_description"] }}
+                            </p>
                         </div>
-                        <button class="item-info-join">
-                            Join
-                        </button>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="item-photo"></div>
-                    <div class="item-content">
-                        <h4 class="item-content-title">
-                            Test
-                        </h4>
-                        <p class="item-content-des">
-                            This is a test description to test the role of the description.
-                        </p>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-people">
-                            <div class="circle bg-success"></div>
-                            <p class="info-people">123,456</p>
-                            <p class="info-people">People</p>
+                        <div class="item-info">
+                            <div class="item-info-people">
+                                <div class="circle bg-success"></div>
+                                <p class="info-people" id="users_num_{{ camp["camp_id"] }}">{{ camp["users_num"] }}</p>
+                                <p class="info-people">People</p>
+                            </div>
+                            <button class="item-info-join" onclick="join_camp({{ camp["camp_id"] }})">
+                                Join
+                            </button>
                         </div>
-                        <button class="item-info-join">
-                            Join
-                        </button>
                     </div>
-                </div>
-
-                <div class="item">
-                    <div class="item-photo"></div>
-                    <div class="item-content">
-                        <h4 class="item-content-title">
-                            Test
-                        </h4>
-                        <p class="item-content-des">
-                            This is a test description to test the role of the description.
-                        </p>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-people">
-                            <div class="circle bg-success"></div>
-                            <p class="info-people">123,456</p>
-                            <p class="info-people">People</p>
-                        </div>
-                        <button class="item-info-join">
-                            Join
-                        </button>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="item-photo"></div>
-                    <div class="item-content">
-                        <h4 class="item-content-title">
-                            Test
-                        </h4>
-                        <p class="item-content-des">
-                            This is a test description to test the role of the description.
-                        </p>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-people">
-                            <div class="circle bg-success"></div>
-                            <p class="info-people">123,456</p>
-                            <p class="info-people">People</p>
-                        </div>
-                        <button class="item-info-join">
-                            Join
-                        </button>
-                    </div>
-                </div>
+                {% endfor %}
 
             </div>
         </div>
