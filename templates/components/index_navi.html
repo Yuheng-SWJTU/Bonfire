@@ -50,8 +50,9 @@
             <li class="layui-nav-item">
                 <a href="javascript:">MyBuilt</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">Camp1</a></dd>
-                    <dd><a href="">Camp2</a></dd>
+                    {% for camp_builder in camp_builders %}
+                        <dd><a href="/camp/{{ camp_builder["camp_id"] }}">{{ camp_builder["camp_name"] }}</a></dd>
+                    {% endfor %}
                     <hr class="dropdown-divider" style="border-color: black!important;">
                     <dd>
                         <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#myModal">Build My Camp</a>
@@ -61,8 +62,9 @@
             <li class="layui-nav-item">
                 <a href="javascript:">MyCamp</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">Camp1</a></dd>
-                    <dd><a href="">Camp2</a></dd>
+                    {% for camp_join in camp_joins %}
+                        <dd><a href="/camp/{{ camp_join["camp_id"] }}">{{ camp_join["camp_name"] }}</a></dd>
+                    {% endfor %}
                 </dl>
             </li>
             <li class="layui-nav-item">

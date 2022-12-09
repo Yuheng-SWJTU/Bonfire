@@ -6,7 +6,7 @@ from datetime import datetime
 from flask_restful import Resource, Api
 from werkzeug.utils import secure_filename
 
-from controller import handle_error_string
+from controller import handle_error_string, get_all_camp_builder, get_all_camp_join
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_mail import Message
@@ -141,13 +141,15 @@ class GetCaptcha(Resource):
 
 class Profile(Resource):
     def get(self):
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
         try:
             return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
-                               status="profile")
+                               status="profile", camp_builders=camp_builders, camp_joins=camp_joins)
         except Exception as e:
             print(e)
             return render_template("profile.html", user=g.user,
-                               status="profile")
+                               status="profile", camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 class EditName(Resource):
@@ -260,8 +262,10 @@ class UploadAvatar(Resource):
 
 class Privacy(Resource):
     def get(self):
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
         return render_template("privacy.html", user=g.user,
-                                status="privacy")
+                                status="privacy", camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 class GetChangePasswordCaptcha(Resource):

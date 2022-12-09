@@ -5,6 +5,7 @@ from flask_restful import Resource, Api
 import json
 from .form import BuildCampForm
 from extensions import db, mail
+from controller import get_all_camp_builder, get_all_camp_join
 
 
 # the information of the blueprint
@@ -46,7 +47,15 @@ class Index(Resource):
             camps_list.append(camps_dict)
             camps_dict = {}
         # print(camps_list)
-        return render_template("index.html", camps=camps_list)
+
+        # get all camps which identity is "Builder"
+        # save the camp_id and camp_name in a dictionary
+        # format: {"camp_id": camp_id, "camp_name": camp_name}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        return render_template("index.html", camps=camps_list, camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 class BuildCamp(Resource):

@@ -5,6 +5,7 @@ import json
 from models import CampModel, CampUserModel, CategoryModel
 from extensions import db, mail
 from .form import AddCategoryForm
+from controller import get_all_camp_builder, get_all_camp_join
 
 # the information of the blueprint
 bp = Blueprint("camp", __name__, url_prefix="/camp")
@@ -57,8 +58,11 @@ class Camp(Resource):
             categories_dict["category_color"] = category.color
             categories_list.append(categories_dict)
             categories_dict = {}
-        print(categories_list)
-        return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity)
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+        return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 class AddCategory(Resource):
@@ -118,9 +122,7 @@ class EditCategory(Resource):
         if identity == "Admin" or identity == "Builder":
             # get the category name and color
             category_name = request.form.get("category_name")
-            print(category_name)
             category_color = request.form.get("category_color")
-            print(category_color)
             category_id = request.form.get("category_id")
             # check whether the category name is exist
             category = CategoryModel.query.filter_by(name=category_name, camp_id=camp_id).first()
