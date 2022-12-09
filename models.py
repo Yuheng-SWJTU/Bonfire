@@ -84,3 +84,17 @@ class CampUserModel(db.Model):
     # if you want to get all the users of a camp, you can write it through users
     camp = db.relationship("CampModel", backref="users")
 
+
+class CategoryModel(db.Model):
+    __tablename__ = "category"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False, unique=False)
+    color = db.Column(db.String(100), nullable=False, unique=False)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # Camp id will be the foreign key
+    camp_id = db.Column(db.Integer, db.ForeignKey("camp.id"))
+    # if you want to get all the categories of a camp, you can write it through categories
+    camp = db.relationship("CampModel", backref="categories")
+

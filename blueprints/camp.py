@@ -2,8 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_mail import Message
 from flask_restful import Resource, Api
 import json
-from models import CampModel, CampUserModel
-
+from models import CampModel, CampUserModel, CategoryModel
+from extensions import db, mail
+from .form import AddCategoryForm
 
 # the information of the blueprint
 bp = Blueprint("camp", __name__, url_prefix="/camp")
@@ -22,10 +23,77 @@ def output_html(data, code, headers=None):
 class Camp(Resource):
     def get(self, camp_id):
 
-        return render_template("camp.html")
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+        return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity)
+
+
+class AddCategory(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        camp_id = request.form.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Admin" or identity == "Builder":
+            # get the category name and color
+            category_name = request.form.get("category_name")
+            category_color = request.form.get("category_color")
+            # check whether the category name is exist
+            category = CategoryModel.query.filter_by(name=category_name, camp_id=camp_id).first()
+            if category:
+                return jsonify({"code": 400, "message": "This category has been added!"})
+            # using form to check the category name and color
+            form = AddCategoryForm(request.form)
+            if form.validate():
+                # add the category to the database
+                category = CategoryModel(name=category_name, color=category_color, camp_id=camp_id)
+                db.session.add(category)
+                db.session.commit()
+                return jsonify({"code": 200})
+            else:
+                return jsonify({"code": 400, "message": "Please check your input!"})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
 api.add_resource(Camp, "/<int:camp_id>")
+api.add_resource(AddCategory, "/add_category")
 
 
 @bp.route("/post", methods=["GET", "POST"])
@@ -41,5 +109,3 @@ def show():
 @bp.route("/manage", methods=["GET", "POST"])
 def manage():
     return render_template("manage.html")
-
-

@@ -3,7 +3,7 @@
 import wtforms
 from wtforms.validators import length, email
 # import models
-from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel, CampModel, CampUserModel
+from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel, CampModel, CategoryModel
 from flask import session, g
 # ///////////////////////////////////////////////////////////////////////////
 
@@ -92,3 +92,13 @@ class BuildCampForm(wtforms.Form):
         camp_model = CampModel.query.filter_by(name=camp_name).first()
         if camp_model:
             raise wtforms.ValidationError("This camp name has been used!")
+
+
+class AddCategoryForm(wtforms.Form):
+    category_name = wtforms.StringField(validators=[length(min=1, max=20)])
+
+    def check_name(self, field):
+        category_name = field.data
+        category_model = CategoryModel.query.filter_by(name=category_name).first()
+        if category_model:
+            raise wtforms.ValidationError("This category name has been used!")
