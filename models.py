@@ -33,5 +33,6 @@ class UserModel(db.Model):
     avatar = db.Column(db.String(200), nullable=False, default="default.png")
     gender = db.Column(db.String(10), nullable=True)
     birthday = db.Column(db.DateTime, nullable=True)
+    description = db.Column(db.String(200), nullable=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
 

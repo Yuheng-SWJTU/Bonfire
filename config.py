@@ -14,3 +14,6 @@ MAIL_DEBUG = True
 MAIL_USERNAME = "2964992240@qq.com"
 MAIL_PASSWORD = "lvnbpinsuqcvdgcb"
 MAIL_DEFAULT_SENDER = "2964992240@qq.com"
+
+
+AVATAR_UPLOAD_FOLDER = "static/upload/avatar/"

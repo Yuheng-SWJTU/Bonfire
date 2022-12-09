@@ -5,34 +5,41 @@
         <div class="profile-container">
             <div class="profile-decoration"></div>
             <div class="avatar-container">
-                <img class="layui-nav-img profile-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                <p class="profile-username">Yuheng Liu</p>
+                {% if user.avatar == "default.png" %}
+                    <img src="{{ url_for('static', filename='images/default.png') }}" alt="avatar" class="layui-nav-img profile-img" id="avatar">
+                {% else %}
+                    <img class="layui-nav-img profile-img" id="avatar" src="../static/upload/avatar/{{ user.avatar }}" alt="avatar">
+                {% endif %}
+                <p class="profile-username">{{ user.username }}</p>
             </div>
-            <dic class="profile-info">
+            <div class="profile-info">
                 <div class="profile-info-block">
                     <div class="profile-info-area">
                         <p class="profile-info-title">Username</p>
-                        <p class="profile-info-content">YuhengLiu</p>
+                        <p class="profile-info-content">{{ user.username }}</p>
                     </div>
-                    <button class="profile-info-button">Edit</button>
+                    <button class="profile-info-button" onclick="edit_name()">Edit</button>
                 </div>
 
                 <div class="profile-info-block">
                     <div class="profile-info-area">
                         <p class="profile-info-title">E-mail</p>
-                        <p class="profile-info-content">2964992240@qq.com</p>
+                        <p class="profile-info-content">{{ user.email }}</p>
                     </div>
-                    <button class="profile-info-button">Edit</button>
                 </div>
 
                 <div class="profile-info-block">
                     <div class="profile-info-area">
                         <p class="profile-info-title">Description</p>
-                        <p class="profile-info-content">This is a test.</p>
+                        {% if user.description == None %}
+                            <p class="profile-info-content">Here is empty~</p>
+                        {% else %}
+                            <p class="profile-info-content">{{ user.description }}</p>
+                        {% endif %}
                     </div>
-                    <button class="profile-info-button">Edit</button>
+                    <button class="profile-info-button" onclick="edit_description()">Edit</button>
                 </div>
-            </dic>
+            </div>
         </div>
 
         <hr class="segmentation">
@@ -46,9 +53,15 @@
                             <p class="profile-info-title">
                                 Gender
                             </p>
-                            <p class="profile-info-content">
-                                Male
-                            </p>
+                            {% if user.gender == None %}
+                                <p class="profile-info-content">
+                                    Unset
+                                </p>
+                            {% else %}
+                                <p class="profile-info-content">
+                                    {{ user.gender }}
+                                </p>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -57,15 +70,21 @@
                             <p class="profile-info-title">
                                 Birthday
                             </p>
-                            <p class="profile-info-content">
-                                1999-01-01
-                            </p>
+                            {% if user.birthday == None %}
+                                <p class="profile-info-content">
+                                    Unset
+                                </p>
+                            {% else %}
+                                <p class="profile-info-content">
+                                    {{ birthday }}
+                                </p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="profile-basic-info-right">
                     <div class="profile-basic-btn-area">
-                        <button class="profile-basic-info-edit">
+                        <button class="profile-basic-info-edit" data-bs-toggle="modal" data-bs-target="#edit-profile">
                             Edit
                         </button>
                     </div>
@@ -86,15 +105,62 @@
                 <div class="my-activity-title">
                     <p id="my-activity-title">Recent Activity</p>
                 </div>
-                <div class="my-activity-content">
-                    <a class="my-activity-content-title">
-                        Test
-                    </a>
-                    <div class="my-activity-content-area">
-                        <p>This is a description of Test.</p>
+                <div class="no_activity">
+                    <img id="no_activity" src="{{ url_for("static", filename="images/no_activity.png") }}">
+                </div>
+                {#                <div class="my-activity-content">#}
+                {#                    <a class="my-activity-content-title">#}
+                {#                        Test#}
+                {#                    </a>#}
+                {#                    <div class="my-activity-content-area">#}
+                {#                        <p>This is a description of Test.</p>#}
+                {#                    </div>#}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="edit-profile">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Basic Information</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="{{ url_for("user.editprofile") }}" method="POST">
+                <div class="modal-body">
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="gender" class="form-label add-information">Gender:</label>
+                            <select class="form-select add-input camp-side-add-input" id="gender" name="gender">
+                                <option value="Unset">Unset</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            {#                            due date#}
+                            <label for="birthday" class="form-label add-information">Due Date:</label>
+                            <input class="form-control add-input camp-side-add-input" type="date"
+                                   id="birthday" name="birthday"
+                                   required="required">
+                        </div>
+                    </div>
+                    <div class="row modal-body-row">
+                        <p class="add-information">Attention: We will get your location automatically, you do not need
+                            to change it.</p>
                     </div>
                 </div>
-            </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="login-nav-btn" data-bs-dismiss="modal">Confirm</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>

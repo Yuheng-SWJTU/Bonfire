@@ -312,3 +312,7 @@
         overflow-x: hidden;
     }
 }
+
+#no_activity{
+    width: 100%;
+}
