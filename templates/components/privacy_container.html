@@ -38,7 +38,7 @@
                 <p class="privacy-text">
                     This operation cannot be restored after the account is deleted.
                 </p>
-                <button class="profile-basic-info-edit" id="delete-account">Delete</button>
+                <button class="profile-basic-info-edit" id="delete-account" onclick="delete_account()">Delete</button>
             </div>
             <div class="privacy-img">
                 <img src="{{ url_for("static", filename="images/delete.png") }}" id="privacy-img">
@@ -57,7 +57,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form action="{{ url_for("user.editprofile") }}" method="POST" id="change_pswd">
+            <form id="change_pswd">
                 <div class="modal-body">
                     <div class="row modal-body-row">
                         <div class="col">

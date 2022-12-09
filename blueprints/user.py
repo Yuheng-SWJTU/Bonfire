@@ -56,7 +56,7 @@ class Login(Resource):
                 print("text")
                 return redirect("/")
             else:
-                return redirect(url_for("user.login"))
+                return render_template("login.html", error="Email or password error!")
         else:
             flash("The format of email or password is wrong! ")
             return redirect(url_for("user.login"))
@@ -141,7 +141,12 @@ class GetCaptcha(Resource):
 
 class Profile(Resource):
     def get(self):
-        return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
+        try:
+            return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
+                               status="profile")
+        except Exception as e:
+            print(e)
+            return render_template("profile.html", user=g.user,
                                status="profile")
 
 
@@ -340,6 +345,28 @@ class EditPassword(Resource):
                 return jsonify({"code": 400, "message": "The captcha is wrong! "})
 
 
+class DeleteAccount(Resource):
+    def delete(self):
+        # delete the user in the database
+        user = UserModel.query.filter_by(id=g.user.id).first()
+        db.session.delete(user)
+        # database rollback
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        session.clear()
+        return jsonify({"code": 200, "message": "You have deleted your account successfully! "})
+
+
+class Logout(Resource):
+    def get(self):
+        # delete the session
+        session.clear()
+        return redirect(url_for("user.login"))
+
+
 api.add_resource(GetCaptcha, "/captcha")
 api.add_resource(Register, "/register")
 api.add_resource(Login, "/login")
@@ -351,6 +378,8 @@ api.add_resource(UploadAvatar, "/upload_avatar")
 api.add_resource(Privacy, "/privacy")
 api.add_resource(GetChangePasswordCaptcha, "/get_change_password_captcha")
 api.add_resource(EditPassword, "/edit_password")
+api.add_resource(DeleteAccount, "/delete_account")
+api.add_resource(Logout, "/logout")
 
 
 @bp.route("/favorite", methods=["GET", "POST"])

@@ -1,22 +1,22 @@
 //prompt层
 function edit_name() {
-    layer.prompt({title: 'Edit your username', formType: 0, btn:['Confirm']}, function (text, index) {
+    layer.prompt({title: 'Edit your username', formType: 0, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
         $.ajax({
-            url: "/user/edit_name",
-            method: "POST",
-            data: {
-                "new_name": text
-            },
-            success: function (res) {
-                var code = res['code']
-                if (code === 200) {
-                    // refresh the page
-                    window.location.reload();
-                } else {
-                    layer.msg(res['message']);
-                }
-            },
+                url: "/user/edit_name",
+                method: "POST",
+                data: {
+                    "new_name": text
+                },
+                success: function (res) {
+                    var code = res['code']
+                    if (code === 200) {
+                        // refresh the page
+                        window.location.reload();
+                    } else {
+                        layer.msg(res['message']);
+                    }
+                },
             }
         )
     });
@@ -24,29 +24,57 @@ function edit_name() {
 
 //prompt层
 function edit_description() {
-    layer.prompt({title: 'Edit your description', formType: 2, btn:['Confirm']}, function (text, index) {
+    layer.prompt({title: 'Edit your description', formType: 2, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
         $.ajax({
-            url: "/user/edit_description",
-            method: "POST",
-            data: {
-                "new_description": text
-            },
-            success: function (res) {
-                var code = res['code']
-                if (code === 200) {
-                    // refresh the page
-                    window.location.reload();
-                } else {
-                    layer.msg(res['message']);
-                }
-            },
+                url: "/user/edit_description",
+                method: "POST",
+                data: {
+                    "new_description": text
+                },
+                success: function (res) {
+                    var code = res['code']
+                    if (code === 200) {
+                        // refresh the page
+                        window.location.reload();
+                    } else {
+                        layer.msg(res['message']);
+                    }
+                },
             }
         )
     });
 }
 
-layui.use(['upload', 'element', 'layer'], function() {
+function delete_account() {
+    layer.confirm('You are deleting your account!<br>This operation cannot be restored!', {
+        title: "WARNING",
+        btn: ['Delete', 'Cancel'] //按钮
+    }, function () {
+        $.ajax({
+                url: "/user/delete_account",
+                data: {_method: "DELETE"},
+                type: "DELETE",
+                success: function (res) {
+                    var code = res['code']
+                    if (code === 200) {
+                        // refresh the page
+                        layer.msg(res['message']);
+                        // wait for 3 seconds and jump to the login page
+                        setTimeout(function () {
+                            window.location.href = "/user/login";
+                        } , 3000);
+                    } else {
+                        layer.msg(res['message']);
+                    }
+                },
+            }
+        )
+    }, function () {
+    });
+}
+
+layui.use(['upload', 'element', 'layer'], function () {
     var $ = layui.jquery
         , upload = layui.upload
         , element = layui.element
@@ -127,7 +155,7 @@ function bindCaptchaBtnClick() {
 }
 
 
-function checkChangePasswordForm(){
+function checkChangePasswordForm() {
     jQuery.validator.addMethod("itemPass", function (value, element) {
         var reg = /^\w+$/;
         return this.optional(element) || (reg.test(value));
@@ -142,14 +170,14 @@ function checkChangePasswordForm(){
         rules: {
             password: {
                 required: true,
-                itemPass:true,
+                itemPass: true,
                 minlength: 6,
                 maxLength: 40
             },
             captcha: {
                 required: false,
             },
-            password_con:{
+            password_con: {
                 required: true,
                 equalTo: "#password"
             }
@@ -163,7 +191,7 @@ function checkChangePasswordForm(){
             captcha: {
                 required: "Please enter the verification code",
             },
-            password_con:{
+            password_con: {
                 required: "Please enter your password again",
                 equalTo: "The two passwords are inconsistent"
             }
