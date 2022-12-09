@@ -87,7 +87,9 @@ layui.use(['upload', 'element', 'layer'], function () {
         , before: function (obj) {
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {
+                $('#navi-logo').attr('src', result);
                 $('#avatar').attr('src', result); //图片链接（base64）
+
             });
             layer.msg('Uploading...', {icon: 12, time: 0});
         }
@@ -98,7 +100,6 @@ layui.use(['upload', 'element', 'layer'], function () {
             }
             //上传成功
             // refresh the page
-            window.location.reload();
             $('#demoText').html(''); //置空上传失败的状态
         }
         , error: function () {

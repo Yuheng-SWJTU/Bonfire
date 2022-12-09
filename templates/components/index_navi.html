@@ -67,17 +67,17 @@
                 <a href="javascript:;">
                     {% if user.avatar == "default.png" %}
                         <img src="{{ url_for('static', filename='images/default.png') }}" alt="avatar"
-                             class="layui-nav-img">
+                             class="layui-nav-img" id="navi-logo">
                     {% else %}
                         <img class="layui-nav-img"
                              src="../static/upload/avatar/{{ user.avatar }}"
-                             alt="avatar">
+                             alt="avatar" id="navi-logo">
                     {% endif %}
                 </a>
                 <dl class="layui-nav-child">
                     <dd><p style="color: black; margin-left: 20px">{{ user.username }}</p></dd>
                     <dd><a href="{{ url_for("user.profile") }}">My profile</a></dd>
-                    <dd><a href="javascript:;">Log out</a></dd>
+                    <dd><a href="{{ url_for("user.logout") }}">Log out</a></dd>
                 </dl>
             </li>
         </ul>
