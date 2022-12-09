@@ -37,3 +37,7 @@ function delete_category(category_id) {
         }
     })
 }
+
+function forbidden(){
+    layer.msg("You have no permission to do this operation");
+}
