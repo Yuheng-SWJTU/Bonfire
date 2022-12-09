@@ -54,6 +54,7 @@ class Camp(Resource):
             categories_dict["category_color"] = category.color
             categories_list.append(categories_dict)
             categories_dict = {}
+        print(categories_list)
         return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity)
 
 

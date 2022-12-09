@@ -492,3 +492,22 @@
 .camp-side-add-input{
     margin-bottom: 10px;
 }
+
+.list-item-link {
+    /*background-color: #0a53be;*/
+    position: absolute;
+    left: 0;
+    width: 65%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 16px;
+    color: black;
+    text-decoration: none;
+}
+
+.list-item-link:hover {
+    color: black;
+}
