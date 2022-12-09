@@ -104,7 +104,7 @@ class JoinCamp(Resource):
             print(e)
             db.session.rollback()
         users_num = CampUserModel.query.filter_by(camp_id=camp_id).count()
-        return jsonify({"code": 200, "message": "Join camp successfully.", "users_num": users_num})
+        return jsonify({"code": 200, "message": "Join camp successfully.", "users_num": users_num, "camp_id": camp_id})
 
 
 api.add_resource(Index, "/")
