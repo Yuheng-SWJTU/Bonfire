@@ -46,3 +46,41 @@ class UserModel(db.Model):
     description = db.Column(db.String(200), nullable=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
 
+
+class CampModel(db.Model):
+    """
+    This class is used to store camp information.
+
+    """
+
+    __tablename__ = "camp"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False, unique=False)
+    description = db.Column(db.String(200), nullable=True)
+    background = db.Column(db.String(200), nullable=True, default="default_camp.png")
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+
+class CampUserModel(db.Model):
+    """
+    This class is used to store camp user information.
+
+    """
+
+    __tablename__ = "camp_user"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    join_time = db.Column(db.DateTime, default=datetime.now)
+    identity = db.Column(db.String(100), nullable=False, unique=False)
+
+    # User id will be the foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Camp id will be the foreign key
+    camp_id = db.Column(db.Integer, db.ForeignKey("camp.id"))
+
+    # if you want to get all the camps of a user, you can write it through camps
+    user = db.relationship("UserModel", backref="camps")
+    # if you want to get all the users of a camp, you can write it through users
+    camp = db.relationship("CampModel", backref="users")
+

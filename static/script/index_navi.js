@@ -43,3 +43,48 @@ layui.use(['upload', 'element', 'layer'], function() {
         }
     });
 });
+
+function checkBuildCampForm(){
+    jQuery.validator.addMethod("itemPass", function (value, element) {
+        var reg = /^\w+$/;
+        return this.optional(element) || (reg.test(value));
+    })
+
+    jQuery.validator.addMethod("itemName", function (value, element) {
+        var reg = /^[A-Za-z]+$/;
+        return this.optional(element) || (reg.test(value));
+    })
+
+    $("#build_camp").validate({
+        rules: {
+            camp_name: {
+                required: true,
+                minlength: 3,
+                maxLength: 20,
+                itemName: true
+            },
+            description: {
+                required: true,
+                minlength: 3,
+                maxLength: 100,
+            }
+        },
+        messages: {
+            camp_name: {
+                required: "Please enter your camp name",
+                minlength: "The camp name is between 4 and 20 characters",
+                itemName: "The camp name can only be composed of letters"
+            },
+            description: {
+                required: "Please enter your camp description",
+                minlength: "The description is between 4 and 100 characters"
+            }
+        }
+    })
+}
+
+// wait for the web page to load all elements
+$(function () {
+        checkBuildCampForm();
+    }
+)

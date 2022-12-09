@@ -3,7 +3,7 @@
 import wtforms
 from wtforms.validators import length, email
 # import models
-from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel
+from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel, CampModel, CampUserModel
 from flask import session, g
 # ///////////////////////////////////////////////////////////////////////////
 
@@ -77,3 +77,18 @@ class ChangePassword(wtforms.Form):
         password_con = field.data
         if password != password_con:
             raise wtforms.ValidationError("Password not match! ")
+
+
+class BuildCampForm(wtforms.Form):
+    """
+    When user build a camp, the form will be sent to this validator.
+    """
+
+    camp_name = wtforms.StringField(validators=[length(min=1, max=20)])
+    description = wtforms.StringField(validators=[length(min=1, max=200)])
+
+    def check_name(self, field):
+        camp_name = field.data
+        camp_model = CampModel.query.filter_by(name=camp_name).first()
+        if camp_model:
+            raise wtforms.ValidationError("This camp name has been used!")

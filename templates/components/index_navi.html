@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
     <script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
     <script src="{{ url_for('static', filename='script/index_navi.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.js"></script>
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -95,48 +97,51 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <!-- 模态框内容 -->
-            <div class="modal-body">
+            <form method="POST" action="{{ url_for("index.buildcamp") }}" id="build_camp">
 
-                <div class="row modal-body-row">
-                    <div class="col">
-                        <label for="assessment_title" class="form-label form-info">My Camp Name:</label>
-                        <input class="form-control form-input" placeholder="Enter camp name..." id="assessment_title"
-                               name="assessment_title">
-                    </div>
-                </div>
+                <!-- 模态框内容 -->
+                <div class="modal-body">
 
-                <div class="row modal-body-row">
-                    <div class="col">
-                        <label for="description" class="form-label form-info">Camp Description:</label>
-                        <textarea class="form-control form-input" rows="3" id="description"
-                                  name="description"></textarea>
-                    </div>
-                </div>
-
-                <div class="row modal-body-row">
-                    <label for="description" class="form-label form-info">Upload a Photo:</label>
-                    <div class="layui-upload">
-                        <div class="layui-upload-list">
-                            <img class="upload-img" id="demo1">
-                            <p id="demoText"></p>
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="camp_name" class="form-label form-info">My Camp Name:</label>
+                            <input class="form-control form-input" placeholder="Enter camp name..."
+                                   id="camp_name"
+                                   name="camp_name">
                         </div>
-                        <div style="width: 320px; margin-bottom: 10px">
-                            <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
-                                <div class="layui-progress-bar" lay-percent=""></div>
-                            </div>
-                        </div>
-                        <button type="button" class="login-nav-btn" id="test1">Upload</button>
                     </div>
-                    <a name="list-progress"> </a>
+
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="description" class="form-label form-info">Camp Description:</label>
+                            <textarea class="form-control form-input" rows="3" id="description"
+                                      name="description"></textarea>
+                        </div>
+                    </div>
+
+                    {#                    <div class="row modal-body-row">#}
+                    {#                        <label class="form-label form-info">Upload a Photo:</label>#}
+                    {#                        <div class="layui-upload">#}
+                    {#                            <div class="layui-upload-list">#}
+                    {#                                <img class="upload-img" id="demo1">#}
+                    {#                                <p id="demoText"></p>#}
+                    {#                            </div>#}
+                    {#                            <div style="width: 320px; margin-bottom: 10px">#}
+                    {#                                <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">#}
+                    {#                                    <div class="layui-progress-bar" lay-percent=""></div>#}
+                    {#                                </div>#}
+                    {#                            </div>#}
+                    {#                            <button type="button" class="login-nav-btn" id="test1">Upload</button>#}
+                    {#                        </div>#}
+                    {#                        <a name="list-progress"> </a>#}
+                    {#                    </div>#}
                 </div>
-            </div>
 
-            <!-- 模态框底部 -->
-            <div class="modal-footer">
-                <button type="button" class="login-nav-btn" data-bs-dismiss="modal">Build</button>
-            </div>
-
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="submit" class="login-nav-btn" data-bs-dismiss="modal">Build</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
