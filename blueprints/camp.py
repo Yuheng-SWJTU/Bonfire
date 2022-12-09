@@ -10,7 +10,6 @@ from .form import AddCategoryForm
 bp = Blueprint("camp", __name__, url_prefix="/camp")
 api = Api(bp)
 
-
 @api.representation('text/html')
 def output_html(data, code, headers=None):
     if isinstance(data, str):
@@ -22,6 +21,9 @@ def output_html(data, code, headers=None):
 
 class Camp(Resource):
     def get(self, camp_id):
+
+        # set a session to record the camp_id
+        session["camp_id"] = camp_id
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
@@ -85,7 +87,12 @@ class AddCategory(Resource):
                 # add the category to the database
                 category = CategoryModel(name=category_name, color=category_color, camp_id=camp_id)
                 db.session.add(category)
-                db.session.commit()
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+                    db.session.rollback()
+                    return jsonify({"code": 400, "message": "Add category failed!"})
                 return jsonify({"code": 200})
             else:
                 return jsonify({"code": 400, "message": "Please check your input!"})
@@ -93,8 +100,49 @@ class AddCategory(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class EditCategory(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        # get the camp_id from g
+        camp_id = session.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Admin" or identity == "Builder":
+            # get the category name and color
+            category_name = request.form.get("category_name")
+            print(category_name)
+            category_color = request.form.get("category_color")
+            print(category_color)
+            category_id = request.form.get("category_id")
+            # check whether the category name is exist
+            category = CategoryModel.query.filter_by(name=category_name, camp_id=camp_id).first()
+            if category:
+                return redirect("/camp/" + str(camp_id))
+            # using form to check the category name and color
+            # add the category to the database
+            category = CategoryModel.query.filter_by(id=category_id).first()
+            category.name = category_name
+            category.color = category_color
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return redirect("/camp/" + str(camp_id))
+            return redirect("/camp/" + str(camp_id))
+        else:
+            return redirect("/camp/" + str(camp_id))
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
+api.add_resource(EditCategory, "/editcategory")
 
 
 @bp.route("/post", methods=["GET", "POST"])
