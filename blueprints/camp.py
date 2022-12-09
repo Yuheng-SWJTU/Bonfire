@@ -10,6 +10,7 @@ from .form import AddCategoryForm
 bp = Blueprint("camp", __name__, url_prefix="/camp")
 api = Api(bp)
 
+
 @api.representation('text/html')
 def output_html(data, code, headers=None):
     if isinstance(data, str):
@@ -170,10 +171,40 @@ class DeleteCategory(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class LeaveCamp(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        # get the camp_id from g
+        camp_id = session.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Builder":
+            return jsonify({"code": 400, "message": "You are the builder of this camp, you can't leave!"})
+        else:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            db.session.delete(camp_user)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Leave camp failed!"})
+            # clear the camp_id in session
+            session["camp_id"] = None
+            return jsonify({"code": 200})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
 api.add_resource(DeleteCategory, "/delete_category")
+api.add_resource(LeaveCamp, "/leave_camp")
 
 
 @bp.route("/post", methods=["GET", "POST"])

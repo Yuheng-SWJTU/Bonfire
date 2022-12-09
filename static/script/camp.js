@@ -38,6 +38,28 @@ function delete_category(category_id) {
     })
 }
 
-function forbidden(){
-    layer.msg("You have no permission to do this operation");
+function leave_camp() {
+    // using ajax to send the request
+
+    layer.confirm('You are leaving this camp!<br>This operation cannot be restored!', {
+        title: "WARNING",
+        btn: ['Leave', 'Cancel'] //按钮
+    }, function () {
+        $.ajax({
+        url: "/camp/leave_camp",
+        method: "POST",
+        success: function (res) {
+            var code = res['code']
+            if (code === 200) {
+                layer.msg(res['message']);
+                // redirect to the index page
+                window.location.href = "/";
+            } else {
+                layer.msg(res['message']);
+            }
+        }
+    }
+        )
+    }, function () {
+    });
 }
