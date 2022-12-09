@@ -41,7 +41,7 @@
 
 .pro-button:hover{
     color: #2b2b2b;
-    background-color: #eeeeee;
+    background-color: #dcdcdc;
 }
 
 .profile-container{
@@ -315,4 +315,12 @@
 
 #no_activity{
     width: 100%;
+}
+
+#avatar{
+    cursor: pointer;
+}
+
+.active-profile{
+    background-color: #dcdcdc;
 }

@@ -18,6 +18,16 @@ class EmailCaptchaModel(db.Model):
     creat_time = db.Column(db.DateTime, default=datetime.now)
 
 
+class ChangePasswordCaptchaModel(db.Model):
+    __tablename__ = "change_password_captcha"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    captcha = db.Column(db.String(10), nullable=False)
+    creat_time = db.Column(db.DateTime, default=datetime.now)
+
+
 class UserModel(db.Model):
     """
     This class is used to store user information.

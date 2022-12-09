@@ -3,8 +3,8 @@
 import wtforms
 from wtforms.validators import length, email
 # import models
-from models import EmailCaptchaModel, UserModel
-from flask import session
+from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel
+from flask import session, g
 # ///////////////////////////////////////////////////////////////////////////
 
 
@@ -58,3 +58,22 @@ class LoginForm(wtforms.Form):
 
     email = wtforms.StringField(validators=[email()])
     password = wtforms.StringField(validators=[length(min=6, max=40)])
+
+
+class ChangePassword(wtforms.Form):
+    captcha = wtforms.StringField(validators=[length(min=4, max=4)])
+    password = wtforms.StringField(validators=[length(min=6, max=40)])
+    password_con = wtforms.StringField(validators=[length(min=6, max=40)])
+
+    def validate_captcha(self, field):
+        captcha = field.data
+        email = g.user.email
+        captcha_model = ChangePasswordCaptchaModel.query.filter_by(email=email).first()
+        if not captcha_model or captcha_model.captcha != captcha:
+            raise wtforms.ValidationError("Captcha Error! ")
+
+    def validate_password_con(self, field):
+        password = self.password.data
+        password_con = field.data
+        if password != password_con:
+            raise wtforms.ValidationError("Password not match! ")

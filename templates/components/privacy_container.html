@@ -14,9 +14,11 @@
                     Two-Factor Authentication
                 </p>
                 <p class="privacy-text">
-                    If you want to change your password, we will use two-factor authentication technology to protect your account security.
+                    If you want to change your password, we will use two-factor authentication technology to protect
+                    your account security.
                 </p>
-                <button class="profile-basic-info-edit">Change</button>
+                <button class="profile-basic-info-edit" data-bs-toggle="modal" data-bs-target="#edit-password">Change
+                </button>
             </div>
             <div class="privacy-img">
                 <img src="{{ url_for("static", filename="images/privacy.png") }}" id="privacy-img">
@@ -41,6 +43,57 @@
             <div class="privacy-img">
                 <img src="{{ url_for("static", filename="images/delete.png") }}" id="privacy-img">
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="edit-password">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Change Password</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="{{ url_for("user.editprofile") }}" method="POST" id="change_pswd">
+                <div class="modal-body">
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="captcha" class="form-label add-information">Captcha</label>
+                            <div class="input-group add-input">
+                                <input type="text" class="form-control add-input camp-side-add-input" name="captcha" id="captcha"
+                                       placeholder="Code">
+                                <button id="captcha-btn"
+                                        class="btn btn-outline-secondary input-group-text captcha-btn add-input camp-side-add-input"
+                                        type="button">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="password" class="form-label add-information">New Password</label>
+                            <input class="form-control add-input camp-side-add-input" type="password"
+                                   id="password" name="password">
+                        </div>
+                    </div>
+                    <div class="row modal-body-row">
+                        <div class="col">
+                            <label for="password_con" class="form-label add-information">Confirm Password</label>
+                            <input class="form-control add-input camp-side-add-input" type="password"
+                                   id="password_con" name="password_con">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="login-nav-btn" data-bs-dismiss="modal" onclick="confirm_pswd()">Confirm</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>

@@ -6,13 +6,25 @@
 
             <hr class="segmentation">
 
-            <a class="pro-button">
-                Profile Setting
-            </a>
+            {% if status=="profile" %}
+                <a class="pro-button active-profile" href="{{ url_for("user.profile") }}">
+                    Profile Setting
+                </a>
+            {% else %}
+                <a class="pro-button" href="{{ url_for("user.profile") }}">
+                    Profile Setting
+                </a>
+            {% endif %}
 
-            <a class="pro-button">
-                Privacy and Security
-            </a>
+            {% if status=="privacy" %}
+                <a class="pro-button active-profile" href="{{ url_for("user.privacy") }}">
+                    Privacy and Security
+                </a>
+            {% else %}
+                <a class="pro-button" href="{{ url_for("user.privacy") }}">
+                    Privacy and Security
+                </a>
+            {% endif %}
 
             <p class="profile-title" style="margin-top: 20px">Tracker</p>
 

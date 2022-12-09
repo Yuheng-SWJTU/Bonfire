@@ -10,9 +10,9 @@ from controller import handle_error_string
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_mail import Message
-from models import UserModel, EmailCaptchaModel
+from models import UserModel, EmailCaptchaModel, ChangePasswordCaptchaModel
 from extensions import db, mail
-from .form import RegisterForm, LoginForm
+from .form import RegisterForm, LoginForm, ChangePassword
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import AVATAR_UPLOAD_FOLDER
@@ -141,7 +141,8 @@ class GetCaptcha(Resource):
 
 class Profile(Resource):
     def get(self):
-        return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"))
+        return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
+                               status="profile")
 
 
 class EditName(Resource):
@@ -252,6 +253,93 @@ class UploadAvatar(Resource):
             return jsonify({"code": 400, "message": "Please deliver your avatar first! "})
 
 
+class Privacy(Resource):
+    def get(self):
+        return render_template("privacy.html", user=g.user,
+                                status="privacy")
+
+
+class GetChangePasswordCaptcha(Resource):
+    def post(self):
+        # GET request
+        email = g.user.email
+
+        # generate the captcha
+        letters = string.digits
+        captcha = "".join(random.sample(letters, 4))
+
+        # send the email
+        if email:
+            message = Message(
+                subject="[Bonfire] - you are changing your password",
+                recipients=[email],
+                body=f"Hi, {g.user.username} ! \n\n"
+                     f"You are changing your password: \n\n"
+                     f"Please enter this captcha code to confirm \n\n"
+                     f"{captcha} \n\n"
+                     f"If you didn't change your password, please ignore this email. \n\n"
+            )
+            mail.send(message)
+
+            # save the captcha in the session
+            captcha_model = ChangePasswordCaptchaModel.query.filter_by(email=email).first()
+            if captcha_model:
+                captcha_model.email = email
+                captcha_model.user_id = g.user.id
+                captcha_model.captcha = captcha
+                captcha_model.creat_time = datetime.now()
+
+                # database rollback
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    raise e
+            else:
+                captcha_model = ChangePasswordCaptchaModel(email=email, captcha=captcha, user_id=g.user.id, creat_time=datetime.now())
+                db.session.add(captcha_model)
+                db.session.commit()
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "We cannot detect your email address! "})
+
+
+class EditPassword(Resource):
+    def post(self):
+        captcha = request.form.get("captcha")
+        password = request.form.get("password")
+        password_con = request.form.get("password_con")
+
+        # check the validation of the password
+        if len(password) < 6:
+            return jsonify({"code": 400, "message": "The length of the password is too short! "})
+
+        if len(password) > 20:
+            return jsonify({"code": 400, "message": "The length of the password is too long! "})
+
+        if password != password_con:
+            return jsonify({"code": 400, "message": "The password is not consistent! "})
+
+        # Use form validation to check the captcha
+        form = ChangePassword(request.form)
+        if form.validate():
+            # check the captcha
+            captcha_model = ChangePasswordCaptchaModel.query.filter_by(email=g.user.email).first()
+            if captcha_model.captcha == captcha:
+                # update the password in the database
+                user = UserModel.query.filter_by(id=g.user.id).first()
+                user.password = generate_password_hash(password)
+                # database rollback
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    raise e
+                return jsonify({"code": 200, "message": "You have changed your password successfully! "})
+            else:
+                return jsonify({"code": 400, "message": "The captcha is wrong! "})
+
+
 api.add_resource(GetCaptcha, "/captcha")
 api.add_resource(Register, "/register")
 api.add_resource(Login, "/login")
@@ -260,11 +348,9 @@ api.add_resource(EditName, "/edit_name")
 api.add_resource(EditDescription, "/edit_description")
 api.add_resource(EditProfile, "/editprofile")
 api.add_resource(UploadAvatar, "/upload_avatar")
-
-
-@bp.route("/privacy", methods=["GET", "POST"])
-def privacy():
-    return render_template("privacy.html")
+api.add_resource(Privacy, "/privacy")
+api.add_resource(GetChangePasswordCaptcha, "/get_change_password_captcha")
+api.add_resource(EditPassword, "/edit_password")
 
 
 @bp.route("/favorite", methods=["GET", "POST"])
