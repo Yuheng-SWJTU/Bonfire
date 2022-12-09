@@ -140,9 +140,40 @@ class EditCategory(Resource):
             return redirect("/camp/" + str(camp_id))
 
 
+class DeleteCategory(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        # get the camp_id from g
+        camp_id = session.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Admin" or identity == "Builder":
+            # get the category id
+            category_id = request.form.get("category_id")
+            # delete the category
+            category = CategoryModel.query.filter_by(id=category_id).first()
+            db.session.delete(category)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Delete category failed!"})
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
+api.add_resource(DeleteCategory, "/delete_category")
 
 
 @bp.route("/post", methods=["GET", "POST"])

@@ -18,3 +18,22 @@ function add_category(camp_id) {
         }
     })
 }
+
+// function for deleting the category
+function delete_category(category_id) {
+    $.ajax({
+        url: "/camp/delete_category",
+        method: "POST",
+        data: {
+            "category_id": category_id
+        },
+        success: function (res) {
+            var code = res['code'];
+            if (code === 200) {
+                window.location.reload();
+            } else {
+                layer.msg(res['message']);
+            }
+        }
+    })
+}
