@@ -37,8 +37,8 @@ class UserModel(db.Model):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(200), nullable=False, unique=True)
-    email = db.Column(db.String(100), nullable=False, unique=True)
+    username = db.Column(db.String(200), nullable=False, unique=False)
+    email = db.Column(db.String(100), nullable=False, unique=False)
     password = db.Column(db.String(200), nullable=False)
     avatar = db.Column(db.String(200), nullable=False, default="default.png")
     gender = db.Column(db.String(10), nullable=True)

@@ -349,7 +349,14 @@ class DeleteAccount(Resource):
     def delete(self):
         # delete the user in the database
         user = UserModel.query.filter_by(id=g.user.id).first()
-        db.session.delete(user)
+        # change the username to "Cancelled"
+        user.username = "Cancelled"
+        # change the email to "Cancelled"
+        user.email = "Cancelled"
+        # change the password to "Cancelled"
+        user.password = "Cancelled"
+        # change the avatar to "default.png"
+        user.avatar = "default.png"
         # database rollback
         try:
             db.session.commit()
