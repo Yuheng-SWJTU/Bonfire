@@ -366,6 +366,11 @@ class DeleteAccount(Resource):
         user.email = "Cancelled"
         # change the password to "Cancelled"
         user.password = "Cancelled"
+
+        # delete the avatar in the folder
+        if user.avatar != "default.png":
+            os.remove(os.path.join(AVATAR_UPLOAD_FOLDER, user.avatar))
+
         # change the avatar to "default.png"
         user.avatar = "default.png"
         # database rollback
