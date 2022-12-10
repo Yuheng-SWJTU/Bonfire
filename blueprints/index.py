@@ -88,8 +88,8 @@ class BuildCamp(Resource):
             except Exception as e:
                 print(e)
                 db.session.rollback()
-            # redirect to camp page
-            return redirect("/")
+            # redirect to the camp page
+            return redirect("/camp/" + str(camp.id) + "/manage")
         else:
             # redirect to camp page
             return redirect("/")
