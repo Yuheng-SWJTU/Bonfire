@@ -44,7 +44,7 @@ def get_all_camp_join():
     user_id = session.get("user_id")
     if user_id:
         # get all camps which identity is "Member" and identity is "Admin"
-        camp_user = CampUserModel.query.filter_by(user_id=user_id).filter(CampUserModel.identity.in_(["Member", "Admin"])).all()
+        camp_user = CampUserModel.query.filter_by(user_id=user_id).filter(CampUserModel.identity.in_(["Admin", "Member"])).all()
         camps = []
         camp_dict = {}
         for camp in camp_user:

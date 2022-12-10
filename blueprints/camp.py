@@ -265,12 +265,57 @@ class ManageCamp(Resource):
                                admins=admin_info)
 
 
+class AddAdmin(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        camp_id = request.form.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Builder":
+            # get the user_id of the new admin
+            new_admin_name = request.form.get("username")
+            # get the user model of the new admin
+            new_admin = UserModel.query.filter_by(username=new_admin_name).first()
+            # if the user is not exist
+            if not new_admin:
+                return jsonify({"code": 400, "message": "The user is not exist!"})
+            # get the camp_user model of the new admin
+            new_admin_camp_user = CampUserModel.query.filter_by(user_id=new_admin.id, camp_id=camp_id).first()
+            # check if the user is not in this camp
+            if not new_admin_camp_user:
+                return jsonify({"code": 400, "message": "This user is not in this camp!"})
+            # check if the new admin is already an admin
+            elif new_admin_camp_user.identity == "Admin":
+                return jsonify({"code": 400, "message": "This user is already an admin!"})
+            # check if the new admin is the builder
+            elif new_admin_camp_user.identity == "Builder":
+                return jsonify({"code": 400, "message": "You are the builder of this camp!"})
+            else:
+                new_admin_camp_user.identity = "Admin"
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+                    return jsonify({"code": 400, "message": "Add admin failed!"})
+                return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
 api.add_resource(DeleteCategory, "/delete_category")
 api.add_resource(LeaveCamp, "/leave_camp")
 api.add_resource(ManageCamp, "/<int:camp_id>/manage")
+api.add_resource(AddAdmin, "/add_admin")
 
 
 @bp.route("/post", methods=["GET", "POST"])

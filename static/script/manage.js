@@ -43,3 +43,24 @@ layui.use(['upload', 'element', 'layer'], function() {
         }
     });
 });
+
+
+function add_admin(camp_id){
+    // using ajax to send the request
+    $.ajax({
+        url: "/camp/add_admin",
+        method: "POST",
+        data: {
+            "camp_id": camp_id,
+            "username": $("#add_admin").val()
+        },
+        success: function (res) {
+            var code = res['code'];
+            if (code === 200) {
+                window.location.reload();
+            } else {
+                layer.msg(res['message']);
+            }
+        }
+    })
+}

@@ -83,7 +83,7 @@
                         {% else %}
                             <div class="no_admin">
                                 {% include "components/no_admin_svg.html" %}
-                                <p style="margin-left: 20px">No Admin Here</p>
+                                <p style="margin-left: 20px; font-style: italic">( No Admin Here )</p>
                             </div>
                         {% endif %}
                     </div>
@@ -93,8 +93,8 @@
                             <div class="add-admin-container">
                                 <input class="form-control form-input manage-input add-admin-input" id="add_admin"
                                        name="add_admin"
-                                       rows="5" placeholder="Enter E-mail to add...">
-                                <div class="add_btn">Add</div>
+                                       placeholder="Enter username to add...">
+                                <div class="add_btn" onclick="add_admin({{ camp["camp_id"] }})">Add</div>
                             </div>
                         </div>
                     {% endif %}
