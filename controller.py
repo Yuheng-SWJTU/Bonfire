@@ -51,7 +51,6 @@ def get_all_camp_join():
             camp_dict["camp_name"] = camp.name
             camps.append(camp_dict)
             camp_dict = {}
-        print(camps)
         return camps
     else:
         return {}

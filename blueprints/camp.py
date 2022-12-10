@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_mail import Message
 from flask_restful import Resource, Api
 import json
-from models import CampModel, CampUserModel, CategoryModel
+from models import CampModel, CampUserModel, CategoryModel, UserModel
 from extensions import db, mail
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join
@@ -202,11 +202,75 @@ class LeaveCamp(Resource):
             return jsonify({"code": 200})
 
 
+class ManageCamp(Resource):
+    def get(self, camp_id):
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        # get the builder information of this camp
+        # format: {"user_id": user_id, "user_name": user_name, "user_avatar": user_avatar}
+        builder_info = {}
+        camp_builder = CampUserModel.query.filter_by(camp_id=camp_id, identity="Builder").first()
+        if camp_builder:
+            builder = UserModel.query.filter_by(id=camp_builder.user_id).first()
+            builder_info["user_id"] = builder.id
+            builder_info["user_name"] = builder.username
+            builder_info["user_avatar"] = builder.avatar
+
+        # get the admin information of this camp
+        # format: {"user_id": user_id, "user_name": user_name, "user_avatar": user_avatar}
+        admin_info = []
+        camp_admins = CampUserModel.query.filter_by(camp_id=camp_id, identity="Admin").all()
+        for camp_admin in camp_admins:
+            admin = UserModel.query.filter_by(id=camp_admin.user_id).first()
+            admin_dict = {"user_id": admin.id, "user_name": admin.username, "user_avatar": admin.avatar}
+            admin_info.append(admin_dict)
+        if not admin_info:
+            admin_info = None
+
+        return render_template("manage.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins, builder=builder_info,
+                               admins=admin_info)
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
 api.add_resource(DeleteCategory, "/delete_category")
 api.add_resource(LeaveCamp, "/leave_camp")
+api.add_resource(ManageCamp, "/<int:camp_id>/manage")
 
 
 @bp.route("/post", methods=["GET", "POST"])
@@ -217,8 +281,3 @@ def post():
 @bp.route("/show", methods=["GET", "POST"])
 def show():
     return render_template("show.html")
-
-
-@bp.route("/manage", methods=["GET", "POST"])
-def manage():
-    return render_template("manage.html")

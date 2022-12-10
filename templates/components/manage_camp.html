@@ -10,27 +10,51 @@
                     <p class="manage-box-title">Basic Information</p>
                     <div class="col">
                         <label for="camp_name" class="form-info">Camp Name</label>
-                        <input class="form-control form-input manage-input" id="camp_name" name="camp_name">
+                        {% if identity == "Admin" or identity == "Builder" %}
+                            <input class="form-control form-input manage-input" id="camp_name" name="camp_name"
+                                   value="{{ camp["camp_name"] }}">
+                        {% else %}
+                            <input class="form-control form-input manage-input" id="camp_name" name="camp_name"
+                                   value="{{ camp["camp_name"] }}" disabled>
+                        {% endif %}
                     </div>
                     <div class="col">
                         <label for="camp_description" class="form-info">Camp Description</label>
-                        <textarea class="form-control form-input manage-input" id="camp_description"
-                                  name="camp_description"
-                                  rows="5"></textarea>
+                        {% if identity == "Admin" or  identity == "Builder" %}
+                            <textarea class="form-control form-input manage-input" id="camp_description"
+                                      name="camp_description"
+                                      rows="5">{{ camp["camp_description"] }}</textarea>
+                        {% else %}
+                            <textarea class="form-control form-input manage-input" id="camp_description"
+                                      name="camp_description"
+                                      rows="5" disabled>{{ camp["camp_description"] }}</textarea>
+                        {% endif %}
                     </div>
                     <div class="col">
-                        <label for="description" class="form-label form-info">Upload a Photo:</label>
+                        {% if identity == "Admin" or  identity == "Builder" %}
+                            <label for="description" class="form-label form-info">Upload a Photo:</label>
+                        {% else %}
+                            <label for="description" class="form-label form-info">Camp Background</label>
+                        {% endif %}
                         <div class="layui-upload">
                             <div class="layui-upload-list">
-                                <img class="upload-img" id="re_upload_background">
+                                {% if identity == "Admin" or  identity == "Builder" %}
+                                    <img class="upload-img" id="re_upload_background"
+                                         src="/static/upload/background/{{ camp["camp_background"] }}">
+                                {% else %}
+                                    <img class="upload-img"
+                                         src="/static/upload/background/{{ camp["camp_background"] }}">
+                                {% endif %}
                                 <p id="re_upload_back_text"></p>
                             </div>
-                            <div style="width: 320px; margin-bottom: 10px">
-                                <div class="layui-progress layui-progress-big" lay-showpercent="yes"
-                                     lay-filter="re_upload_back_progress">
-                                    <div class="layui-progress-bar" lay-percent=""></div>
+                            {% if identity == "Admin" or  identity == "Builder" %}
+                                <div style="width: 320px; margin-bottom: 10px">
+                                    <div class="layui-progress layui-progress-big" lay-showpercent="yes"
+                                         lay-filter="re_upload_back_progress">
+                                        <div class="layui-progress-bar" lay-percent=""></div>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         </div>
                         <a name="list-progress"> </a>
                     </div>
@@ -42,42 +66,43 @@
                         <div class="col">
                             <p class="form-info">Builder</p>
                             <div class="builder">
-                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                                <p>Yuheng Liu</p>
+                                <img class="layui-nav-img" src="/static/upload/avatar/{{ builder["user_avatar"] }}">
+                                <p>{{ builder["user_name"] }}</p>
                             </div>
                         </div>
                         <p class="form-info">Admin</p>
-                        <div class="admin">
-                            <dia class="admin-item">
-                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                                <p>Yuheng Liu</p>
-                            </dia>
-                            <dia class="admin-item">
-                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                                <p>Yuheng Liu</p>
-                            </dia>
-                            <dia class="admin-item">
-                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                                <p>Yuheng Liu</p>
-                            </dia>
-                            <dia class="admin-item">
-                                <img class="layui-nav-img" src="{{ url_for("static", filename="images/avatar.png") }}">
-                                <p>Yuheng Liu</p>
-                            </dia>
-                        </div>
+                        {% if admins != None %}
+                            {% for admin in admins %}
+                                <div class="admin">
+                                    <div class="admin-item">
+                                        <img class="layui-nav-img" src="/static/upload/avatar/{{ admin["user_avatar"] }}">
+                                        <p>{{ admin["user_name"] }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="no_admin">
+                                {% include "components/no_admin_svg.html" %}
+                                <p style="margin-left: 20px">No Admin Here</p>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="col">
-                        <label for="add_admin" class="form-info">Add Admin</label>
-                        <div class="add-admin-container">
-                            <input class="form-control form-input manage-input add-admin-input" id="add_admin"
-                                   name="add_admin"
-                                   rows="5" placeholder="Enter E-mail to add...">
-                            <div class="add_btn">Add</div>
+                    {% if identity == "Builder" %}
+                        <div class="col">
+                            <label for="add_admin" class="form-info">Add Admin</label>
+                            <div class="add-admin-container">
+                                <input class="form-control form-input manage-input add-admin-input" id="add_admin"
+                                       name="add_admin"
+                                       rows="5" placeholder="Enter E-mail to add...">
+                                <div class="add_btn">Add</div>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
 
-                <button type="submit" class="login-nav-btn manage-submit-btn">Save</button>
+                {% if identity == "Builder" or identity == "Admin" %}
+                    <button type="submit" class="login-nav-btn manage-submit-btn">Save</button>
+                {% endif %}
             </form>
         </div>
     </div>

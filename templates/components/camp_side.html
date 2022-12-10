@@ -46,9 +46,15 @@
                 + New Post
             </button>
 
-            <button class="side-btn">
-                Manage Camp
-            </button>
+            {% if identity == "Admin" or identity == "Builder" %}
+                <button class="side-btn">
+                    Manage Camp
+                </button>
+            {% else %}
+                <button class="side-btn">
+                    view Information
+                </button>
+            {% endif %}
 
             <hr class="segmentation">
 
@@ -107,7 +113,8 @@
                                 {% if identity == "Admin" or identity=="Builder" %}
                                     {#                                edit button#}
                                     <button type="button" class="side-title-btn edit-btn-list" id="edit-btn"
-                                            data-bs-toggle="modal" data-bs-target="#category-edit-{{ category["category_id"] }}">
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#category-edit-{{ category["category_id"] }}">
                                         <svg t="1666173777331" class="icon" viewBox="0 0 1024 1024" version="1.1"
                                              xmlns="http://www.w3.org/2000/svg" p-id="11685" width="14" height="14">
                                             <path d="M853.333333 501.333333c-17.066667 0-32 14.933333-32 32v320c0 6.4-4.266667 10.666667-10.666666 10.666667H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666667V213.333333c0-6.4 4.266667-10.666667 10.666667-10.666666h320c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32H170.666667c-40.533333 0-74.666667 34.133333-74.666667 74.666666v640c0 40.533333 34.133333 74.666667 74.666667 74.666667h640c40.533333 0 74.666667-34.133333 74.666666-74.666667V533.333333c0-17.066667-14.933333-32-32-32z"
@@ -221,7 +228,8 @@
                         <div class="row modal-body-row">
                             <div class="col">
                                 <label for="category_name" class="form-label add-information">Category Name:</label>
-                                <input class="form-control add-input" value="{{ category["category_name"] }}" id="category_name"
+                                <input class="form-control add-input" value="{{ category["category_name"] }}"
+                                       id="category_name"
                                        name="category_name">
                             </div>
                         </div>
