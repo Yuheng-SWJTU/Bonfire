@@ -11,10 +11,12 @@
                     <div class="col">
                         <label for="manage_camp_name" class="form-info">Camp Name</label>
                         {% if identity == "Admin" or identity == "Builder" %}
-                            <input class="form-control form-input manage-input" id="manage_camp_name" name="manage_camp_name"
+                            <input class="form-control form-input manage-input" id="manage_camp_name"
+                                   name="manage_camp_name"
                                    value="{{ camp["camp_name"] }}">
                         {% else %}
-                            <input class="form-control form-input manage-input" id="manage_camp_name" name="manage_camp_name"
+                            <input class="form-control form-input manage-input" id="manage_camp_name"
+                                   name="manage_camp_name"
                                    value="{{ camp["camp_name"] }}" disabled>
                         {% endif %}
                     </div>
@@ -73,23 +75,24 @@
                         <p class="form-info">Admin</p>
                         {% if admins != None %}
                             <div class="admin">
-                            {% if identity == "Builder" %}
-                                {% for admin in admins %}
-                                    <div class="admin-item" onclick="delete_admin({{ camp["camp_id"] }}, {{ admin["user_id"] }}, '{{ admin["user_name"] }}')">
-                                        <img class="layui-nav-img"
-                                             src="/static/upload/avatar/{{ admin["user_avatar"] }}">
-                                        <p>{{ admin["user_name"] }}</p>
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                {% for admin in admins %}
-                                    <div class="admin-item-normal">
-                                        <img class="layui-nav-img"
-                                             src="/static/upload/avatar/{{ admin["user_avatar"] }}">
-                                        <p>{{ admin["user_name"] }}</p>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                                {% if identity == "Builder" %}
+                                    {% for admin in admins %}
+                                        <div class="admin-item"
+                                             onclick="delete_admin({{ camp["camp_id"] }}, {{ admin["user_id"] }}, '{{ admin["user_name"] }}')">
+                                            <img class="layui-nav-img"
+                                                 src="/static/upload/avatar/{{ admin["user_avatar"] }}">
+                                            <p>{{ admin["user_name"] }}</p>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for admin in admins %}
+                                        <div class="admin-item-normal">
+                                            <img class="layui-nav-img"
+                                                 src="/static/upload/avatar/{{ admin["user_avatar"] }}">
+                                            <p>{{ admin["user_name"] }}</p>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         {% else %}
                             <div class="no_admin">
@@ -112,7 +115,14 @@
                 </div>
 
                 {% if identity == "Builder" or identity == "Admin" %}
-                    <button type="button" class="login-nav-btn manage-submit-btn" onclick="edit_camp({{ camp["camp_id"] }})">Save</button>
+                    <button type="button" class="login-nav-btn manage-submit-btn"
+                            onclick="edit_camp({{ camp["camp_id"] }})">Save
+                    </button>
+                {% endif %}
+                {% if identity == "Builder"%}
+                    <button type="button" class="manage-dismiss-btn"
+                            onclick="dismiss_camp({{ camp["camp_id"] }})">Dismiss
+                    </button>
                 {% endif %}
             </form>
         </div>

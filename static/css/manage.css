@@ -51,6 +51,13 @@
         border-radius: 5px !important;
     }
 
+    .manage-dismiss-btn {
+        position: absolute;
+        right: 90px;
+        margin-right: 0 !important;
+        border-radius: 5px !important;
+    }
+
     .manage-seg{
         width: 95%!important;
     }
@@ -81,6 +88,13 @@
     .manage-submit-btn {
         position: absolute;
         right: 0;
+        margin-right: 0 !important;
+        border-radius: 5px !important;
+    }
+
+    .manage-dismiss-btn {
+        position: absolute;
+        right: 90px;
         margin-right: 0 !important;
         border-radius: 5px !important;
     }
@@ -195,4 +209,22 @@
     font-weight: bold;
     margin-bottom: 10px !important;
     color: #484848;
+}
+
+.manage-dismiss-btn{
+    background: white;
+    color: #e02929;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e02929;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+.manage-dismiss-btn:hover{
+    background: #e02929;
+    color: white;
 }

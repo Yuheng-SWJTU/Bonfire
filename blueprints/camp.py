@@ -1,7 +1,6 @@
 import os
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
-from flask_mail import Message
 from flask_restful import Resource, Api
 import json
 
@@ -10,7 +9,7 @@ from werkzeug.utils import secure_filename
 from config import BACKGROUND_UPLOAD_FOLDER
 
 from models import CampModel, CampUserModel, CategoryModel, UserModel
-from extensions import db, mail
+from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join
 
@@ -434,6 +433,50 @@ class EditCamp(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class DismissCamp(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        camp_id = request.form.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Builder":
+
+            # delete the camp background image in the folder
+            camp = CampModel.query.filter_by(id=camp_id).first()
+            if camp.background != "default_camp.png":
+                os.remove(os.path.join(BACKGROUND_UPLOAD_FOLDER, camp.background))
+
+            # delete the data in the CampUserModel
+            camp_users = CampUserModel.query.filter_by(camp_id=camp_id).all()
+            for camp_user in camp_users:
+                db.session.delete(camp_user)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Dismiss camp failed!"})
+
+            # delete the data in the CampModel
+            camp = CampModel.query.filter_by(id=camp_id).first()
+            db.session.delete(camp)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Dismiss camp failed!"})
+
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -444,6 +487,7 @@ api.add_resource(AddAdmin, "/add_admin")
 api.add_resource(RemoveAdmin, "/remove_admin")
 api.add_resource(UploadBackground, "/upload_background")
 api.add_resource(EditCamp, "/edit_camp")
+api.add_resource(DismissCamp, "/dismiss_camp")
 
 
 @bp.route("/post", methods=["GET", "POST"])

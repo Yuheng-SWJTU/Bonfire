@@ -4,46 +4,39 @@ layui.use(['upload', 'element', 'layer'], function () {
         , element = layui.element
         , layer = layui.layer;
 
-    //常规使用 - 普通图片上传
     var uploadInst = upload.render({
         elem: '#re_upload_background'
-        , url: '/camp/upload_background' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+        , url: '/camp/upload_background'
         , before: function (obj) {
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {
-                $('#re_upload_background').attr('src', result); //图片链接（base64）
+                $('#re_upload_background').attr('src', result);
             });
 
-            element.progress('re_upload_back_progress', '0%'); //进度条复位
+            element.progress('re_upload_back_progress', '0%');
             layer.msg('Uploading...', {icon: 12, time: 0});
         }
         , done: function (res) {
-            //如果上传失败
             if (res.code > 0) {
                 return layer.msg('Failed');
             }
-            //上传成功的一些操作
-            //……
-            $('#demoText').html(''); //置空上传失败的状态
+            $('#demoText').html('');
         }
         , error: function () {
-            //演示失败状态，并实现重传
             var demoText = $('#demoText');
             demoText.html('<span style="color: #FF5722;">Failed</span> <a class="layui-btn layui-btn-xs demo-reload">Retry</a>');
             demoText.find('.demo-reload').on('click', function () {
                 uploadInst.upload();
             });
         }
-        //进度条
         , progress: function (n, elem, e) {
-            element.progress('re_upload_back_progress', n + '%'); //可配合 layui 进度条元素使用
+            element.progress('re_upload_back_progress', n + '%');
             if (n == 100) {
                 layer.msg('Completed', {icon: 1});
             }
         }
     });
 });
-
 
 function add_admin(camp_id) {
     // using ajax to send the request
@@ -122,6 +115,35 @@ function edit_camp(camp_id){
             }
         }
     })
+}
+
+function dismiss_camp(camp_id) {
+    layer.confirm('You are going to dismiss the camp<br><br>All resources in the camp will be deleted<br><br>This operation cannot be restored!', {
+        title: "WARNING",
+        btn: ['Dismiss', 'Cancel'] //按钮
+    }, function () {
+        $.ajax({
+            url: "/camp/dismiss_camp",
+            method: "POST",
+            data: {
+                "camp_id": camp_id
+            },
+            success: function (res) {
+                var code = res['code'];
+                if (code === 200) {
+                    layer.msg("Delete camp successfully!");
+                    // wait for 1 second and reload the page
+                    setTimeout(function () {
+                        window.location.href = "/";
+                    }, 1000);
+                } else {
+                    layer.msg(res['message']);
+                }
+            }
+        }
+    )
+    }, function () {
+    });
 }
 
 function checkEditCampForm() {
