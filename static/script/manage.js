@@ -7,7 +7,7 @@ layui.use(['upload', 'element', 'layer'], function () {
     //常规使用 - 普通图片上传
     var uploadInst = upload.render({
         elem: '#re_upload_background'
-        , url: 'https://httpbin.org/post' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+        , url: '/camp/upload_background' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
         , before: function (obj) {
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {

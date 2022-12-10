@@ -1,7 +1,14 @@
+import os
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_mail import Message
 from flask_restful import Resource, Api
 import json
+
+from werkzeug.utils import secure_filename
+
+from config import BACKGROUND_UPLOAD_FOLDER
+
 from models import CampModel, CampUserModel, CategoryModel, UserModel
 from extensions import db, mail
 from .form import AddCategoryForm
@@ -347,6 +354,35 @@ class RemoveAdmin(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class UploadBackground(Resource):
+    def post(self):
+        # get the file from layui upload component
+        file = request.files.get("file")
+        if file:
+            # check the file format
+            if file.filename.split(".")[-1] not in ["jpg", "png", "jpeg"]:
+                return jsonify({"code": 400, "message": "The format of the file is wrong! "})
+            # check the file size
+            if file.content_length > 1024 * 1024 * 2:
+                return jsonify({"code": 400, "message": "The size of the file is too big! "})
+            # save the file
+            # change the file name into camp_id + file format
+            file_name = str(session.get("camp_id")) + "." + file.filename.split(".")[-1]
+            file_name = secure_filename(file_name)
+            file.save(os.path.join(BACKGROUND_UPLOAD_FOLDER, file_name))
+            # save the file name in the database
+            camp = CampModel.query.filter_by(id=session.get("camp_id")).first()
+            camp.background = file_name
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Upload background failed!"})
+            return jsonify({"code": 0})
+        else:
+            return jsonify({"code": 400, "message": "Please deliver your background image first! "})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -355,6 +391,7 @@ api.add_resource(LeaveCamp, "/leave_camp")
 api.add_resource(ManageCamp, "/<int:camp_id>/manage")
 api.add_resource(AddAdmin, "/add_admin")
 api.add_resource(RemoveAdmin, "/remove_admin")
+api.add_resource(UploadBackground, "/upload_background")
 
 
 @bp.route("/post", methods=["GET", "POST"])
