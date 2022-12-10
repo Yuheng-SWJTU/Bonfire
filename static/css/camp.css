@@ -152,6 +152,9 @@
 }
 
 .side-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
     color: #886be4;
     height: 34px;

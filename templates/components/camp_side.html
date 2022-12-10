@@ -47,13 +47,13 @@
             </button>
 
             {% if identity == "Admin" or identity == "Builder" %}
-                <button class="side-btn">
+                <a class="side-btn" href="/camp/{{ camp["camp_id"] }}/manage">
                     Manage Camp
-                </button>
+                </a>
             {% else %}
-                <button class="side-btn">
+                <a class="side-btn" href="/camp/{{ camp["camp_id"] }}/manage">
                     view Information
-                </button>
+                </a>
             {% endif %}
 
             <hr class="segmentation">
