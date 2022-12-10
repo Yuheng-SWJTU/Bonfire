@@ -1,4 +1,4 @@
-layui.use(['upload', 'element', 'layer'], function() {
+layui.use(['upload', 'element', 'layer'], function () {
     var $ = layui.jquery
         , upload = layui.upload
         , element = layui.element
@@ -45,7 +45,7 @@ layui.use(['upload', 'element', 'layer'], function() {
 });
 
 
-function add_admin(camp_id){
+function add_admin(camp_id) {
     // using ajax to send the request
     $.ajax({
         url: "/camp/add_admin",
@@ -57,10 +57,45 @@ function add_admin(camp_id){
         success: function (res) {
             var code = res['code'];
             if (code === 200) {
-                window.location.reload();
+                layer.msg("Add admin successfully!");
+                // wait for 1 second and reload the page
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1000);
             } else {
                 layer.msg(res['message']);
             }
         }
     })
+}
+
+function delete_admin(camp_id, admin_id, admin_name) {
+
+    layer.confirm('You are going to remove the Admin identity of<br>' + admin_name, {
+        title: "Remove Admin",
+        btn: ['Remove', 'Cancel'] //按钮
+    }, function () {
+        $.ajax({
+            url: "/camp/remove_admin",
+            method: "POST",
+            data: {
+                "camp_id": camp_id,
+                "admin_id": admin_id
+            },
+            success: function (res) {
+                var code = res['code'];
+                if (code === 200) {
+                    layer.msg("Delete admin successfully!");
+                    // wait for 1 second and reload the page
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    layer.msg(res['message']);
+                }
+            }
+        }
+    )
+    }, function () {
+    });
 }

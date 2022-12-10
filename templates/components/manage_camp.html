@@ -72,14 +72,25 @@
                         </div>
                         <p class="form-info">Admin</p>
                         {% if admins != None %}
-                            {% for admin in admins %}
-                                <div class="admin">
-                                    <div class="admin-item">
-                                        <img class="layui-nav-img" src="/static/upload/avatar/{{ admin["user_avatar"] }}">
+                            <div class="admin">
+                            {% if identity == "Builder" %}
+                                {% for admin in admins %}
+                                    <div class="admin-item" onclick="delete_admin({{ camp["camp_id"] }}, {{ admin["user_id"] }}, '{{ admin["user_name"] }}')">
+                                        <img class="layui-nav-img"
+                                             src="/static/upload/avatar/{{ admin["user_avatar"] }}">
                                         <p>{{ admin["user_name"] }}</p>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                {% for admin in admins %}
+                                    <div class="admin-item-normal">
+                                        <img class="layui-nav-img"
+                                             src="/static/upload/avatar/{{ admin["user_avatar"] }}">
+                                        <p>{{ admin["user_name"] }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
                         {% else %}
                             <div class="no_admin">
                                 {% include "components/no_admin_svg.html" %}

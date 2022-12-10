@@ -310,6 +310,43 @@ class AddAdmin(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class RemoveAdmin(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        camp_id = request.form.get("camp_id")
+        admin_id = request.form.get("admin_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Builder":
+            # get the user model of the admin
+            admin = UserModel.query.filter_by(id=admin_id).first()
+            # if the user is not exist
+            if not admin:
+                return jsonify({"code": 400, "message": "The user is not exist!"})
+            # get the camp_user model of the new admin
+            delete_admin_camp_user = CampUserModel.query.filter_by(user_id=admin.id, camp_id=camp_id).first()
+            # check if the user is not in this camp
+            if not delete_admin_camp_user:
+                return jsonify({"code": 400, "message": "This user is not in this camp!"})
+            # change the identity of the admin
+            delete_admin_camp_user.identity = "Member"
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Remove admin failed!"})
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -317,6 +354,7 @@ api.add_resource(DeleteCategory, "/delete_category")
 api.add_resource(LeaveCamp, "/leave_camp")
 api.add_resource(ManageCamp, "/<int:camp_id>/manage")
 api.add_resource(AddAdmin, "/add_admin")
+api.add_resource(RemoveAdmin, "/remove_admin")
 
 
 @bp.route("/post", methods=["GET", "POST"])

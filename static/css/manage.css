@@ -134,6 +134,18 @@
 .admin-item {
     display: flex;
     align-items: center;
+    cursor: pointer;
+    transition: ease .3s;
+}
+
+.admin-item:hover{
+    border-radius: 15px;
+    background-color: #eeeeee;
+}
+
+.admin-item-normal{
+    display: flex;
+    align-items: center;
 }
 
 .add-admin-container {
