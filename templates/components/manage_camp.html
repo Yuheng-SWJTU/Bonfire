@@ -4,29 +4,29 @@
             <h3 class="manage-title">
                 Camp Management
             </h3>
-            <form>
 
+            <form id="edit-camp">
                 <div class="manage-basic-info">
                     <p class="manage-box-title">Basic Information</p>
                     <div class="col">
-                        <label for="camp_name" class="form-info">Camp Name</label>
+                        <label for="manage_camp_name" class="form-info">Camp Name</label>
                         {% if identity == "Admin" or identity == "Builder" %}
-                            <input class="form-control form-input manage-input" id="camp_name" name="camp_name"
+                            <input class="form-control form-input manage-input" id="manage_camp_name" name="manage_camp_name"
                                    value="{{ camp["camp_name"] }}">
                         {% else %}
-                            <input class="form-control form-input manage-input" id="camp_name" name="camp_name"
+                            <input class="form-control form-input manage-input" id="manage_camp_name" name="manage_camp_name"
                                    value="{{ camp["camp_name"] }}" disabled>
                         {% endif %}
                     </div>
                     <div class="col">
-                        <label for="camp_description" class="form-info">Camp Description</label>
+                        <label for="manage_camp_description" class="form-info">Camp Description</label>
                         {% if identity == "Admin" or  identity == "Builder" %}
-                            <textarea class="form-control form-input manage-input" id="camp_description"
-                                      name="camp_description"
+                            <textarea class="form-control form-input manage-input" id="manage_camp_description"
+                                      name="manage_camp_description"
                                       rows="5">{{ camp["camp_description"] }}</textarea>
                         {% else %}
-                            <textarea class="form-control form-input manage-input" id="camp_description"
-                                      name="camp_description"
+                            <textarea class="form-control form-input manage-input" id="manage_camp_description"
+                                      name="manage_camp_description"
                                       rows="5" disabled>{{ camp["camp_description"] }}</textarea>
                         {% endif %}
                     </div>
@@ -112,7 +112,7 @@
                 </div>
 
                 {% if identity == "Builder" or identity == "Admin" %}
-                    <button type="submit" class="login-nav-btn manage-submit-btn">Save</button>
+                    <button type="button" class="login-nav-btn manage-submit-btn" onclick="edit_camp({{ camp["camp_id"] }})">Save</button>
                 {% endif %}
             </form>
         </div>

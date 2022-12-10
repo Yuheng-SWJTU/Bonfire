@@ -383,6 +383,57 @@ class UploadBackground(Resource):
             return jsonify({"code": 400, "message": "Please deliver your background image first! "})
 
 
+class EditCamp(Resource):
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+        camp_id = request.form.get("camp_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+        if identity == "Builder" or identity == "Admin":
+            # get the camp model
+            camp = CampModel.query.filter_by(id=camp_id).first()
+            # get the form data
+            camp_name = request.form.get("camp_name")
+            camp_description = request.form.get("camp_description")
+            # check if the camp name is empty
+            if not camp_name:
+                return jsonify({"code": 400, "message": "The camp name can't be empty!"})
+            # check if the camp description is empty
+            if not camp_description:
+                return jsonify({"code": 400, "message": "The camp description can't be empty!"})
+            # check the length of the camp name
+            if len(camp_name) > 20:
+                return jsonify({"code": 400, "message": "The length of the camp name is too long!"})
+            if len(camp_name) < 4:
+                return jsonify({"code": 400, "message": "The length of the camp name is too short!"})
+            # check the length of the camp description
+            if len(camp_description) > 100:
+                return jsonify({"code": 400, "message": "The length of the camp description is too long!"})
+            if len(camp_description) < 4:
+                return jsonify({"code": 400, "message": "The length of the camp description is too short!"})
+            # check if the camp name is already exist
+            if CampModel.query.filter_by(name=camp_name).first() and camp.name != camp_name:
+                return jsonify({"code": 400, "message": "The camp name is already exist!"})
+            # update the camp model
+            camp.name = camp_name
+            camp.description = camp_description
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                return jsonify({"code": 400, "message": "Edit camp failed!"})
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -392,6 +443,7 @@ api.add_resource(ManageCamp, "/<int:camp_id>/manage")
 api.add_resource(AddAdmin, "/add_admin")
 api.add_resource(RemoveAdmin, "/remove_admin")
 api.add_resource(UploadBackground, "/upload_background")
+api.add_resource(EditCamp, "/edit_camp")
 
 
 @bp.route("/post", methods=["GET", "POST"])

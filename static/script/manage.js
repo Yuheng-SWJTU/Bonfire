@@ -99,3 +99,76 @@ function delete_admin(camp_id, admin_id, admin_name) {
     }, function () {
     });
 }
+
+function edit_camp(camp_id){
+    $.ajax({
+        url: "/camp/edit_camp",
+        method: "POST",
+        data: {
+            "camp_id": camp_id,
+            "camp_name": $("#manage_camp_name").val(),
+            "camp_description": $("#manage_camp_description").val()
+        },
+        success: function (res) {
+            var code = res['code'];
+            if (code === 200) {
+                layer.msg("Edit camp successfully!");
+                // wait for 1 second and reload the page
+                setTimeout(function () {
+                    window.location.reload();
+                } , 1000);
+            } else {
+                layer.msg(res['message']);
+            }
+        }
+    })
+}
+
+function checkEditCampForm() {
+    jQuery.validator.addMethod("itemPass", function (value, element) {
+        var reg = /^\w+$/;
+        return this.optional(element) || (reg.test(value));
+    })
+
+    jQuery.validator.addMethod("itemName", function (value, element) {
+        var reg = /^[A-Za-z]+$/;
+        return this.optional(element) || (reg.test(value));
+    })
+
+    $("#edit-camp").validate({
+        rules: {
+            manage_camp_name: {
+                required: true,
+                itemPass: true,
+                minlength: 4,
+                maxLength: 20
+            },
+            manage_camp_description: {
+                required: true,
+                itemPass: true,
+                minlength: 4,
+                maxLength: 100
+            }
+        },
+        messages: {
+            manage_camp_name: {
+                required: "Please enter the camp name",
+                itemPass: "Only letters and numbers are allowed",
+                minlength: "The camp name should be at least 4 characters",
+                maxLength: "The camp name should be at most 20 characters"
+            },
+            manage_camp_description: {
+                required: "Please enter the camp description",
+                itemPass: "Only letters and numbers are allowed",
+                minlength: "The camp description should be at least 4 characters",
+                maxLength: "The camp description should be at most 100 characters"
+            }
+        }
+    })
+}
+
+// wait for the web page to load all elements
+$(function () {
+        checkEditCampForm();
+    }
+)
