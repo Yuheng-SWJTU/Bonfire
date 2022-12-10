@@ -8,6 +8,7 @@
 #     s = Serializer(SECRET_KEY, expires_in=expiration)
 #     return s.dumps({'user_id': user_id})
 from flask import session
+from sqlalchemy import or_
 
 from models import CampUserModel, CampModel
 
@@ -42,7 +43,8 @@ def get_all_camp_builder():
 def get_all_camp_join():
     user_id = session.get("user_id")
     if user_id:
-        camp_user = CampUserModel.query.filter_by(user_id=user_id, identity="Member").all()
+        # get all camps which identity is "Member" and identity is "Admin"
+        camp_user = CampUserModel.query.filter_by(user_id=user_id).filter(CampUserModel.identity.in_(["Member", "Admin"])).all()
         camps = []
         camp_dict = {}
         for camp in camp_user:
