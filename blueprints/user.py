@@ -17,6 +17,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import AVATAR_UPLOAD_FOLDER
 
+from decoration import login_required
+
 # the information of the blueprint
 bp = Blueprint("user", __name__, url_prefix="/user")
 api = Api(bp)
@@ -140,6 +142,9 @@ class GetCaptcha(Resource):
 
 
 class Profile(Resource):
+
+    method_decorators = [login_required]
+
     def get(self):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
@@ -153,6 +158,9 @@ class Profile(Resource):
 
 
 class EditName(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         new_name = request.form.get("new_name")
         if new_name:
@@ -183,6 +191,9 @@ class EditName(Resource):
 
 
 class EditDescription(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         new_description = request.form.get("new_description")
         if new_description:
@@ -209,6 +220,9 @@ class EditDescription(Resource):
 
 
 class EditProfile(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the form data
         gender = request.form.get("gender")
@@ -230,6 +244,9 @@ class EditProfile(Resource):
 
 
 class UploadAvatar(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the file from layui upload component
         file = request.files.get("file")
@@ -268,6 +285,9 @@ class UploadAvatar(Resource):
 
 
 class Privacy(Resource):
+
+    method_decorators = [login_required]
+
     def get(self):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
@@ -276,6 +296,9 @@ class Privacy(Resource):
 
 
 class GetChangePasswordCaptcha(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # GET request
         email = g.user.email
@@ -321,6 +344,9 @@ class GetChangePasswordCaptcha(Resource):
 
 
 class EditPassword(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         captcha = request.form.get("captcha")
         password = request.form.get("password")
@@ -357,6 +383,9 @@ class EditPassword(Resource):
 
 
 class DeleteAccount(Resource):
+
+    method_decorators = [login_required]
+
     def delete(self):
         # delete the user in the database
         user = UserModel.query.filter_by(id=g.user.id).first()
@@ -384,6 +413,9 @@ class DeleteAccount(Resource):
 
 
 class Logout(Resource):
+
+    method_decorators = [login_required]
+
     def get(self):
         # delete the session
         session.clear()

@@ -8,10 +8,12 @@ from werkzeug.utils import secure_filename
 
 from config import BACKGROUND_UPLOAD_FOLDER
 
-from models import CampModel, CampUserModel, CategoryModel, UserModel
+from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join
+
+from decoration import login_required, check_category
 
 # the information of the blueprint
 bp = Blueprint("camp", __name__, url_prefix="/camp")
@@ -28,6 +30,9 @@ def output_html(data, code, headers=None):
 
 
 class Camp(Resource):
+
+    method_decorators = [login_required, check_category]
+
     def get(self, camp_id):
 
         # set a session to record the camp_id
@@ -72,6 +77,9 @@ class Camp(Resource):
 
 
 class AddCategory(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -112,6 +120,9 @@ class AddCategory(Resource):
 
 
 class EditCategory(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -150,6 +161,9 @@ class EditCategory(Resource):
 
 
 class DeleteCategory(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -180,6 +194,9 @@ class DeleteCategory(Resource):
 
 
 class LeaveCamp(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -209,6 +226,9 @@ class LeaveCamp(Resource):
 
 
 class ManageCamp(Resource):
+
+    method_decorators = [login_required, check_category]
+
     def get(self, camp_id):
         session["camp_id"] = camp_id
         # get the camp information
@@ -273,6 +293,9 @@ class ManageCamp(Resource):
 
 
 class AddAdmin(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -317,6 +340,9 @@ class AddAdmin(Resource):
 
 
 class RemoveAdmin(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -354,6 +380,9 @@ class RemoveAdmin(Resource):
 
 
 class UploadBackground(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the file from layui upload component
         file = request.files.get("file")
@@ -390,6 +419,9 @@ class UploadBackground(Resource):
 
 
 class EditCamp(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -441,6 +473,9 @@ class EditCamp(Resource):
 
 
 class DismissCamp(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
@@ -484,6 +519,53 @@ class DismissCamp(Resource):
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
+class Posts(Resource):
+
+    method_decorators = [login_required, check_category]
+
+    def get(self, camp_id):
+
+        # set a session to record the camp_id
+        session["camp_id"] = camp_id
+
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+        return render_template("post.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins)
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -495,11 +577,7 @@ api.add_resource(RemoveAdmin, "/remove_admin")
 api.add_resource(UploadBackground, "/upload_background")
 api.add_resource(EditCamp, "/edit_camp")
 api.add_resource(DismissCamp, "/dismiss_camp")
-
-
-@bp.route("/post", methods=["GET", "POST"])
-def post():
-    return render_template("post.html")
+api.add_resource(Posts, "/<int:camp_id>/post")
 
 
 @bp.route("/show", methods=["GET", "POST"])

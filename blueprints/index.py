@@ -6,6 +6,7 @@ import json
 from .form import BuildCampForm
 from extensions import db, mail
 from controller import get_all_camp_builder, get_all_camp_join
+from decoration import login_required
 
 
 # the information of the blueprint
@@ -23,7 +24,12 @@ def output_html(data, code, headers=None):
 
 
 class Index(Resource):
+
+    method_decorators = [login_required]
+
     def get(self):
+        # clear the camp_id session
+        session["camp_id"] = None
         # get all camps
         camps = CampModel.query.all()
         # Count the people in each camp
@@ -59,6 +65,9 @@ class Index(Resource):
 
 
 class BuildCamp(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         camp_name = request.form.get("camp_name")
         description = request.form.get("description")
@@ -96,6 +105,9 @@ class BuildCamp(Resource):
 
 
 class JoinCamp(Resource):
+
+    method_decorators = [login_required]
+
     def post(self):
         # handle the request from ajax
         camp_id = request.form.get("camp_id")
