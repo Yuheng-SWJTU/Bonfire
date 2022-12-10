@@ -411,12 +411,12 @@ class EditCamp(Resource):
             # check the length of the camp name
             if len(camp_name) > 20:
                 return jsonify({"code": 400, "message": "The length of the camp name is too long!"})
-            if len(camp_name) < 4:
+            if len(camp_name) < 3:
                 return jsonify({"code": 400, "message": "The length of the camp name is too short!"})
             # check the length of the camp description
             if len(camp_description) > 100:
                 return jsonify({"code": 400, "message": "The length of the camp description is too long!"})
-            if len(camp_description) < 4:
+            if len(camp_description) < 3:
                 return jsonify({"code": 400, "message": "The length of the camp description is too short!"})
             # check if the camp name is already exist
             if CampModel.query.filter_by(name=camp_name).first() and camp.name != camp_name:

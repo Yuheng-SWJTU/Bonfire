@@ -72,12 +72,12 @@ function checkBuildCampForm(){
         messages: {
             camp_name: {
                 required: "Please enter your camp name",
-                minlength: "The camp name is between 4 and 20 characters",
+                minlength: "The camp name is between 3 and 20 characters",
                 itemName: "The camp name can only be composed of letters"
             },
             description: {
                 required: "Please enter your camp description",
-                minlength: "The description is between 4 and 100 characters"
+                minlength: "The description is between 3 and 100 characters"
             }
         }
     })

@@ -140,13 +140,13 @@ function checkEditCampForm() {
             manage_camp_name: {
                 required: true,
                 itemPass: true,
-                minlength: 4,
+                minlength: 3,
                 maxLength: 20
             },
             manage_camp_description: {
                 required: true,
                 itemPass: true,
-                minlength: 4,
+                minlength: 3,
                 maxLength: 100
             }
         },
@@ -154,13 +154,13 @@ function checkEditCampForm() {
             manage_camp_name: {
                 required: "Please enter the camp name",
                 itemPass: "Only letters and numbers are allowed",
-                minlength: "The camp name should be at least 4 characters",
+                minlength: "The camp name should be at least 3 characters",
                 maxLength: "The camp name should be at most 20 characters"
             },
             manage_camp_description: {
                 required: "Please enter the camp description",
                 itemPass: "Only letters and numbers are allowed",
-                minlength: "The camp description should be at least 4 characters",
+                minlength: "The camp description should be at least 3 characters",
                 maxLength: "The camp description should be at most 100 characters"
             }
         }
