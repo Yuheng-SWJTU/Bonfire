@@ -204,6 +204,7 @@ class LeaveCamp(Resource):
 
 class ManageCamp(Resource):
     def get(self, camp_id):
+        session["camp_id"] = camp_id
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
         # get the number of people in the camp
