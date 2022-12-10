@@ -364,6 +364,13 @@ class UploadBackground(Resource):
             # check the file size
             if file.content_length > 1024 * 1024 * 2:
                 return jsonify({"code": 400, "message": "The size of the file is too big! "})
+
+            # before save the file, check if the camp has a background
+            camp = CampModel.query.filter_by(id=session.get("camp_id")).first()
+            if camp.background != "default_camp.png":
+                # delete the old background
+                os.remove(os.path.join(BACKGROUND_UPLOAD_FOLDER, camp.background))
+
             # save the file
             # change the file name into camp_id + file format
             file_name = str(session.get("camp_id")) + "." + file.filename.split(".")[-1]
