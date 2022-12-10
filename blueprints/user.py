@@ -240,6 +240,13 @@ class UploadAvatar(Resource):
             # check the file size
             if file.content_length > 1024 * 1024 * 2:
                 return jsonify({"code": 400, "message": "The size of the file is too big! "})
+
+            # before upload the file, delete the old file
+            user_id = session.get("user_id")
+            user = UserModel.query.filter_by(id=user_id).first()
+            if user.avatar != "default.png":
+                os.remove(os.path.join(AVATAR_UPLOAD_FOLDER, user.avatar))
+
             # save the file
             # change the file name into user_id + file format
             file_name = str(session.get("user_id")) + "." + file.filename.split(".")[-1]
