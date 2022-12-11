@@ -11,7 +11,7 @@ from config import BACKGROUND_UPLOAD_FOLDER
 from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
 from extensions import db
 from .form import AddCategoryForm
-from controller import get_all_camp_builder, get_all_camp_join
+from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict
 
 from decoration import login_required, check_category
 
@@ -30,7 +30,6 @@ def output_html(data, code, headers=None):
 
 
 class Camp(Resource):
-
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id):
@@ -72,12 +71,15 @@ class Camp(Resource):
 
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
+
+        posts = get_all_posts(PostModel, camp_id, "time", None)
+        notices = save_all_notice_in_dict(PostModel, camp_id)
+
         return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
-                               camp_builders=camp_builders, camp_joins=camp_joins)
+                               camp_builders=camp_builders, camp_joins=camp_joins, notices=notices)
 
 
 class AddCategory(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -120,7 +122,6 @@ class AddCategory(Resource):
 
 
 class EditCategory(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -161,7 +162,6 @@ class EditCategory(Resource):
 
 
 class DeleteCategory(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -194,7 +194,6 @@ class DeleteCategory(Resource):
 
 
 class LeaveCamp(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -226,7 +225,6 @@ class LeaveCamp(Resource):
 
 
 class ManageCamp(Resource):
-
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id):
@@ -293,7 +291,6 @@ class ManageCamp(Resource):
 
 
 class AddAdmin(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -340,7 +337,6 @@ class AddAdmin(Resource):
 
 
 class RemoveAdmin(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -380,7 +376,6 @@ class RemoveAdmin(Resource):
 
 
 class UploadBackground(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -419,7 +414,6 @@ class UploadBackground(Resource):
 
 
 class EditCamp(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -473,7 +467,6 @@ class EditCamp(Resource):
 
 
 class DismissCamp(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -520,7 +513,6 @@ class DismissCamp(Resource):
 
 
 class Posts(Resource):
-
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id):
@@ -566,6 +558,70 @@ class Posts(Resource):
                                camp_builders=camp_builders, camp_joins=camp_joins)
 
 
+class MakePost(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+
+        # get the user identity
+        user_id = session.get("user_id")
+
+        # get the form data
+        post_title = request.form.get("title")
+        post_content = request.form.get("content")
+        category_id = request.form.get("category_id")
+        description = request.form.get("description")
+        is_notice = request.form.get("is_notice")
+        is_top = request.form.get("is_top")
+
+        if is_notice == "true":
+            is_notice = True
+        else:
+            is_notice = False
+        if is_top == "true":
+            is_top = True
+        else:
+            is_top = False
+
+        # check if the post title is empty
+        if not post_title:
+            return jsonify({"code": 400, "message": "The post title can't be empty!"})
+        # check if the post content is empty
+        if not post_content:
+            return jsonify({"code": 400, "message": "The post content can't be empty!"})
+        # check the length of the post title
+        if len(post_title) > 50:
+            return jsonify({"code": 400, "message": "The length of the post title is too long!"})
+        if len(post_title) < 3:
+            return jsonify({"code": 400, "message": "The length of the post title is too short!"})
+        # check if the category is existed
+        if not CategoryModel.query.filter_by(id=category_id).first():
+            return jsonify({"code": 400, "message": "The category is not exist!"})
+
+        # if the length of the description is over 150, cut it
+        if len(description) > 150:
+            description = description[:150]
+
+        # save the post in the database
+        post = PostModel()
+        post.title = post_title
+        post.content = post_content
+        post.category_id = category_id
+        post.description = description
+        post.is_top = is_top
+        post.is_notice = is_notice
+        post.user_id = user_id
+        post.camp_id = session.get("camp_id")
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({"code": 400, "message": "Make post failed!"})
+
+        return jsonify({"code": 200})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -578,6 +634,7 @@ api.add_resource(UploadBackground, "/upload_background")
 api.add_resource(EditCamp, "/edit_camp")
 api.add_resource(DismissCamp, "/dismiss_camp")
 api.add_resource(Posts, "/<int:camp_id>/post")
+api.add_resource(MakePost, "/make_post")
 
 
 @bp.route("/show", methods=["GET", "POST"])

@@ -86,8 +86,8 @@
             <div class="collapse show" id="dashboard">
                 <div class="side-list2 side-list3">
                     <ul class="nav nav-pills flex-column mb-auto">
-                        <li class="nav-item nav-items nav-link list-items2">
-                            <a href=""
+                        <li class="nav-item nav-items nav-link list-items2 active-camp">
+                            <a href="/camp/{{ camp["camp_id"] }}"
                                class="list-item-link">
                                 <div class="circle bg-primary"></div>
                                 ALL Posts
@@ -95,43 +95,53 @@
                         </li>
 
                         {% for category in categories %}
-                            {% if category["category_color"] == "blue" %}
-                                {% set color = "bg-primary" %}
-                            {% elif category["category_color"] == "red" %}
-                                {% set color = "bg-danger" %}
-                            {% elif category["category_color"] == "green" %}
-                                {% set color = "bg-success" %}
-                            {% elif category["category_color"] == "yellow" %}
-                                {% set color = "bg-warning" %}
-                            {% endif %}
-                            <li class="nav-item nav-items nav-link list-items2">
-                                <a href=""
-                                   class="list-item-link">
-                                    <div class="circle {{ color }}"></div>
-                                    {{ category["category_name"] }}
-                                </a>
-                                {% if identity == "Admin" or identity=="Builder" %}
-                                    {#                                edit button#}
-                                    <button type="button" class="side-title-btn edit-btn-list" id="edit-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#category-edit-{{ category["category_id"] }}">
-                                        <svg t="1666173777331" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                                             xmlns="http://www.w3.org/2000/svg" p-id="11685" width="14" height="14">
-                                            <path d="M853.333333 501.333333c-17.066667 0-32 14.933333-32 32v320c0 6.4-4.266667 10.666667-10.666666 10.666667H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666667V213.333333c0-6.4 4.266667-10.666667 10.666667-10.666666h320c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32H170.666667c-40.533333 0-74.666667 34.133333-74.666667 74.666666v640c0 40.533333 34.133333 74.666667 74.666667 74.666667h640c40.533333 0 74.666667-34.133333 74.666666-74.666667V533.333333c0-17.066667-14.933333-32-32-32z"
-                                                  p-id="11686" fill="#6E6E6E"></path>
-                                            <path d="M405.333333 484.266667l-32 125.866666c-2.133333 10.666667 0 23.466667 8.533334 29.866667 6.4 6.4 14.933333 8.533333 23.466666 8.533333h8.533334l125.866666-32c6.4-2.133333 10.666667-4.266667 14.933334-8.533333l300.8-300.8c38.4-38.4 38.4-102.4 0-140.8-38.4-38.4-102.4-38.4-140.8 0L413.866667 469.333333c-4.266667 4.266667-6.4 8.533333-8.533334 14.933334z m59.733334 23.466666L761.6 213.333333c12.8-12.8 36.266667-12.8 49.066667 0 12.8 12.8 12.8 36.266667 0 49.066667L516.266667 558.933333l-66.133334 17.066667 14.933334-68.266667z"
-                                                  p-id="11687" fill="#6E6E6E"></path>
-                                        </svg>
-                                    </button>
-                                    {#                                delete button#}
-                                    <button onclick="delete_category({{ category["category_id"] }})" type="button"
-                                            class="btn-toggle side-title-btn delete-btn-list" id="delete-btn">
-                                        <svg t="1666173870364" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                                             xmlns="http://www.w3.org/2000/svg" p-id="13536" width="14" height="14">
-                                            <path d="M548.1984 537.6l289.0752-289.0752a25.6 25.6 0 0 0-36.1984-36.1984L512 501.4016 222.9248 212.3264a25.6 25.6 0 0 0-36.1984 36.1984L475.8016 537.6l-289.0752 289.0752a25.6 25.6 0 0 0 36.2496 36.1984l289.0752-289.0752 289.0752 289.0752a25.4976 25.4976 0 0 0 36.2496 0 25.6 25.6 0 0 0 0-36.1984L548.3008 537.6z"
-                                                  fill="#6E6E6E" p-id="13537"></path>
-                                        </svg>
-                                    </button>
+                            {% if category["category_name"] == "Default" %}
+                                <li class="nav-item nav-items nav-link list-items2">
+                                    <a href=""
+                                       class="list-item-link">
+                                        <div class="circle bg-primary"></div>
+                                        {{ category["category_name"] }}
+                                    </a>
+                                </li>
+                            {% else %}
+                                {% if category["category_color"] == "blue" %}
+                                    {% set color = "bg-primary" %}
+                                {% elif category["category_color"] == "red" %}
+                                    {% set color = "bg-danger" %}
+                                {% elif category["category_color"] == "green" %}
+                                    {% set color = "bg-success" %}
+                                {% elif category["category_color"] == "yellow" %}
+                                    {% set color = "bg-warning" %}
+                                {% endif %}
+                                <li class="nav-item nav-items nav-link list-items2">
+                                    <a href=""
+                                       class="list-item-link">
+                                        <div class="circle {{ color }}"></div>
+                                        {{ category["category_name"] }}
+                                    </a>
+                                    {% if identity == "Admin" or identity=="Builder" %}
+                                        {#                                edit button#}
+                                        <button type="button" class="side-title-btn edit-btn-list" id="edit-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#category-edit-{{ category["category_id"] }}">
+                                            <svg t="1666173777331" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                                 xmlns="http://www.w3.org/2000/svg" p-id="11685" width="14" height="14">
+                                                <path d="M853.333333 501.333333c-17.066667 0-32 14.933333-32 32v320c0 6.4-4.266667 10.666667-10.666666 10.666667H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666667V213.333333c0-6.4 4.266667-10.666667 10.666667-10.666666h320c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32H170.666667c-40.533333 0-74.666667 34.133333-74.666667 74.666666v640c0 40.533333 34.133333 74.666667 74.666667 74.666667h640c40.533333 0 74.666667-34.133333 74.666666-74.666667V533.333333c0-17.066667-14.933333-32-32-32z"
+                                                      p-id="11686" fill="#6E6E6E"></path>
+                                                <path d="M405.333333 484.266667l-32 125.866666c-2.133333 10.666667 0 23.466667 8.533334 29.866667 6.4 6.4 14.933333 8.533333 23.466666 8.533333h8.533334l125.866666-32c6.4-2.133333 10.666667-4.266667 14.933334-8.533333l300.8-300.8c38.4-38.4 38.4-102.4 0-140.8-38.4-38.4-102.4-38.4-140.8 0L413.866667 469.333333c-4.266667 4.266667-6.4 8.533333-8.533334 14.933334z m59.733334 23.466666L761.6 213.333333c12.8-12.8 36.266667-12.8 49.066667 0 12.8 12.8 12.8 36.266667 0 49.066667L516.266667 558.933333l-66.133334 17.066667 14.933334-68.266667z"
+                                                      p-id="11687" fill="#6E6E6E"></path>
+                                            </svg>
+                                        </button>
+                                        {#                                delete button#}
+                                        <button onclick="delete_category({{ category["category_id"] }})" type="button"
+                                                class="btn-toggle side-title-btn delete-btn-list" id="delete-btn">
+                                            <svg t="1666173870364" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                                 xmlns="http://www.w3.org/2000/svg" p-id="13536" width="14" height="14">
+                                                <path d="M548.1984 537.6l289.0752-289.0752a25.6 25.6 0 0 0-36.1984-36.1984L512 501.4016 222.9248 212.3264a25.6 25.6 0 0 0-36.1984 36.1984L475.8016 537.6l-289.0752 289.0752a25.6 25.6 0 0 0 36.2496 36.1984l289.0752-289.0752 289.0752 289.0752a25.4976 25.4976 0 0 0 36.2496 0 25.6 25.6 0 0 0 0-36.1984L548.3008 537.6z"
+                                                      fill="#6E6E6E" p-id="13537"></path>
+                                            </svg>
+                                        </button>
+                                    {% endif %}
                                 {% endif %}
                             </li>
                         {% endfor %}

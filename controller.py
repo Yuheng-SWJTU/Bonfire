@@ -7,8 +7,11 @@
 # def generate_auth_token(user_id, expiration=36000):
 #     s = Serializer(SECRET_KEY, expires_in=expiration)
 #     return s.dumps({'user_id': user_id})
+import datetime
+
 from flask import session
-from sqlalchemy import or_
+from sqlalchemy import or_, extract
+from datetime import timezone, timedelta
 
 from models import CampUserModel, CampModel
 
@@ -57,3 +60,40 @@ def get_all_camp_join():
     else:
         return {}
 
+
+def get_all_posts(post_model, camp_id,  order_by, category_id=None):
+
+    # if the category_id is None, then get all posts
+    if category_id is None:
+        posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0)
+    else:
+        posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0, category_id=category_id)
+
+    # sort the posts by the order_by
+    if order_by == "new":
+        posts = posts.order_by(post_model.update_time.desc())
+    # elif order_by == "hot":
+    #     posts = posts.order_by(post_model.like_count.desc())
+
+    return posts
+
+
+def save_all_notice_in_dict(post_model, camp_id):
+
+    # get all posts which is not deleted in the camp
+    posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0).all()
+
+    notices = []
+    notice_dict = {}
+    for post in posts:
+        notice_dict["post_id"] = post.id
+        notice_dict["title"] = post.title
+        notice_dict["category_id"] = post.category_id
+        notice_dict["camp_id"] = post.camp_id
+        notices.append(notice_dict)
+        notice_dict = {}
+
+    if len(notices) > 0:
+        return notices
+    else:
+        return None

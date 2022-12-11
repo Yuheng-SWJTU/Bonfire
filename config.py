@@ -18,3 +18,4 @@ MAIL_DEFAULT_SENDER = "2964992240@qq.com"
 
 AVATAR_UPLOAD_FOLDER = "static/upload/avatar/"
 BACKGROUND_UPLOAD_FOLDER = "static/upload/background/"
+POST_UPLOAD_FOLDER = "static/upload/posts_images/"

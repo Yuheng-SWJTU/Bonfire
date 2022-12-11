@@ -2,48 +2,57 @@
     <div class="center" id="center-box">
         <h3 class="post-page-title">Create a Post</h3>
         <form>
-            <label for="title" class="post-form-text">Post title:</label>
-            <input class="post-form-input form-control add-input camp-side-add-input" type="text" name="title"
-                   id="title" placeholder="Enter your post title...">
+            <label for="post_title" class="post-form-text">Post title:</label>
+            <input class="post-form-input form-control add-input camp-side-add-input" type="text" name="post_title"
+                   id="post_title" placeholder="Enter your post title...">
 
-            <div id="editor—wrapper">
-                <div id="toolbar-container"><!-- 工具栏 --></div>
-                <div id="editor-container"><!-- 编辑器 --></div>
-            </div>
+            <textarea id="rich_edit" style="display: none;"></textarea>
 
-            <label for="module-color" class="post-form-text">Choose one Category:</label>
+            <label for="post_category" class="post-form-text">Choose one Category:</label>
             <select class="form-select add-input camp-side-add-input camp-side-category post-form-input choose-category"
-                    id="module-color" name="module_color">
-                <option value="blue">Blue</option>
-                <option value="green">Green</option>
-                <option value="yellow">Yellow</option>
-                <option value="red">Red</option>
+                    id="post_category" name="post_category">
+                {% for category in categories %}
+                    <option value="{{ category["category_id"] }}">{{ category["category_name"] }}</option>
+                {% endfor %}
             </select>
 
             <div class="post-area post-area-common" id="post-area">
 
-                <div class="post-choice">
-                    <div class="form-check" style="margin-right: 10px">
-                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio1" name="optradio" value="option1"
-                               checked>
-                        Normal
-                        <label class="form-check-label" for="radio1"></label>
+                {% if identity=="Admin" or identity == "Builder" %}
+                    <div class="post-choice">
+                        <div class="form-check" style="margin-right: 10px">
+                            <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal"
+                                   name="status" value="Normal"
+                                   checked>
+                            Normal
+                            <label class="form-check-label" for="Normal"></label>
+                        </div>
+                        <div class="form-check" style="margin-right: 10px">
+                            <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice"
+                                   name="status" value="Notice">
+                            Notice
+                            <label class="form-check-label" for="Notice"></label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                                   name="status" value="Sticky">
+                            Sticky
+                            <label class="form-check-label" for="Sticky"></label>
+                        </div>
                     </div>
-                    <div class="form-check" style="margin-right: 10px">
-                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio1" name="optradio" value="option1">
-                        Notice
-                        <label class="form-check-label" for="radio1"></label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input add-input post-choice-radio" id="radio2" name="optradio" value="option2">
-                        Sticky
-                        <label class="form-check-label" for="radio2"></label>
-                    </div>
-                </div>
+                {% else %}
+                    <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal" name="status"
+                           value="Normal"
+                           checked hidden>
+                    <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice" name="status"
+                           value="Notice" hidden>
+                    <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                           name="status" value="Sticky" hidden>
+                {% endif %}
 
-                <button class="login-nav-btn post-area-btn" type="submit">Post</button>
+                <input id="post_camp_id" value="{{ camp["camp_id"] }}" hidden>
+                <button class="login-nav-btn post-area-btn" type="button" id="post_btn">Post</button>
             </div>
-
         </form>
     </div>
 </div>

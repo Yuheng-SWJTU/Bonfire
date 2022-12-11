@@ -98,3 +98,35 @@ class CategoryModel(db.Model):
     # if you want to get all the categories of a camp, you can write it through categories
     camp = db.relationship("CampModel", backref="categories")
 
+
+class PostModel(db.Model):
+    """
+    This class is used to store post information.
+
+    """
+
+    __tablename__ = "post"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False, unique=False)
+    content = db.Column(db.Text, nullable=True)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now)
+    is_top = db.Column(db.Boolean, default=False)
+    is_notice = db.Column(db.Boolean, default=False)
+    is_delete = db.Column(db.Boolean, default=False)
+    description = db.Column(db.String(200), nullable=True)
+
+    # User id will be the foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Camp id will be the foreign key
+    camp_id = db.Column(db.Integer, db.ForeignKey("camp.id"))
+    # Category id will be the foreign key
+    category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
+
+    # if you want to get all the posts of a user, you can write it through posts
+    user = db.relationship("UserModel", backref="posts")
+    # if you want to get all the posts of a camp, you can write it through posts
+    camp = db.relationship("CampModel", backref="posts")
+    # if you want to get all the posts of a category, you can write it through posts
+    category = db.relationship("CategoryModel", backref="posts")

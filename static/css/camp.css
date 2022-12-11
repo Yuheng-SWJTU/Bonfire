@@ -16,7 +16,6 @@
         padding-top: 30px;
         overflow: hidden;
         flex-direction: column;
-        /*box-shadow: 0 20px 40px 0 rgb(0 0 0 / 30%);*/
         left: -255px;
         width: 255px;
     }
@@ -445,7 +444,7 @@
 
 @media (max-width: 750px) {
     .post-info {
-        width: 70%;
+        width: 235px;
         display: flex;
         justify-content: space-between;
     }
@@ -453,7 +452,7 @@
 
 @media (min-width: 751px) {
     .post-info {
-        width: 25%;
+        width: 235px;
         display: flex;
         justify-content: space-between;
     }
@@ -513,4 +512,8 @@
 
 .list-item-link:hover {
     color: black;
+}
+
+.active-camp{
+    background-color: #eeeeee !important;
 }
