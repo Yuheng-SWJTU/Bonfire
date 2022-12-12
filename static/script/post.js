@@ -55,9 +55,38 @@ function post() {
     })
 }
 
+function leave_camp() {
+    // using ajax to send the request
+
+    layer.confirm('You are leaving this camp!<br>This operation cannot be restored!', {
+        title: "WARNING",
+        btn: ['Leave', 'Cancel'] //按钮
+    }, function () {
+        $.ajax({
+        url: "/camp/leave_camp",
+        method: "POST",
+        success: function (res) {
+            var code = res['code']
+            if (code === 200) {
+                layer.msg(res['message']);
+                // redirect to the index page
+                window.location.href = "/";
+            } else {
+                layer.msg(res['message']);
+            }
+        }
+    }
+        )
+    }, function () {
+    });
+}
+
 // using jquery to get the click button
 $(function () {
     $("#post_btn").on("click", function (event) {
         post();
+    })
+    $("#leave-camp").on("click", function (event) {
+        leave_camp();
     })
 })
