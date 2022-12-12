@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 
 from config import BACKGROUND_UPLOAD_FOLDER
 
-from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
+from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel, FavoritePostModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
@@ -90,6 +90,7 @@ class Camp(Resource):
 
 
 class AddCategory(Resource):
+
     method_decorators = [login_required]
 
     def post(self):
@@ -634,7 +635,7 @@ class MakePost(Resource):
 
 class ShowPost(Resource):
 
-    # method_decorators = [login_required, check_category]
+    method_decorators = [login_required, check_category]
 
     def get(self, camp_id, category_id, post_id):
         # set a session to record the camp_id
@@ -687,13 +688,21 @@ class ShowPost(Resource):
                      "post_update_time": post_update_time, "post_username": post.user.username,
                      "post_category_name": post.category.name, "post_camp_id": post.camp_id,
                      "post_category_id": post.category_id, "post_user_id": post.user_id,
-                     "post_user_description": post.user.description, "post_user_avatar": post.user.avatar}
+                     "post_user_description": post.user.description, "post_user_avatar": post.user.avatar,
+                     "post_like_count": post.like_count}
 
         page_status = category_id
 
+        # get the information of favorite
+        favorite = FavoritePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
+        if favorite:
+            favorite_status = "true"
+        else:
+            favorite_status = "false"
+
         return render_template("show.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, post_info=post_dict,
-                               page_status=page_status, user_id=user_id)
+                               page_status=page_status, user_id=user_id, favorite_status=favorite_status)
 
     def post(self, camp_id, category_id, post_id):
         # get the post id
@@ -703,6 +712,9 @@ class ShowPost(Resource):
 
 
 class GoToCategory(Resource):
+
+    method_decorators = [login_required, check_category]
+
     def get(self, camp_id, category_id):
         # set a session to record the camp_id
         session["camp_id"] = camp_id
@@ -760,6 +772,56 @@ class GoToCategory(Resource):
                                posts=posts_list, page_status=page_status)
 
 
+class Favorite(Resource):
+
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the post id
+        post_id = request.form.get("post_id")
+        # get the post
+        post = PostModel.query.filter_by(id=post_id).first()
+
+        # check if the user has already favorite this post
+        favorite = FavoritePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
+        if favorite:
+            # if the user has already favorite this post, then delete the favorite record
+            db.session.delete(favorite)
+            db.session.commit()
+            # update the post's favorite number
+            post.favorite_count -= 1
+            db.session.add(post)
+            db.session.commit()
+            # return the favorite number
+            return jsonify({"code": 200, "message": "Cancel favorite", "status": "cancel"})
+
+        # save the favorite post information in the database
+        favorite = FavoritePostModel()
+        favorite.user_id = user_id
+        favorite.post_id = post_id
+        db.session.add(favorite)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        # update the post's favorite number
+        post.favorite_count += 1
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        return jsonify({"code": 200, "message": "Favorite success.", "status": "success"})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -775,3 +837,4 @@ api.add_resource(Posts, "/<int:camp_id>/post")
 api.add_resource(MakePost, "/make_post")
 api.add_resource(ShowPost, "/<int:camp_id>/<int:category_id>/<int:post_id>")
 api.add_resource(GoToCategory, "/<int:camp_id>/<int:category_id>")
+api.add_resource(Favorite, "/favorite")

@@ -116,6 +116,9 @@ class PostModel(db.Model):
     is_notice = db.Column(db.Boolean, default=False)
     is_delete = db.Column(db.Boolean, default=False)
     description = db.Column(db.String(200), nullable=True)
+    favorite_count = db.Column(db.Integer, default=0)
+    comment_count = db.Column(db.Integer, default=0)
+    like_count = db.Column(db.Integer, default=0)
 
     # User id will be the foreign key
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -130,3 +133,25 @@ class PostModel(db.Model):
     camp = db.relationship("CampModel", backref="posts")
     # if you want to get all the posts of a category, you can write it through posts
     category = db.relationship("CategoryModel", backref="posts")
+
+
+class FavoritePostModel(db.Model):
+    """
+    This class is used to store favorite post information.
+
+    """
+
+    __tablename__ = "favorite_post"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # User id will be the foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Post id will be the foreign key
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+
+    # if you want to get all the favorite posts of a user, you can write it through favorite_posts
+    user = db.relationship("UserModel", backref="favorite_posts")
+    # if you want to get all the favorite users of a post, you can write it through favorite_users
+    post = db.relationship("PostModel", backref="favorite_users")
