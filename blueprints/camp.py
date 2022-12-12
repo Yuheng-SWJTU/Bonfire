@@ -11,7 +11,8 @@ from config import BACKGROUND_UPLOAD_FOLDER
 from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
 from extensions import db
 from .form import AddCategoryForm
-from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict
+from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
+    save_all_posts_in_dict
 
 from decoration import login_required, check_category
 
@@ -73,10 +74,19 @@ class Camp(Resource):
         camp_joins = get_all_camp_join()
 
         posts = get_all_posts(PostModel, camp_id, "time", None)
-        notices = save_all_notice_in_dict(PostModel, camp_id)
+
+        # using post_id to get the username and user_avatar
+        for post in posts:
+            user = UserModel.query.filter_by(id=post.user_id).first()
+            post.username = user.username
+            post.user_avatar = user.avatar
+
+        notices_list = save_all_notice_in_dict(PostModel, camp_id)
+        posts_list = save_all_posts_in_dict(posts)
 
         return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
-                               camp_builders=camp_builders, camp_joins=camp_joins, notices=notices)
+                               camp_builders=camp_builders, camp_joins=camp_joins, notices=notices_list,
+                               posts=posts_list, page_status="ALL")
 
 
 class AddCategory(Resource):
@@ -287,7 +297,7 @@ class ManageCamp(Resource):
 
         return render_template("manage.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, builder=builder_info,
-                               admins=admin_info)
+                               admins=admin_info, page_status="manage")
 
 
 class AddAdmin(Resource):
@@ -555,7 +565,7 @@ class Posts(Resource):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
         return render_template("post.html", camp=camp_dict, categories=categories_list, identity=identity,
-                               camp_builders=camp_builders, camp_joins=camp_joins)
+                               camp_builders=camp_builders, camp_joins=camp_joins, page_status="posts")
 
 
 class MakePost(Resource):
@@ -622,6 +632,130 @@ class MakePost(Resource):
         return jsonify({"code": 200})
 
 
+class ShowPost(Resource):
+
+    # method_decorators = [login_required, check_category]
+
+    def get(self, camp_id, category_id, post_id):
+        # set a session to record the camp_id
+
+        # get the camp id from session
+
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        # get the post information
+        post = PostModel.query.filter_by(id=post_id).first()
+        # save the post information in a dictionary
+        post_dict = {"post_id": post.id, "post_title": post.title, "post_content": post.content,
+                     "post_update_time": post.update_time, "post_username": post.user.username,
+                     "post_category_name": post.category.name, "post_camp_id": post.camp_id,
+                     "post_category_id": post.category_id, "post_user_id": post.user_id,
+                     "post_user_description": post.user.description, "post_user_avatar": post.user.avatar}
+
+        page_status = category_id
+
+        return render_template("show.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins, post_info=post_dict,
+                               page_status=page_status)
+
+    def post(self, camp_id, category_id, post_id):
+        # get the post id
+        post_id = request.form.get("post_id")
+        post = PostModel.query.filter_by(id=post_id).first()
+        return jsonify({"code": 200, "post_content": post.content})
+
+
+class GoToCategory(Resource):
+    def get(self, camp_id, category_id):
+        # set a session to record the camp_id
+        session["camp_id"] = camp_id
+
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        posts = get_all_posts(PostModel, camp_id, "time", category_id)
+
+        # using post_id to get the username and user_avatar
+        for post in posts:
+            user = UserModel.query.filter_by(id=post.user_id).first()
+            post.username = user.username
+            post.user_avatar = user.avatar
+
+        notices_list = save_all_notice_in_dict(PostModel, camp_id)
+        posts_list = save_all_posts_in_dict(posts)
+
+        page_status = category_id
+
+        return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins, notices=notices_list,
+                               posts=posts_list, page_status=page_status)
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -635,8 +769,5 @@ api.add_resource(EditCamp, "/edit_camp")
 api.add_resource(DismissCamp, "/dismiss_camp")
 api.add_resource(Posts, "/<int:camp_id>/post")
 api.add_resource(MakePost, "/make_post")
-
-
-@bp.route("/show", methods=["GET", "POST"])
-def show():
-    return render_template("show.html")
+api.add_resource(ShowPost, "/<int:camp_id>/<int:category_id>/<int:post_id>")
+api.add_resource(GoToCategory, "/<int:camp_id>/<int:category_id>")

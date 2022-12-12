@@ -166,6 +166,7 @@
     border-color: #886be4;
     border-width: 1px;
     transition: ease 0.3s;
+    cursor: pointer;
 }
 
 .side-btn:hover {
@@ -280,7 +281,7 @@
 
 /*hover effect*/
 .list-items2:hover {
-    background-color: #EEEEEE !important;
+    background-color: #e1e1e1 !important;
 }
 
 .list-items2:hover #edit-btn {
@@ -515,5 +516,5 @@
 }
 
 .active-camp{
-    background-color: #eeeeee !important;
+    background-color: #e1e1e1 !important;
 }

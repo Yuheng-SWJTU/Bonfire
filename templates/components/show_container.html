@@ -11,19 +11,19 @@
 
         <div class="show-title-area">
             <h4 class="show-title">
-                Test
+                {{ post_info["post_title"] }}
             </h4>
-            <span class="badge rounded-pill bg-primary">Default</span>
-            <p class="show-title-content">Post Date:</p>
-            <p class="show-title-content">2022/2/12</p>
+            <span class="badge rounded-pill bg-primary">{{ post_info["post_category_name"] }}</span>
+            <p class="show-title-content">Update Date:</p>
+            <p class="show-title-content">{{ post_info["post_update_time"] }}</p>
             <hr class="segmentation">
             <div class="show-title-avatar">
                 <a href="javascript:;">
-                    <img src="{{ url_for('static', filename='images/avatar.png') }}" class="avatar-img">
+                    <img src="/static/upload/avatar/{{ post_info["post_user_avatar"] }}" class="avatar-img">
                 </a>
                 <div class="show-title-avatar-info">
-                    <p class="show-title-avatar-name">YuhengLiu</p>
-                    <p class="show-title-content">This is a description</p>
+                    <p class="show-title-avatar-name">{{ post_info["post_username"] }}</p>
+                    <p class="show-title-content">{{ post_info["post_user_description"] }}</p>
                 </div>
             </div>
 
@@ -51,9 +51,28 @@
 
         </div>
 
-        <div class="show-content-area">
-            This is a test
+        <div class="show-content-area" id="show-content-area">
         </div>
+
+        <script>
+            $.ajax({
+                url: '/camp/{{ post_info["post_camp_id"] }}/{{ post_info["post_category_id"] }}/{{ post_info["post_id"] }}',
+                method: "POST",
+                data: {
+                    "post_id": "{{ post_info["post_id"] }}"
+                },
+                success: function (res) {
+                    var code = res['code'];
+                    if (code === 200) {
+                        // get the passage
+                        // fill the passage into id="show-content-area"
+                        document.getElementById("show-content-area").innerHTML = res['post_content'];
+                    } else {
+                        alert(res['message']);
+                    }
+                }
+            })
+        </script>
 
         <hr class="segmentation">
 
