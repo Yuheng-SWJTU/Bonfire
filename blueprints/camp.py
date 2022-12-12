@@ -678,9 +678,13 @@ class ShowPost(Resource):
 
         # get the post information
         post = PostModel.query.filter_by(id=post_id).first()
+
+        # format the post update time into "2020-01-01 00:00:00"
+        post_update_time = post.update_time.strftime("%Y-%m-%d %H:%M")
+
         # save the post information in a dictionary
         post_dict = {"post_id": post.id, "post_title": post.title, "post_content": post.content,
-                     "post_update_time": post.update_time, "post_username": post.user.username,
+                     "post_update_time": post_update_time, "post_username": post.user.username,
                      "post_category_name": post.category.name, "post_camp_id": post.camp_id,
                      "post_category_id": post.category_id, "post_user_id": post.user_id,
                      "post_user_description": post.user.description, "post_user_avatar": post.user.avatar}
@@ -689,7 +693,7 @@ class ShowPost(Resource):
 
         return render_template("show.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, post_info=post_dict,
-                               page_status=page_status)
+                               page_status=page_status, user_id=user_id)
 
     def post(self, camp_id, category_id, post_id):
         # get the post id

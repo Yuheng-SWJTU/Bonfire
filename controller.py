@@ -111,7 +111,6 @@ def save_all_posts_in_dict(post_model):
         post_dict["is_top"] = post.is_top
         post_dict["description"] = post.description
         post_dict["username"] = post.user.username
-        # post_dict["username"] = post.username
         posts.append(post_dict)
         post_dict = {}
     if len(posts) > 0:
