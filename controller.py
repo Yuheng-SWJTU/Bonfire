@@ -63,13 +63,17 @@ def get_all_camp_join():
         return {}
 
 
-def get_all_posts(post_model, camp_id,  order_by, category_id=None):
+def get_all_posts(post_model, camp_id,  order_by, category_id=None, search=None):
 
     # if the category_id is None, then get all posts
     if category_id is None:
         posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0).order_by(post_model.is_top.desc())
     else:
         posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0, category_id=category_id).order_by(post_model.is_top.desc())
+
+    if search is not None:
+        posts = posts.filter(or_(post_model.title.like("%" + search + "%"),
+                                 post_model.description.like("%" + search + "%")))
 
     # sort the posts by the order_by
     if order_by == "popularity":

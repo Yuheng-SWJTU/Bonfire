@@ -7,6 +7,7 @@ from .form import BuildCampForm
 from extensions import db, mail
 from controller import get_all_camp_builder, get_all_camp_join
 from decoration import login_required
+from sqlalchemy import or_
 
 
 # the information of the blueprint
@@ -39,7 +40,6 @@ class Index(Resource):
             users_in_camp[camp.id] = 0
         for user in camp_user:
             users_in_camp[user.camp_id] += 1
-        print(users_in_camp)
         # store camps in a dictionary
         camps_list = []
         camps_dict = {}
@@ -128,6 +128,51 @@ class JoinCamp(Resource):
         return jsonify({"code": 200, "message": "Join camp successfully.", "users_num": users_num, "camp_id": camp_id})
 
 
+class SearchCamp(Resource):
+
+        method_decorators = [login_required]
+
+        def get(self):
+            # get the search content
+            search_content = request.args.get("index_search")
+            # get all camps
+            camps = CampModel.query.filter(or_(CampModel.name.like("%" + search_content + "%"),
+                                                     CampModel.description.like("%" + search_content + "%")))
+            # Count the people in each camp
+            camp_user = CampUserModel.query.all()
+            users_in_camp = {}
+            for camp in camps:
+                try:
+                    users_in_camp[camp.id] = 0
+                except Exception as e:
+                    print(e)
+                    continue
+            for user in camp_user:
+                try:
+                    users_in_camp[user.camp_id] += 1
+                except Exception as e:
+                    print(e)
+                    continue
+            # store camps in a dictionary
+            camps_list = []
+            camps_dict = {}
+            for camp in camps:
+                camps_dict["camp_id"] = camp.id
+                camps_dict["camp_name"] = camp.name
+                camps_dict["camp_description"] = camp.description
+                camps_dict["camp_background"] = camp.background
+                # get the number of people in the camp
+                camps_dict["users_num"] = users_in_camp[camp.id]
+                camps_list.append(camps_dict)
+                camps_dict = {}
+
+            camp_builders = get_all_camp_builder()
+            camp_joins = get_all_camp_join()
+
+            return render_template("index.html", camps=camps_list, camp_builders=camp_builders, camp_joins=camp_joins)
+
+
 api.add_resource(Index, "/")
 api.add_resource(BuildCamp, "/buildcamp")
 api.add_resource(JoinCamp, "/join_camp")
+api.add_resource(SearchCamp, "/searchcamp")

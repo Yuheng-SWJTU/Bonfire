@@ -1181,6 +1181,72 @@ class ChangeSort(Resource):
         return jsonify({"code": 200})
 
 
+class SearchPost(Resource):
+    method_decorators = [login_required, check_category]
+
+    def get(self):
+        # get camp_id from session
+        camp_id = session.get("camp_id")
+
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html"), 404
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # get all category in this camp
+        categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+        # store categories in a dictionary
+        categories_list = []
+        categories_dict = {}
+        for category in categories:
+            categories_dict["category_id"] = category.id
+            categories_dict["category_name"] = category.name
+            categories_dict["category_color"] = category.color
+            categories_list.append(categories_dict)
+            categories_dict = {}
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        # from session get the sort
+        sort = session.get("sort")
+
+        # get the search content
+        search_content = request.args.get("post_search")
+
+        posts = get_all_posts(PostModel, camp_id, sort, None, search_content)
+
+        # using post_id to get the username and user_avatar
+        for post in posts:
+            user = UserModel.query.filter_by(id=post.user_id).first()
+            post.username = user.username
+            post.user_avatar = user.avatar
+
+        notices_list = save_all_notice_in_dict(PostModel, camp_id)
+        posts_list = save_all_posts_in_dict(posts)
+
+        return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
+                               camp_builders=camp_builders, camp_joins=camp_joins, notices=notices_list,
+                               posts=posts_list, page_status="search", sort=sort)
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -1205,3 +1271,4 @@ api.add_resource(UploadImage, "/upload_image")
 api.add_resource(EditPost, "/<int:camp_id>/<int:post_id>/edit")
 api.add_resource(EditPosts, "/edit_post")
 api.add_resource(ChangeSort, "/change_sort")
+api.add_resource(SearchPost, "/searchpost")

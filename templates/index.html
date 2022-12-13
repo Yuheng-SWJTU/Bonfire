@@ -23,8 +23,8 @@
             <img class="head-pho" src="{{ url_for('static', filename='images/container_pho.png') }}">
             <div class="head-wrapper">
                 <h3 style="margin-bottom: 20px; color: white">Find your interests in <b>Bonfire</b></h3>
-                <form class="d-flex" id="search-bar" method="get" action="{{ url_for("index.index") }}">
-                    <input class="form-control me-2 add-input" type="search" placeholder="Search..." name="todos">
+                <form class="d-flex" id="index-search-bar" method="get" action="/searchcamp">
+                    <input class="form-control me-2 add-input" type="search" placeholder="Search..." name="index_search">
                     <button class="btn btn-primary" type="submit" id="search-btn">
                         <svg t="1667264185309" class="icon" viewBox="0 0 1024 1024" version="1.1"
                              xmlns="http://www.w3.org/2000/svg" p-id="3794" width="24" height="24">
