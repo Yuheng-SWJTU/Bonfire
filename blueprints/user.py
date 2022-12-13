@@ -10,7 +10,7 @@ from controller import handle_error_string, get_all_camp_builder, get_all_camp_j
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_mail import Message
-from models import UserModel, EmailCaptchaModel, ChangePasswordCaptchaModel
+from models import UserModel, EmailCaptchaModel, ChangePasswordCaptchaModel, FavoritePostModel, PostModel, LikePostModel
 from extensions import db, mail
 from .form import RegisterForm, LoginForm, ChangePassword
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -142,23 +142,29 @@ class GetCaptcha(Resource):
 
 
 class Profile(Resource):
-
     method_decorators = [login_required]
 
     def get(self):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
+
+        # get the latest post i created
+        latest_post = PostModel.query.filter_by(user_id=g.user.id, is_delete=0).order_by(PostModel.create_time.desc()).first()
+        if latest_post:
+            latest_post = latest_post
+        else:
+            latest_post = None
+
         try:
             return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
-                               status="profile", camp_builders=camp_builders, camp_joins=camp_joins)
+                                   status="profile", camp_builders=camp_builders, camp_joins=camp_joins, latest_post=latest_post)
         except Exception as e:
             print(e)
             return render_template("profile.html", user=g.user,
-                               status="profile", camp_builders=camp_builders, camp_joins=camp_joins)
+                                   status="profile", camp_builders=camp_builders, camp_joins=camp_joins, latest_post=latest_post)
 
 
 class EditName(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -191,7 +197,6 @@ class EditName(Resource):
 
 
 class EditDescription(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -220,7 +225,6 @@ class EditDescription(Resource):
 
 
 class EditProfile(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -244,7 +248,6 @@ class EditProfile(Resource):
 
 
 class UploadAvatar(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -285,18 +288,16 @@ class UploadAvatar(Resource):
 
 
 class Privacy(Resource):
-
     method_decorators = [login_required]
 
     def get(self):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
         return render_template("privacy.html", user=g.user,
-                                status="privacy", camp_builders=camp_builders, camp_joins=camp_joins)
+                               status="privacy", camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 class GetChangePasswordCaptcha(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -335,7 +336,8 @@ class GetChangePasswordCaptcha(Resource):
                     db.session.rollback()
                     raise e
             else:
-                captcha_model = ChangePasswordCaptchaModel(email=email, captcha=captcha, user_id=g.user.id, creat_time=datetime.now())
+                captcha_model = ChangePasswordCaptchaModel(email=email, captcha=captcha, user_id=g.user.id,
+                                                           creat_time=datetime.now())
                 db.session.add(captcha_model)
                 db.session.commit()
             return jsonify({"code": 200})
@@ -344,7 +346,6 @@ class GetChangePasswordCaptcha(Resource):
 
 
 class EditPassword(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -383,7 +384,6 @@ class EditPassword(Resource):
 
 
 class DeleteAccount(Resource):
-
     method_decorators = [login_required]
 
     def delete(self):
@@ -413,13 +413,109 @@ class DeleteAccount(Resource):
 
 
 class Logout(Resource):
-
     method_decorators = [login_required]
 
     def get(self):
         # delete the session
         session.clear()
         return redirect(url_for("user.login"))
+
+
+class FavoriteContent(Resource):
+    method_decorators = [login_required]
+
+    def get(self):
+        favorite_contents = FavoritePostModel.query.filter_by(user_id=g.user.id).all()
+        # get all posts information
+        posts = []
+        post = {}
+        for favorite_content in favorite_contents:
+            post_model = PostModel.query.filter_by(id=favorite_content.post_id, is_delete=0).first()
+            try:
+                post["title"] = post_model.title
+                post["description"] = post_model.description
+                post["like_count"] = post_model.like_count
+                post["comment_count"] = post_model.comment_count
+                post["favorite_count"] = post_model.favorite_count
+                post["camp_id"] = post_model.camp_id
+                post["category_id"] = post_model.category_id
+                post["post_id"] = post_model.id
+                posts.append(post)
+                post = {}
+            except Exception as e:
+                print(e)
+                continue
+
+        if len(posts) == 0:
+            posts = None
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        return render_template("lists.html", status="favorite", posts=posts, user=g.user, camp_builders=camp_builders, camp_joins=camp_joins)
+
+
+class LikeContent(Resource):
+    method_decorators = [login_required]
+
+    def get(self):
+        like_contents = LikePostModel.query.filter_by(user_id=g.user.id).all()
+        # get all posts information
+        posts = []
+        post = {}
+        for like_content in like_contents:
+            post_model = PostModel.query.filter_by(id=like_content.post_id, is_delete=0).first()
+            try:
+                post["title"] = post_model.title
+                post["description"] = post_model.description
+                post["like_count"] = post_model.like_count
+                post["comment_count"] = post_model.comment_count
+                post["favorite_count"] = post_model.favorite_count
+                post["camp_id"] = post_model.camp_id
+                post["category_id"] = post_model.category_id
+                post["post_id"] = post_model.id
+                posts.append(post)
+                post = {}
+            except Exception as e:
+                print(e)
+                continue
+
+        if len(posts) == 0:
+            posts = None
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        return render_template("lists.html", status="like", posts=posts, user=g.user, camp_builders=camp_builders, camp_joins=camp_joins)
+
+
+class MyPost(Resource):
+    method_decorators = [login_required]
+
+    def get(self):
+        # get all posts information
+        posts = []
+        post = {}
+        post_models = PostModel.query.filter_by(user_id=g.user.id, is_delete=0).all()
+        for post_model in post_models:
+            post["title"] = post_model.title
+            post["description"] = post_model.description
+            post["like_count"] = post_model.like_count
+            post["comment_count"] = post_model.comment_count
+            post["favorite_count"] = post_model.favorite_count
+            post["camp_id"] = post_model.camp_id
+            post["category_id"] = post_model.category_id
+            post["post_id"] = post_model.id
+            posts.append(post)
+            post = {}
+
+        if len(posts) == 0:
+            posts = None
+
+        camp_builders = get_all_camp_builder()
+        camp_joins = get_all_camp_join()
+
+        return render_template("lists.html", status="myposts", posts=posts, user=g.user, camp_builders=camp_builders, camp_joins=camp_joins)
 
 
 api.add_resource(GetCaptcha, "/captcha")
@@ -435,8 +531,6 @@ api.add_resource(GetChangePasswordCaptcha, "/get_change_password_captcha")
 api.add_resource(EditPassword, "/edit_password")
 api.add_resource(DeleteAccount, "/delete_account")
 api.add_resource(Logout, "/logout")
-
-
-@bp.route("/favorite", methods=["GET", "POST"])
-def favorite():
-    return render_template("lists.html")
+api.add_resource(FavoriteContent, "/favorite")
+api.add_resource(LikeContent, "/like")
+api.add_resource(MyPost, "/myposts")

@@ -155,3 +155,49 @@ class FavoritePostModel(db.Model):
     user = db.relationship("UserModel", backref="favorite_posts")
     # if you want to get all the favorite users of a post, you can write it through favorite_users
     post = db.relationship("PostModel", backref="favorite_users")
+
+
+class LikePostModel(db.Model):
+    """
+    This class is used to store like post information.
+
+    """
+
+    __tablename__ = "like_post"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # User id will be the foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Post id will be the foreign key
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+
+    # if you want to get all the like posts of a user, you can write it through like_posts
+    user = db.relationship("UserModel", backref="like_posts")
+    # if you want to get all the like users of a post, you can write it through like_users
+    post = db.relationship("PostModel", backref="like_users")
+
+
+class CommentModel(db.Model):
+    """
+    This class is used to store comment information.
+
+    """
+
+    __tablename__ = "comment"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text, nullable=True)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    is_delete = db.Column(db.Boolean, default=False)
+
+    # User id will be the foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Post id will be the foreign key
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+
+    # if you want to get all the comments of a user, you can write it through comments
+    user = db.relationship("UserModel", backref="comments")
+    # if you want to get all the comments of a post, you can write it through comments
+    post = db.relationship("PostModel", backref="comments")

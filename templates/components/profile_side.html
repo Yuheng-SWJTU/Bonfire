@@ -30,17 +30,35 @@
 
             <hr class="segmentation">
 
-            <a class="pro-button">
-                Favorite
-            </a>
+            {% if status=="favorite" %}
+                <a class="pro-button active-profile" href="/user/favorite">
+                    Favorite
+                </a>
+            {% else %}
+                <a class="pro-button" href="/user/favorite">
+                    Favorite
+                </a>
+            {% endif %}
 
-            <a class="pro-button">
-                My Posts
-            </a>
+            {% if status == "myposts" %}
+                <a class="pro-button active-profile" href="/user/myposts">
+                    My Posts
+                </a>
+            {% else %}
+                <a class="pro-button" href="/user/myposts">
+                    My Posts
+                </a>
+            {% endif %}
 
-            <a class="pro-button">
-                My Likes
-            </a>
+            {% if status=="like" %}
+                <a class="pro-button active-profile" href="/user/like">
+                    My Likes
+                </a>
+            {% else %}
+                <a class="pro-button" href="/user/like">
+                    My Likes
+                </a>
+            {% endif %}
 
             <div class="side-bottom">
                 <hr class="segmentation">

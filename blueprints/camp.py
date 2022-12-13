@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_restful import Resource, Api
@@ -6,9 +7,10 @@ import json
 
 from werkzeug.utils import secure_filename
 
-from config import BACKGROUND_UPLOAD_FOLDER
+from config import BACKGROUND_UPLOAD_FOLDER, POST_UPLOAD_FOLDER
 
-from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel, FavoritePostModel
+from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel, FavoritePostModel, LikePostModel, \
+    CommentModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
@@ -90,7 +92,6 @@ class Camp(Resource):
 
 
 class AddCategory(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -634,13 +635,9 @@ class MakePost(Resource):
 
 
 class ShowPost(Resource):
-
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id, category_id, post_id):
-        # set a session to record the camp_id
-
-        # get the camp id from session
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
@@ -678,7 +675,9 @@ class ShowPost(Resource):
         camp_joins = get_all_camp_join()
 
         # get the post information
-        post = PostModel.query.filter_by(id=post_id).first()
+        post = PostModel.query.filter_by(id=post_id, is_delete=0).first()
+        if not post:
+            return render_template("404.html")
 
         # format the post update time into "2020-01-01 00:00:00"
         post_update_time = post.update_time.strftime("%Y-%m-%d %H:%M")
@@ -689,20 +688,48 @@ class ShowPost(Resource):
                      "post_category_name": post.category.name, "post_camp_id": post.camp_id,
                      "post_category_id": post.category_id, "post_user_id": post.user_id,
                      "post_user_description": post.user.description, "post_user_avatar": post.user.avatar,
-                     "post_like_count": post.like_count}
+                     "post_like_count": post.like_count, "post_comment_count": post.comment_count}
 
         page_status = category_id
 
         # get the information of favorite
         favorite = FavoritePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
+        # get the information of like
+        like = LikePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
+        # get the information of comment
+        comments = CommentModel.query.filter_by(post_id=post_id, is_delete=0).all()
+        # store comments in a dictionary
+        comments_list = []
+        comments_dict = {}
+        if comments:
+            for comment in comments:
+                # format the comment update time into "2020-01-01 00 : 00 : 00"
+                comment_create_time = comment.create_time.strftime("%Y-%m-%d %H:%M")
+                comments_dict["comment_id"] = comment.id
+                comments_dict["comment_content"] = comment.content
+                comments_dict["comment_create_time"] = comment_create_time
+                comments_dict["comment_username"] = comment.user.username
+                comments_dict["comment_user_id"] = comment.user_id
+                comments_dict["comment_user_avatar"] = comment.user.avatar
+                comments_list.append(comments_dict)
+                comments_dict = {}
+        else:
+            comments_list = None
+
         if favorite:
             favorite_status = "true"
         else:
             favorite_status = "false"
 
+        if like:
+            like_status = "true"
+        else:
+            like_status = "false"
+
         return render_template("show.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, post_info=post_dict,
-                               page_status=page_status, user_id=user_id, favorite_status=favorite_status)
+                               page_status=page_status, user_id=user_id, favorite_status=favorite_status,
+                               like_status=like_status, comments=comments_list)
 
     def post(self, camp_id, category_id, post_id):
         # get the post id
@@ -712,7 +739,6 @@ class ShowPost(Resource):
 
 
 class GoToCategory(Resource):
-
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id, category_id):
@@ -773,7 +799,6 @@ class GoToCategory(Resource):
 
 
 class Favorite(Resource):
-
     method_decorators = [login_required]
 
     def post(self):
@@ -822,6 +847,180 @@ class Favorite(Resource):
         return jsonify({"code": 200, "message": "Favorite success.", "status": "success"})
 
 
+class Like(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the post id
+        post_id = request.form.get("post_id")
+        # get the post
+        post = PostModel.query.filter_by(id=post_id).first()
+
+        # check if the user has already like this post
+        like = LikePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
+        if like:
+            # if the user has already like this post, then delete the like record
+            db.session.delete(like)
+            db.session.commit()
+            # update the post's like number
+            post.like_count -= 1
+            db.session.add(post)
+            db.session.commit()
+            # return the like number
+            return jsonify({"code": 200, "message": "Cancel like", "status": "cancel",
+                            "like_count": post.like_count})
+
+        # save the like post information in the database
+        like = LikePostModel()
+        like.user_id = user_id
+        like.post_id = post_id
+        db.session.add(like)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        # update the post's like number
+        post.like_count += 1
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        return jsonify({"code": 200, "message": "Like success.", "status": "success",
+                        "like_count": post.like_count})
+
+
+class DeletePost(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the post id
+        post_id = request.form.get("post_id")
+        # get the post
+        post = PostModel.query.filter_by(id=post_id).first()
+
+        # change the post 'is_delete' to 1
+        post.is_delete = 1
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        return jsonify({"code": 200, "message": "Delete success."})
+
+
+class Comment(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the post id
+        post_id = request.form.get("post_id")
+        # get the comment content
+        content = request.form.get("content")
+        if not content:
+            return jsonify({"code": 400, "message": "Comment content cannot be empty."})
+        if len(content) > 500:
+            return jsonify({"code": 400, "message": "Comment content cannot be more than 500 characters."})
+
+        # the comment_count of the post + 1
+        post = PostModel.query.filter_by(id=post_id).first()
+        post.comment_count += 1
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        # get the comment
+        comment = CommentModel()
+        comment.user_id = user_id
+        comment.post_id = post_id
+        comment.content = content
+        db.session.add(comment)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        return jsonify({"code": 200, "message": "Comment success."})
+
+
+class DeleteComment(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the comment id
+        comment_id = request.form.get("comment_id")
+        # get the comment
+        comment = CommentModel.query.filter_by(id=comment_id).first()
+
+        # the comment_count of the post - 1
+        post = PostModel.query.filter_by(id=comment.post_id).first()
+        post.comment_count -= 1
+        db.session.add(post)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        # change the comment 'is_delete' to 1
+        comment.is_delete = 1
+        db.session.add(comment)
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({"code": 500, "message": "Server error."})
+
+        return jsonify({"code": 200, "message": "Delete success."})
+
+
+class UploadImage(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user id
+        user_id = session.get("user_id")
+        # get the image from wangEditor
+        image = request.files.get("wangeditor-uploaded-image")
+        if not image:
+            return jsonify({"errno": 400, "message": "Image cannot be empty."})
+        # check the image format
+        # # save the image
+        random_name = str(uuid.uuid4())
+        image_name = random_name + "." + image.filename.split(".")[-1]
+        image.save(os.path.join(POST_UPLOAD_FOLDER, image_name))
+
+        return jsonify({"errno": 0, "data": {
+            "url": "/static/upload/posts_images/" + image_name,
+            "alt": image_name
+        }})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -838,3 +1037,8 @@ api.add_resource(MakePost, "/make_post")
 api.add_resource(ShowPost, "/<int:camp_id>/<int:category_id>/<int:post_id>")
 api.add_resource(GoToCategory, "/<int:camp_id>/<int:category_id>")
 api.add_resource(Favorite, "/favorite")
+api.add_resource(Like, "/like")
+api.add_resource(DeletePost, "/delete_post")
+api.add_resource(Comment, "/comment")
+api.add_resource(DeleteComment, "/delete_comment")
+api.add_resource(UploadImage, "/upload_image")

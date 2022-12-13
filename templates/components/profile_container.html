@@ -105,17 +105,21 @@
                 <div class="my-activity-title">
                     <p id="my-activity-title">Recent Activity</p>
                 </div>
-                <div class="no_activity">
-                    <img id="no_activity" src="{{ url_for("static", filename="images/no_activity.png") }}">
-                </div>
-                {#                <div class="my-activity-content">#}
-                {#                    <a class="my-activity-content-title">#}
-                {#                        Test#}
-                {#                    </a>#}
-                {#                    <div class="my-activity-content-area">#}
-                {#                        <p>This is a description of Test.</p>#}
-                {#                    </div>#}
-                {#                </div>#}
+
+                {% if latest_post == None %}
+                    <div class="no_activity">
+                        <img id="no_activity" src="{{ url_for("static", filename="images/no_activity.png") }}">
+                    </div>
+                {% else %}
+                    <div class="my-activity-content">
+                        <a class="my-activity-content-title" href="/camp/{{ latest_post.camp_id }}/{{ latest_post.category_id }}/{{ latest_post.id }}">
+                            {{ latest_post.title }}
+                        </a>
+                        <div class="my-activity-content-area">
+                            <p>{{ latest_post.description }}</p>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

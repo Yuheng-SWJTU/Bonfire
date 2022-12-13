@@ -36,7 +36,8 @@
                     </svg>
                 </button>
 
-                <button class="edit-delete-post" id="post-delete-btn">
+                <button class="edit-delete-post" id="post-delete-btn"
+                        onclick="delete_post({{ post_info["post_id"] }}, {{ post_info["post_camp_id"] }})">
                     <svg t="1670322674151" class="icon" viewBox="0 0 1024 1024" version="1.1"
                          xmlns="http://www.w3.org/2000/svg" p-id="5930" width="24" height="24">
                         <path d="M768 384c-19.2 0-32 12.8-32 32l0 377.6c0 25.6-19.2 38.4-38.4 38.4L326.4 832c-25.6 0-38.4-19.2-38.4-38.4L288 416C288 396.8 275.2 384 256 384S224 396.8 224 416l0 377.6c0 57.6 44.8 102.4 102.4 102.4l364.8 0c57.6 0 102.4-44.8 102.4-102.4L793.6 416C800 396.8 787.2 384 768 384z"
@@ -79,134 +80,88 @@
         <hr class="segmentation">
 
         <div class="comment-input-box" id="commentAnchor">
-            <form>
-                <div class="row modal-body-row">
-                    <div class="col">
+            <div class="row modal-body-row">
+                <div class="col">
                         <textarea class="comment-input form-control" placeholder="Leave a comment..."
-                                  rows="3"></textarea>
-                    </div>
+                                  rows="3" id="comment_input"></textarea>
                 </div>
+            </div>
 
-                <hr class="segmentation">
+            <hr class="segmentation">
 
-                <div class="btn-area">
-                    <button class="login-nav-btn">
-                        Comment
-                    </button>
-                </div>
-            </form>
+            <div class="btn-area">
+                <button class="login-nav-btn" onclick="comment({{ post_info["post_id"] }})">
+                    Comment
+                </button>
+            </div>
         </div>
 
         <div class="comment-show-area">
             <div class="comment-show-info">
-                <p style="margin-left: 10px">10 Comments</p>
+                <p style="margin-left: 10px">{{ post_info["post_comment_count"] }} Comments</p>
             </div>
 
             <div class="comment-show-content">
-                <div class="comment-item">
-                    <a class="comment-avatar" href="javascript:;">
-                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
-                    </a>
-                    <div class="comment-info">
-                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
-                        <p class="comment-info-content">This is a test</p>
-                        <p class="show-title-content">2022/2/14</p>
-                    </div>
 
-                    {% if user_id == post_info["post_user_id"] or identity=="Admin" or identity=="Builder" %}
-                        <button class="delete-comment">
-                            <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                                 xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
-                                <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
-                                      p-id="6185" fill="#828282"></path>
-                            </svg>
-                        </button>
-                    {% endif %}
+                {% if comments != None %}
+                    {% for comment in comments %}
+                        <div class="comment-item">
+                            <a class="comment-avatar" href="javascript:;">
+                                <img src="/static/upload/avatar/{{ comment["comment_user_avatar"] }}"
+                                     class="layui-nav-img">
+                            </a>
+                            <div class="comment-info">
+                                <h4 class="show-title-avatar-name">{{ comment["comment_username"] }}</h4>
+                                <p class="comment-info-content">{{ comment["comment_content"] }}</p>
+                                <p class="show-title-content">{{ comment["comment_create_time"] }}</p>
+                            </div>
 
-                </div>
-                <div class="comment-item">
-                    <a class="comment-avatar" href="javascript:;">
-                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
-                    </a>
-                    <div class="comment-info">
-                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
-                        <p class="comment-info-content">This is a test</p>
-                        <p class="show-title-content">2022/2/14</p>
+                            {% if user_id == post_info["post_user_id"] or identity=="Admin" or identity=="Builder" or user_id == comment["comment_user_id"] %}
+                                <button class="delete-comment" onclick="delete_comment({{ comment["comment_id"] }})">
+                                    <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                         xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
+                                        <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
+                                              p-id="6185" fill="#828282"></path>
+                                    </svg>
+                                </button>
+                            {% endif %}
+
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align: center">
+                        <img src="/static/images/nothing.png" style="width: 25%">
                     </div>
-                    <button class="delete-comment">
-                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
-                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
-                                  p-id="6185" fill="#828282"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="comment-item">
-                    <a class="comment-avatar" href="javascript:;">
-                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
-                    </a>
-                    <div class="comment-info">
-                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
-                        <p class="comment-info-content">This is a test</p>
-                        <p class="show-title-content">2022/2/14</p>
-                    </div>
-                    <button class="delete-comment">
-                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
-                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
-                                  p-id="6185" fill="#828282"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="comment-item">
-                    <a class="comment-avatar" href="javascript:;">
-                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
-                    </a>
-                    <div class="comment-info">
-                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
-                        <p class="comment-info-content">This is a test</p>
-                        <p class="show-title-content">2022/2/14</p>
-                    </div>
-                    <button class="delete-comment">
-                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
-                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
-                                  p-id="6185" fill="#828282"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="comment-item">
-                    <a class="comment-avatar" href="javascript:;">
-                        <img src="{{ url_for("static", filename="images/avatar.png") }}" class="layui-nav-img">
-                    </a>
-                    <div class="comment-info">
-                        <h4 class="show-title-avatar-name">Yuheng Liu</h4>
-                        <p class="comment-info-content">This is a test</p>
-                        <p class="show-title-content">2022/2/14</p>
-                    </div>
-                    <button class="delete-comment">
-                        <svg t="1670323361700" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                             xmlns="http://www.w3.org/2000/svg" p-id="6184" width="24" height="24">
-                            <path d="M512 471.744l207.424-207.36a28.416 28.416 0 1 1 40.256 40.192L552.256 512l207.36 207.424a28.416 28.416 0 1 1-40.192 40.256L512 552.256l-207.424 207.36a28.416 28.416 0 1 1-40.256-40.192L471.744 512l-207.36-207.424a28.416 28.416 0 0 1 40.192-40.256L512 471.744z"
-                                  p-id="6185" fill="#828282"></path>
-                        </svg>
-                    </button>
-                </div>
+                {% endif %}
             </div>
+
         </div>
 
 
         <div class="post-area post-area-common show-area-common" id="post-area">
             <div class="button-area">
-                <div class="like button-area-like">
-                    <svg t="1670236074165" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                         xmlns="http://www.w3.org/2000/svg" p-id="2694" width="24" height="24">
-                        <path d="M515.2 67.2c-246.4 0-448 201.6-448 448s201.6 448 448 448 448-201.6 448-448-201.6-448-448-448zM704 563.2l-150.4 153.6c-12.8 12.8-25.6 19.2-41.6 19.2s-28.8-6.4-41.6-19.2l-147.2-153.6C307.2 544 288 515.2 288 476.8c0-67.2 54.4-121.6 118.4-121.6 32 0 60.8 12.8 83.2 35.2l22.4 22.4c9.6-9.6 19.2-22.4 22.4-22.4 22.4-22.4 51.2-35.2 83.2-35.2 67.2 0 118.4 54.4 118.4 121.6 3.2 41.6-12.8 64-32 86.4z"
-                              fill="#ffffff" p-id="2695"></path>
-                    </svg>
-                    <p class="like-info-text">Like</p>
-                    <p class="like-info-num">{{ post_info["post_like_count"] }}</p>
-                </div>
+
+                {% if like_status == "true" %}
+                    <div class="like button-area-like active-post" onclick="like({{ post_info["post_id"] }})" id="like">
+                        <svg t="1670236074165" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="2694" width="24" height="24">
+                            <path d="M515.2 67.2c-246.4 0-448 201.6-448 448s201.6 448 448 448 448-201.6 448-448-201.6-448-448-448zM704 563.2l-150.4 153.6c-12.8 12.8-25.6 19.2-41.6 19.2s-28.8-6.4-41.6-19.2l-147.2-153.6C307.2 544 288 515.2 288 476.8c0-67.2 54.4-121.6 118.4-121.6 32 0 60.8 12.8 83.2 35.2l22.4 22.4c9.6-9.6 19.2-22.4 22.4-22.4 22.4-22.4 51.2-35.2 83.2-35.2 67.2 0 118.4 54.4 118.4 121.6 3.2 41.6-12.8 64-32 86.4z"
+                                  fill="#ffffff" p-id="2695"></path>
+                        </svg>
+                        <p class="like-info-text">Like</p>
+                        <p class="like-info-num" id="like-count">{{ post_info["post_like_count"] }}</p>
+                    </div>
+                {% else %}
+                    <div class="like button-area-like" onclick="like({{ post_info["post_id"] }})" id="like">
+                        <svg t="1670236074165" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="2694" width="24" height="24">
+                            <path d="M515.2 67.2c-246.4 0-448 201.6-448 448s201.6 448 448 448 448-201.6 448-448-201.6-448-448-448zM704 563.2l-150.4 153.6c-12.8 12.8-25.6 19.2-41.6 19.2s-28.8-6.4-41.6-19.2l-147.2-153.6C307.2 544 288 515.2 288 476.8c0-67.2 54.4-121.6 118.4-121.6 32 0 60.8 12.8 83.2 35.2l22.4 22.4c9.6-9.6 19.2-22.4 22.4-22.4 22.4-22.4 51.2-35.2 83.2-35.2 67.2 0 118.4 54.4 118.4 121.6 3.2 41.6-12.8 64-32 86.4z"
+                                  fill="#ffffff" p-id="2695"></path>
+                        </svg>
+                        <p class="like-info-text">Like</p>
+                        <p class="like-info-num" id="like-count">{{ post_info["post_like_count"] }}</p>
+                    </div>
+                {% endif %}
 
                 {% if favorite_status == "true" %}
                     <div class="like button-area-like active-post" onclick="favorite({{ post_info["post_id"] }})"

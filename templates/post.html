@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/camp.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
     <script type="module" src="{{ url_for('static', filename='script/post.js') }}"></script>
+    <!-- 引入 css -->
+    <link href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css" rel="stylesheet">
+
+    <!-- 引入 js -->
+    <script src="https://unpkg.com/@wangeditor/editor@latest/dist/index.js"></script>
+    <script>
+        var E = window.wangEditor; // 全局变量
+    </script>
 
 {% endblock %}
 

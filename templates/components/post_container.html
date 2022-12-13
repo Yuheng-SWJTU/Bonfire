@@ -6,7 +6,11 @@
             <input class="post-form-input form-control add-input camp-side-add-input" type="text" name="post_title"
                    id="post_title" placeholder="Enter your post title...">
 
-            <textarea id="rich_edit" style="display: none;"></textarea>
+            {#            <textarea id="rich_edit" style="display: none;"></textarea>#}
+            <div id="editor—wrapper">
+                <div id="toolbar-container"><!-- 工具栏 --></div>
+                <div id="editor-container"><!-- 编辑器 --></div>
+            </div>
 
             <label for="post_category" class="post-form-text">Choose one Category:</label>
             <select class="form-select add-input camp-side-add-input camp-side-category post-form-input choose-category"
