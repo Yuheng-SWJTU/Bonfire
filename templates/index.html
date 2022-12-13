@@ -24,7 +24,8 @@
             <div class="head-wrapper">
                 <h3 style="margin-bottom: 20px; color: white">Find your interests in <b>Bonfire</b></h3>
                 <form class="d-flex" id="index-search-bar" method="get" action="/searchcamp">
-                    <input class="form-control me-2 add-input" type="search" placeholder="Search..." name="index_search">
+                    <input class="form-control me-2 add-input" type="search" placeholder="Search..."
+                           name="index_search">
                     <button class="btn btn-primary" type="submit" id="search-btn">
                         <svg t="1667264185309" class="icon" viewBox="0 0 1024 1024" version="1.1"
                              xmlns="http://www.w3.org/2000/svg" p-id="3794" width="24" height="24">
@@ -44,38 +45,45 @@
                 Bonfire Camp
             </h3>
 
-            <div class="item-container">
+            {% if camps != None %}
+                <div class="item-container">
+                    {% for camp in camps %}
+                        <div class="item">
+                            {% if camp["camp_background"] == "default_camp.png" %}
+                                <div class="item-photo"
+                                     style="background-image: url('../static/images/default_camp.png');"></div>
+                            {% else %}
+                                <div class="item-photo"
+                                     style="background-image: url('../static/upload/background/{{ camp["camp_background"] }}');"></div>
+                            {% endif %}
 
-                {% for camp in camps %}
-                    <div class="item">
-                        {% if camp["camp_background"] == "default_camp.png" %}
-                            <div class="item-photo" style="background-image: url('../static/images/default_camp.png');"></div>
-                        {% else %}
-                            <div class="item-photo" style="background-image: url('../static/upload/background/{{ camp["camp_background"] }}');"></div>
-                        {% endif %}
-
-                        <div class="item-content">
-                            <h4 class="item-content-title">
-                                {{ camp["camp_name"] }}
-                            </h4>
-                            <p class="item-content-des">
-                                {{ camp["camp_description"] }}
-                            </p>
-                        </div>
-                        <div class="item-info">
-                            <div class="item-info-people">
-                                <div class="circle bg-success"></div>
-                                <p class="info-people" id="users_num_{{ camp["camp_id"] }}">{{ camp["users_num"] }}</p>
-                                <p class="info-people">People</p>
+                            <div class="item-content">
+                                <h4 class="item-content-title">
+                                    {{ camp["camp_name"] }}
+                                </h4>
+                                <p class="item-content-des">
+                                    {{ camp["camp_description"] }}
+                                </p>
                             </div>
-                            <button class="item-info-join" onclick="join_camp({{ camp["camp_id"] }})">
-                                Join
-                            </button>
+                            <div class="item-info">
+                                <div class="item-info-people">
+                                    <div class="circle bg-success"></div>
+                                    <p class="info-people"
+                                       id="users_num_{{ camp["camp_id"] }}">{{ camp["users_num"] }}</p>
+                                    <p class="info-people">People</p>
+                                </div>
+                                <button class="item-info-join" onclick="join_camp({{ camp["camp_id"] }})">
+                                    Join
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-
-            </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center">
+                    <img src="static/images/nothing.png" alt="nothing" style="width: 25%">
+                </div>
+            {% endif %}
         </div>
     </div>
 

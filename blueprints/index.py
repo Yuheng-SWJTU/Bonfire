@@ -52,6 +52,9 @@ class Index(Resource):
             camps_dict["users_num"] = users_in_camp[camp.id]
             camps_list.append(camps_dict)
             camps_dict = {}
+
+        if len(camps_list) == 0:
+            camps_list = None
         # print(camps_list)
 
         # get all camps which identity is "Builder"
@@ -168,6 +171,9 @@ class SearchCamp(Resource):
 
             camp_builders = get_all_camp_builder()
             camp_joins = get_all_camp_join()
+
+            if len(camps_list) == 0:
+                camps_list = None
 
             return render_template("index.html", camps=camps_list, camp_builders=camp_builders, camp_joins=camp_joins)
 
