@@ -45,6 +45,7 @@ class UserModel(db.Model):
     birthday = db.Column(db.DateTime, nullable=True)
     description = db.Column(db.String(200), nullable=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
+    email_inform = db.Column(db.Boolean, default=True)
 
 
 class CampModel(db.Model):

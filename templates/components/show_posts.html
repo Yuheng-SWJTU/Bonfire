@@ -36,13 +36,20 @@
 
                 {#        sort#}
                 <div class="dropdown task-title-button2">
-                    <button type="button" class="btn btn-primary dropdown-toggle task-title-button3"
-                            data-bs-toggle="dropdown">
-                        Sort
-                    </button>
+                    {% if sort == "popularity" %}
+                        <button type="button" class="btn btn-primary dropdown-toggle task-title-button3"
+                                data-bs-toggle="dropdown">
+                            Popularity
+                        </button>
+                    {% elif sort == "postdate" %}
+                        <button type="button" class="btn btn-primary dropdown-toggle task-title-button3"
+                                data-bs-toggle="dropdown">
+                            Post Date
+                        </button>
+                    {% endif %}
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" onclick="indexAssessment()">Popularity</a></li>
-                        <li><a class="dropdown-item" onclick="indexModule()">Post Date</a></li>
+                        <li><a class="dropdown-item task-title-option" onclick="popularity()">Popularity</a></li>
+                        <li><a class="dropdown-item task-title-option" onclick="postdate()">Post Date</a></li>
                     </ul>
                 </div>
             </div>

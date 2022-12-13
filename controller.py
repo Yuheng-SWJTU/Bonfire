@@ -10,8 +10,10 @@
 import datetime
 
 from flask import session
+from flask_mail import Message
 from sqlalchemy import or_, extract
 from datetime import timezone, timedelta
+from extensions import mail
 
 from models import CampUserModel, CampModel
 
@@ -70,10 +72,10 @@ def get_all_posts(post_model, camp_id,  order_by, category_id=None):
         posts = post_model.query.filter_by(camp_id=camp_id, is_delete=0, category_id=category_id).order_by(post_model.is_top.desc())
 
     # sort the posts by the order_by
-    if order_by == "new":
+    if order_by == "popularity":
+        posts = posts.order_by(post_model.like_count.desc())
+    elif order_by == "postdate":
         posts = posts.order_by(post_model.update_time.desc())
-    # elif order_by == "hot":
-    #     posts = posts.order_by(post_model.like_count.desc())
 
     return posts
 
@@ -120,3 +122,19 @@ def save_all_posts_in_dict(post_model):
         return posts
     else:
         return None
+
+
+def send_comment_notification(post_author, post, content):
+    # send email to post author
+    msg = Message(subject="[Bonfire] - You have a new comment on your post",
+                  recipients=[post_author.email],
+                  body="Hi, " + post_author.username + ":\n\n"
+                       "You have a new comment on your post: " + "'" + post.title + "'" + "\n\n"
+                       "The comment is: \n\n"
+                       + content + "\n\n"
+                       "And it is posted by: " + "'" + post.user.username + "'" + "\n\n"
+                       "You can check it on the post page: \n\n"
+                       "https://bonfire.bilgin.top/camp/" + str(post.camp_id) + "/" + str(post.category_id) + "/" + str(post.id) + "\n\n"
+                       "Thanks for using Bonfire!\n\n"
+                       "Bonfire Team")
+    mail.send(msg)

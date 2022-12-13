@@ -324,3 +324,11 @@
 .active-profile{
     background-color: #dcdcdc;
 }
+
+.switch-div{
+    margin-left: 0!important;
+}
+
+.switch{
+    height: 24px!important;
+}

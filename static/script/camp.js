@@ -46,20 +46,62 @@ function leave_camp() {
         btn: ['Leave', 'Cancel'] //按钮
     }, function () {
         $.ajax({
-        url: "/camp/leave_camp",
-        method: "POST",
-        success: function (res) {
-            var code = res['code']
-            if (code === 200) {
-                layer.msg(res['message']);
-                // redirect to the index page
-                window.location.href = "/";
-            } else {
-                layer.msg(res['message']);
+                url: "/camp/leave_camp",
+                method: "POST",
+                success: function (res) {
+                    var code = res['code']
+                    if (code === 200) {
+                        layer.msg(res['message']);
+                        // redirect to the index page
+                        window.location.href = "/";
+                    } else {
+                        layer.msg(res['message']);
+                    }
+                }
             }
-        }
-    }
         )
     }, function () {
     });
+}
+
+function popularity() {
+    $.ajax({
+            url: "/camp/change_sort",
+            method: "POST",
+            data: {
+                "sort": "popularity"
+            },
+            success: function (res) {
+                var code = res['code']
+                if (code === 200) {
+                    layer.msg(res['message']);
+                    // refresh the page
+                    window.location.reload();
+                } else {
+                    layer.msg(res['message']);
+                }
+            }
+        }
+    )
+}
+
+function postdate(){
+    $.ajax({
+            url: "/camp/change_sort",
+            method: "POST",
+            data: {
+                "sort": "postdate"
+            },
+            success: function (res) {
+                var code = res['code']
+                if (code === 200) {
+                    layer.msg(res['message']);
+                    // refresh the page
+                    window.location.reload();
+                } else {
+                    layer.msg(res['message']);
+                }
+            }
+        }
+    )
 }

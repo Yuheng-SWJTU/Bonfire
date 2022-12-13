@@ -49,6 +49,7 @@ class Login(Resource):
             if user and check_password_hash(user.password, password):
                 # save in session
                 session['user_id'] = user.id
+                session['sort'] = "popularity"
                 # remember me
                 rememberme = request.form.getlist("remember")
                 if "rememberme" in rememberme:
@@ -293,8 +294,11 @@ class Privacy(Resource):
     def get(self):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
+        # get the user information in the database
+        user_id = session.get("user_id")
+        user = UserModel.query.filter_by(id=user_id).first()
         return render_template("privacy.html", user=g.user,
-                               status="privacy", camp_builders=camp_builders, camp_joins=camp_joins)
+                               status="privacy", camp_builders=camp_builders, camp_joins=camp_joins, user_info=user)
 
 
 class GetChangePasswordCaptcha(Resource):
@@ -517,6 +521,27 @@ class MyPost(Resource):
 
         return render_template("lists.html", status="myposts", posts=posts, user=g.user, camp_builders=camp_builders, camp_joins=camp_joins)
 
+class EmailInform(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the email inform
+        email_inform = request.form.get("switch")
+        if email_inform == "True":
+            email_inform = True
+        else:
+            email_inform = False
+        # update the email inform in the database
+        user = UserModel.query.filter_by(id=g.user.id).first()
+        user.email_inform = email_inform
+        # database rollback
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        return jsonify({"code": 200, "message": "You have changed your email inform successfully! "})
+
 
 api.add_resource(GetCaptcha, "/captcha")
 api.add_resource(Register, "/register")
@@ -534,3 +559,4 @@ api.add_resource(Logout, "/logout")
 api.add_resource(FavoriteContent, "/favorite")
 api.add_resource(LikeContent, "/like")
 api.add_resource(MyPost, "/myposts")
+api.add_resource(EmailInform, "/switch_email")

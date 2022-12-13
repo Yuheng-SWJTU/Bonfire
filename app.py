@@ -1,4 +1,4 @@
-from flask import Flask, g, session
+from flask import Flask, g, session, render_template
 from blueprints import user_bp, index_bp, camp_bp
 import config
 from flask_migrate import Migrate
@@ -19,6 +19,10 @@ app.register_blueprint(user_bp)
 app.register_blueprint(index_bp)
 app.register_blueprint(camp_bp)
 
+
+@app.errorhandler(404)
+def error404(error):
+    return render_template("404.html"), 404
 
 @app.before_request
 def before_request():

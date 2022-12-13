@@ -63,7 +63,7 @@ function delete_account() {
                         // wait for 3 seconds and jump to the login page
                         setTimeout(function () {
                             window.location.href = "/user/login";
-                        } , 3000);
+                        }, 3000);
                     } else {
                         layer.msg(res['message']);
                     }
@@ -115,6 +115,35 @@ layui.use(['upload', 'element', 'layer'], function () {
             if (n === 100) {
                 layer.msg('Completed', {icon: 1});
             }
+        }
+    });
+});
+
+layui.use(['form', 'layedit', 'laydate'], function () {
+    var form = layui.form
+        , layer = layui.layer
+
+    form.on('switch(switchTest)', function (data) {
+        layer.msg('E-mail Inform: ' + (this.checked ? 'True' : 'False'), {
+            offset: '6px'
+        });
+        if(this.checked){
+            $.ajax({
+                url: "/user/switch_email",
+                method: "POST",
+                data: {
+                    "switch": "True"
+                }
+            })
+        }
+        else{
+            $.ajax({
+                url: "/user/switch_email",
+                method: "POST",
+                data: {
+                    "switch": "False"
+                }
+            })
         }
     });
 });

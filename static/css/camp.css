@@ -363,7 +363,7 @@
 }
 
 .task-title-button3 {
-    width: 100px;
+    width: 120px;
     height: 30px;
     line-height: 19px;
     vertical-align: center;
@@ -392,6 +392,10 @@
     background-color: #eaecef !important;
     color: black !important;
     box-shadow: unset !important;
+}
+
+.task-title-option{
+    cursor: pointer;
 }
 
 .task-title {

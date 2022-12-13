@@ -2664,7 +2664,7 @@ a cite {
     position: relative;
     display: inline-block;
     vertical-align: middle;
-    height: 22px;
+    height: 24px;
     line-height: 22px;
     min-width: 35px;
     padding: 0 5px;
@@ -2691,7 +2691,7 @@ a cite {
 
 .layui-form-switch em {
     position: relative;
-    top: 0;
+    top: -1px;
     width: 25px;
     margin-left: 21px;
     padding: 0 !important;
@@ -2702,8 +2702,8 @@ a cite {
 }
 
 .layui-form-onswitch {
-    border-color: #5fb878;
-    background-color: #5fb878
+    border-color: #836cdd;
+    background-color: #836cdd
 }
 
 .layui-form-onswitch i {

@@ -15,7 +15,7 @@ from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
-    save_all_posts_in_dict
+    save_all_posts_in_dict, send_comment_notification
 
 from decoration import login_required, check_category
 
@@ -43,6 +43,8 @@ class Camp(Resource):
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html"), 404
         # get the number of people in the camp
         camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
         users_num = len(camp_user)
@@ -76,7 +78,10 @@ class Camp(Resource):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
 
-        posts = get_all_posts(PostModel, camp_id, "time", None)
+        # from session get the sort
+        sort = session.get("sort")
+
+        posts = get_all_posts(PostModel, camp_id, sort, None)
 
         # using post_id to get the username and user_avatar
         for post in posts:
@@ -89,7 +94,7 @@ class Camp(Resource):
 
         return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, notices=notices_list,
-                               posts=posts_list, page_status="ALL")
+                               posts=posts_list, page_status="ALL", sort=sort)
 
 
 class AddCategory(Resource):
@@ -244,6 +249,8 @@ class ManageCamp(Resource):
         session["camp_id"] = camp_id
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html")
         # get the number of people in the camp
         camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
         users_num = len(camp_user)
@@ -535,6 +542,8 @@ class Posts(Resource):
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html")
         # get the number of people in the camp
         camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
         users_num = len(camp_user)
@@ -642,6 +651,8 @@ class ShowPost(Resource):
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html")
         # get the number of people in the camp
         camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
         users_num = len(camp_user)
@@ -781,7 +792,10 @@ class GoToCategory(Resource):
         camp_builders = get_all_camp_builder()
         camp_joins = get_all_camp_join()
 
-        posts = get_all_posts(PostModel, camp_id, "time", category_id)
+        # get the sort in the session
+        sort = session.get("sort")
+
+        posts = get_all_posts(PostModel, camp_id, sort, category_id)
 
         # using post_id to get the username and user_avatar
         for post in posts:
@@ -796,7 +810,7 @@ class GoToCategory(Resource):
 
         return render_template("camp.html", camp=camp_dict, categories=categories_list, identity=identity,
                                camp_builders=camp_builders, camp_joins=camp_joins, notices=notices_list,
-                               posts=posts_list, page_status=page_status)
+                               posts=posts_list, page_status=page_status, sort=sort, user_id=user_id)
 
 
 class Favorite(Resource):
@@ -940,6 +954,15 @@ class Comment(Resource):
 
         # the comment_count of the post + 1
         post = PostModel.query.filter_by(id=post_id).first()
+
+        # who is the post's author
+        post_author = UserModel.query.filter_by(id=post.user_id).first()
+        if post_author:
+            # if the post's author is not the current user and author opened the comment notification
+            if post_author.id != user_id and post_author.email_inform:
+                # send the comment notification to the post's author
+                send_comment_notification(post_author, post, content)
+
         post.comment_count += 1
         db.session.add(post)
         try:
@@ -1035,6 +1058,8 @@ class EditPost(Resource):
 
         # get the camp information
         camp = CampModel.query.filter_by(id=camp_id).first()
+        if camp is None:
+            return render_template("404.html")
         # get the number of people in the camp
         camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
         users_num = len(camp_user)
@@ -1142,6 +1167,20 @@ class EditPosts(Resource):
         return jsonify({"code": 200})
 
 
+class ChangeSort(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+
+        sort = request.form.get("sort")
+        if sort == "popularity":
+            session["sort"] = "popularity"
+        elif sort == "postdate":
+            session["sort"] = "postdate"
+
+        return jsonify({"code": 200})
+
+
 api.add_resource(Camp, "/<int:camp_id>")
 api.add_resource(AddCategory, "/add_category")
 api.add_resource(EditCategory, "/editcategory")
@@ -1165,4 +1204,4 @@ api.add_resource(DeleteComment, "/delete_comment")
 api.add_resource(UploadImage, "/upload_image")
 api.add_resource(EditPost, "/<int:camp_id>/<int:post_id>/edit")
 api.add_resource(EditPosts, "/edit_post")
-
+api.add_resource(ChangeSort, "/change_sort")

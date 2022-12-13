@@ -28,6 +28,40 @@
         <hr class="segmentation">
 
         <p class="privacy-title">
+            E-mail Information
+        </p>
+
+        <div class="privacy-container">
+            <div class="privacy-content">
+                <p class="privacy-little-title">
+                    Inform me with email
+                </p>
+                <p class="privacy-text">
+                    When you open this option, we will send you an email when you get a new comment.
+                </p>
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block switch-div">
+                            {% if user_info.email_inform == True %}
+                                <input type="checkbox" checked="" name="open" lay-skin="switch" lay-filter="switchTest"
+                                       lay-text="ON|OFF" class="switch">
+                            {% else %}
+                                <input type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"
+                                       lay-text="ON|OFF" class="switch">
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="privacy-img">
+                <img src="{{ url_for("static", filename="images/email.png") }}" id="privacy-img">
+            </div>
+        </div>
+
+        <hr class="segmentation">
+
+
+        <p class="privacy-title">
             Delete My Account
         </p>
         <div class="privacy-container">
@@ -63,7 +97,8 @@
                         <div class="col">
                             <label for="captcha" class="form-label add-information">Captcha</label>
                             <div class="input-group add-input">
-                                <input type="text" class="form-control add-input camp-side-add-input" name="captcha" id="captcha"
+                                <input type="text" class="form-control add-input camp-side-add-input" name="captcha"
+                                       id="captcha"
                                        placeholder="Code">
                                 <button id="captcha-btn"
                                         class="btn btn-outline-secondary input-group-text captcha-btn add-input camp-side-add-input"
@@ -90,7 +125,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="login-nav-btn" data-bs-dismiss="modal" onclick="confirm_pswd()">Confirm</button>
+                    <button type="button" class="login-nav-btn" data-bs-dismiss="modal" onclick="confirm_pswd()">
+                        Confirm
+                    </button>
                 </div>
             </form>
 
