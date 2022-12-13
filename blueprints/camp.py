@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
 from flask_restful import Resource, Api
@@ -1009,6 +1010,12 @@ class UploadImage(Resource):
         image = request.files.get("wangeditor-uploaded-image")
         if not image:
             return jsonify({"errno": 400, "message": "Image cannot be empty."})
+
+        # check the size of the image
+        if image.mimetype not in ["image/jpeg", "image/png", "image/gif", "image/jpg"]:
+            return jsonify({"errno": 400, "message": "Image format error."})
+        if image.content_length > 1024 * 1024 * 2:
+            return jsonify({"errno": 400, "message": "Image size cannot be more than 2M."})
         # check the image format
         # # save the image
         random_name = str(uuid.uuid4())
@@ -1019,6 +1026,120 @@ class UploadImage(Resource):
             "url": "/static/upload/posts_images/" + image_name,
             "alt": image_name
         }})
+
+
+class EditPost(Resource):
+    method_decorators = [login_required, check_category]
+
+    def get(self, camp_id, post_id):
+
+        # get the camp information
+        camp = CampModel.query.filter_by(id=camp_id).first()
+        # get the number of people in the camp
+        camp_user = CampUserModel.query.filter_by(camp_id=camp_id).all()
+        users_num = len(camp_user)
+        # Store all camp's information in a dictionary
+        camp_dict = {"camp_id": camp.id, "camp_name": camp.name, "camp_description": camp.description,
+                     "camp_background": camp.background, "users_num": users_num}
+
+        # get the user identity
+        user_id = session.get("user_id")
+        if user_id:
+            camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
+            if camp_user:
+                identity = camp_user.identity
+            else:
+                identity = "visitor"
+        else:
+            identity = "visitor"
+
+        # judge the post is existed
+        post = PostModel.query.filter_by(id=post_id, is_delete=0).first()
+        if not post:
+            return render_template("404.html")
+        # judge the user is the author of the post
+        if post.user_id == user_id or identity == "Admin" or identity == "Builder":
+
+            # get all category in this camp
+            categories = CategoryModel.query.filter_by(camp_id=camp_id).all()
+            # store categories in a dictionary
+            categories_list = []
+            categories_dict = {}
+            for category in categories:
+                categories_dict["category_id"] = category.id
+                categories_dict["category_name"] = category.name
+                categories_dict["category_color"] = category.color
+                categories_list.append(categories_dict)
+                categories_dict = {}
+
+            camp_builders = get_all_camp_builder()
+            camp_joins = get_all_camp_join()
+            return render_template("edit.html", camp=camp_dict, categories=categories_list, identity=identity,
+                                   camp_builders=camp_builders, camp_joins=camp_joins, page_status="eidt", post=post)
+        else:
+            return render_template("404.html")
+
+
+class EditPosts(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        # get the user identity
+        user_id = session.get("user_id")
+
+        # get the form data
+        post_title = request.form.get("title")
+        post_content = request.form.get("content")
+        category_id = request.form.get("category_id")
+        description = request.form.get("description")
+        is_notice = request.form.get("is_notice")
+        is_top = request.form.get("is_top")
+        post_id = request.form.get("post_id")
+
+        if is_notice == "true":
+            is_notice = True
+        else:
+            is_notice = False
+        if is_top == "true":
+            is_top = True
+        else:
+            is_top = False
+
+        # check if the post title is empty
+        if not post_title:
+            return jsonify({"code": 400, "message": "The post title can't be empty!"})
+        # check if the post content is empty
+        if not post_content:
+            return jsonify({"code": 400, "message": "The post content can't be empty!"})
+        # check the length of the post title
+        if len(post_title) > 50:
+            return jsonify({"code": 400, "message": "The length of the post title is too long!"})
+        if len(post_title) < 3:
+            return jsonify({"code": 400, "message": "The length of the post title is too short!"})
+        # check if the category is existed
+        if not CategoryModel.query.filter_by(id=category_id).first():
+            return jsonify({"code": 400, "message": "The category is not exist!"})
+
+        # if the length of the description is over 150, cut it
+        if len(description) > 150:
+            description = description[:150]
+
+        # change the post information
+        post = PostModel.query.filter_by(id=post_id).first()
+        post.title = post_title
+        post.content = post_content
+        post.category_id = category_id
+        post.description = description
+        post.is_notice = is_notice
+        post.is_top = is_top
+        post.update_time = datetime.now()
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({"code": 400, "message": "Make post failed!"})
+
+        return jsonify({"code": 200})
 
 
 api.add_resource(Camp, "/<int:camp_id>")
@@ -1042,3 +1163,6 @@ api.add_resource(DeletePost, "/delete_post")
 api.add_resource(Comment, "/comment")
 api.add_resource(DeleteComment, "/delete_comment")
 api.add_resource(UploadImage, "/upload_image")
+api.add_resource(EditPost, "/<int:camp_id>/<int:post_id>/edit")
+api.add_resource(EditPosts, "/edit_post")
+

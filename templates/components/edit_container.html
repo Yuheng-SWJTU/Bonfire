@@ -1,0 +1,115 @@
+<div class="container-box" id="container-box">
+    <div class="center" id="center-box">
+        <h3 class="post-page-title">Edit Post</h3>
+        <input id="edit_content" value="{{ post.content }}" hidden>
+        <input id="edit_id" value="{{ post.id }}" hidden>
+        <form>
+            <label for="post_title" class="post-form-text">Post title:</label>
+            <input class="post-form-input form-control add-input camp-side-add-input" type="text" name="post_title"
+                   id="post_title" placeholder="Enter your post title..." value="{{ post.title }}">
+
+            <div id="editor—wrapper-edit">
+                <div id="toolbar-container-edit"><!-- 工具栏 --></div>
+                <div id="editor-container-edit"><!-- 编辑器 --></div>
+            </div>
+
+            <label for="post_category" class="post-form-text">Choose one Category:</label>
+            <select class="form-select add-input camp-side-add-input camp-side-category post-form-input choose-category"
+                    id="post_category" name="post_category">
+                {% for category in categories %}
+                    {% if category["category_id"] == post.category_id %}
+                        <option value="{{ category["category_id"] }}" selected>{{ category["category_name"] }}</option>
+                    {% endif %}
+                    <option value="{{ category["category_id"] }}">{{ category["category_name"] }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="post-area post-area-common" id="post-area">
+
+                {% if identity=="Admin" or identity == "Builder" %}
+                    <div class="post-choice">
+
+                        {% if post.is_top == 0 and post.is_notice == 0 %}
+                            <div class="form-check" style="margin-right: 10px">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal"
+                                       name="status" value="Normal"
+                                       checked>
+                                Normal
+                                <label class="form-check-label" for="Normal"></label>
+                            </div>
+                        {% else %}
+                            <div class="form-check" style="margin-right: 10px">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal"
+                                       name="status" value="Normal">
+                                Normal
+                                <label class="form-check-label" for="Normal"></label>
+                            </div>
+                        {% endif %}
+
+                        {% if post.is_notice == 1 %}
+                            <div class="form-check" style="margin-right: 10px">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice"
+                                       name="status" value="Notice" checked>
+                                Notice
+                                <label class="form-check-label" for="Notice"></label>
+                            </div>
+                        {% else %}
+                            <div class="form-check" style="margin-right: 10px">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice"
+                                       name="status" value="Notice">
+                                Notice
+                                <label class="form-check-label" for="Notice"></label>
+                            </div>
+                        {% endif %}
+
+                        {% if post.is_top == 1 %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                                       name="status" value="Sticky" checked>
+                                Sticky
+                                <label class="form-check-label" for="Sticky"></label>
+                            </div>
+                        {% else %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                                       name="status" value="Sticky">
+                                Sticky
+                                <label class="form-check-label" for="Sticky"></label>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {% if post.is_top == 0 and post.is_notice == 0 %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal" name="status"
+                               value="Normal"
+                               checked hidden>
+                    {% else %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Normal" name="status"
+                               value="Normal"
+                               hidden>
+                    {% endif %}
+
+                    {% if post.is_notice == 1 %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice" name="status"
+                               value="Notice" checked hidden>
+                    {% else %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Notice" name="status"
+                               value="Notice" hidden>
+                    {% endif %}
+
+                    {% if post.is_top == 1 %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                               name="status" value="Sticky" checked hidden>
+                    {% else %}
+                        <input type="radio" class="form-check-input add-input post-choice-radio" id="Sticky"
+                               name="status" value="Sticky" hidden>
+                    {% endif %}
+
+                {% endif %}
+
+                <input id="post_camp_id" value="{{ camp["camp_id"] }}" hidden>
+                <button class="login-nav-btn post-area-btn" type="button" id="edit_btn">Edit</button>
+            </div>
+        </form>
+    </div>
+</div>

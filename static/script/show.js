@@ -119,3 +119,8 @@ function delete_comment(comment_id){
         }
     })
 }
+
+function edit_post(post_id, camp_id){
+    // access the url
+    window.location.href = "/camp/" + camp_id.toString() + "/" + post_id.toString() + "/edit";
+}

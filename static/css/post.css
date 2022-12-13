@@ -20,11 +20,25 @@
     margin-bottom: 20px;
 }
 
+#editor—wrapper-edit {
+    border: 1px solid #886be4;
+    z-index: 100; /* 按需定义 */
+    margin-bottom: 20px;
+}
+
 #toolbar-container {
     border-bottom: 1px solid #886be4;
 }
 
+#toolbar-container-edit {
+    border-bottom: 1px solid #886be4;
+}
+
 #editor-container {
+    height: 500px;
+}
+
+#editor-container-edit {
     height: 500px;
 }
 

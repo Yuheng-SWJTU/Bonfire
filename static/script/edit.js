@@ -31,22 +31,15 @@ window.onload = function () {
         onSuccess(file, res) {
             layer.msg("Image uploaded successfully!");
         },
-
-        // // 单个文件上传失败
-        // onFailed(file, res) {
-        //     layer.msg(res);
-        // },
-        //
-        // // 上传错误，或者触发 timeout 超时
-        // onError(file, err, res) {
-        //     layer.msg(res);
-        // },
-
     }
 
+    // get content from id="edit_content"
+    var content = document.getElementById("edit_content").value;
+    console.log(content);
+
     editor = createEditor({
-        selector: '#editor-container',
-        html: '<p><br></p>',
+        selector: '#editor-container-edit',
+        html: content,
         config: editorConfig,
         mode: 'simple', // or 'simple'
     })
@@ -55,13 +48,13 @@ window.onload = function () {
 
     const toolbar = createToolbar({
         editor,
-        selector: '#toolbar-container',
+        selector: '#toolbar-container-edit',
         config: toolbarConfig,
         mode: 'simple', // or 'simple'
     })
 }
 
-function post() {
+function edit() {
     // get the title
     var title = document.getElementById("post_title").value;
     // get the category id from the select
@@ -74,9 +67,10 @@ function post() {
     var is_Notice = document.getElementById("Notice").checked;
     var is_Top = document.getElementById("Sticky").checked;
     var camp_id = document.getElementById("post_camp_id").value;
+    var edit_id = document.getElementById("edit_id").value;
     // using ajax to send the information
     $.ajax({
-        url: "/camp/make_post",
+        url: "/camp/edit_post",
         method: "POST",
         data: {
             "title": title,
@@ -84,12 +78,13 @@ function post() {
             "content": content,
             "description": description,
             "is_notice": is_Notice,
-            "is_top": is_Top
+            "is_top": is_Top,
+            "post_id": edit_id,
         },
         success: function (res) {
             var code = res['code'];
             if (code === 200) {
-                layer.msg("You have successfully posted a new post!");
+                layer.msg("You have successfully edit this post!");
                 // wait for 1 second and reload the page
                 setTimeout(function () {
                     window.location.href = "/camp/" + camp_id.toString();
@@ -129,8 +124,8 @@ function leave_camp() {
 
 // using jquery to get the click button
 $(function () {
-    $("#post_btn").on("click", function (event) {
-        post();
+    $("#edit_btn").on("click", function (event) {
+        edit();
     })
     $("#leave-camp").on("click", function (event) {
         leave_camp();
