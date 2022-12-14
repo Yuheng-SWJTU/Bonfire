@@ -1,11 +1,11 @@
-from flask import Flask, g, session, render_template
+from flask import Flask, g, session, render_template, current_app
 from blueprints import user_bp, index_bp, camp_bp
 import config
 from flask_migrate import Migrate
 from extensions import db, mail, api
 from models import UserModel
-
-# from flask_cors import CORS
+from controller import get_user_ip
+from config import init_log
 
 app = Flask(__name__)
 # CORS(app, supports_credentials=True)
@@ -18,6 +18,8 @@ api.init_app(app)
 app.register_blueprint(user_bp)
 app.register_blueprint(index_bp)
 app.register_blueprint(camp_bp)
+
+init_log("INFO")
 
 
 @app.errorhandler(404)

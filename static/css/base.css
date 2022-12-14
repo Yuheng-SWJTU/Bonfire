@@ -74,6 +74,7 @@ input {
 .nav-bar{
     box-shadow: 1px 1px 3px rgb(0 0 0 / 30%);
     backdrop-filter: saturate(180%) blur(20px)!important;
+    -webkit-backdrop-filter: saturate(180%) blur(20px)!important;
     z-index: 99!important;
 }
 

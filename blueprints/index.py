@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
+from flask import Blueprint, render_template, request, redirect, flash, g, session, jsonify, Response, current_app
 from flask_mail import Message
 from models import CampModel, CampUserModel
 from flask_restful import Resource, Api
 import json
 from .form import BuildCampForm
 from extensions import db, mail
-from controller import get_all_camp_builder, get_all_camp_join
+from controller import get_all_camp_builder, get_all_camp_join, get_user_ip
 from decoration import login_required
 from sqlalchemy import or_
 
@@ -89,7 +89,7 @@ class BuildCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 db.session.rollback()
             # create camp_user
             camp_user = CampUserModel(camp_id=camp.id, user_id=g.user.id, identity="Builder")
@@ -98,9 +98,10 @@ class BuildCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 db.session.rollback()
             # redirect to the camp page
+            current_app.logger.info("{}[{}] build a camp: {}".format(session.get("user_name"), get_user_ip(), camp_name))
             return redirect("/camp/" + str(camp.id) + "/manage")
         else:
             # redirect to camp page
@@ -126,8 +127,10 @@ class JoinCamp(Resource):
             db.session.commit()
         except Exception as e:
             print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
         users_num = CampUserModel.query.filter_by(camp_id=camp_id).count()
+        current_app.logger.info("{}[{}] join a camp: {}".format(session.get("user_name"), get_user_ip(), camp_id))
         return jsonify({"code": 200, "message": "Join camp successfully.", "users_num": users_num, "camp_id": camp_id})
 
 

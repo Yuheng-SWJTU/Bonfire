@@ -9,7 +9,7 @@
 #     return s.dumps({'user_id': user_id})
 import datetime
 
-from flask import session
+from flask import session, request
 from flask_mail import Message
 from sqlalchemy import or_, extract
 from datetime import timezone, timedelta
@@ -142,3 +142,11 @@ def send_comment_notification(post_author, post, content):
                        "Thanks for using Bonfire!\n\n"
                        "Bonfire Team")
     mail.send(msg)
+
+
+def get_user_ip():
+    # get user ip
+    ip = request.remote_addr
+    # save user ip in session
+    session["user_ip"] = ip
+    return ip

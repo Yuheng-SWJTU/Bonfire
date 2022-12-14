@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
+from flask import Blueprint, render_template, request, redirect, session, jsonify, Response, current_app
 from flask_restful import Resource, Api
 import json
 
@@ -15,7 +15,7 @@ from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
-    save_all_posts_in_dict, send_comment_notification
+    save_all_posts_in_dict, send_comment_notification, get_user_ip
 
 from decoration import login_required, check_category
 
@@ -130,12 +130,17 @@ class AddCategory(Resource):
                     db.session.commit()
                 except Exception as e:
                     print(e)
+                    current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                     db.session.rollback()
                     return jsonify({"code": 400, "message": "Add category failed!"})
+                current_app.logger.info("{}[{}] add category {} in camp {}".format(session.get("user_name"),
+                                                                                  get_user_ip(), category_name, camp_id))
                 return jsonify({"code": 200})
             else:
+                current_app.logger.warning("{}[{}] add category failed".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "Please check your input!"})
         else:
+            current_app.logger.warning("{}[{}] add category failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
@@ -173,9 +178,12 @@ class EditCategory(Resource):
                 db.session.commit()
             except Exception as e:
                 print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return redirect("/camp/" + str(camp_id))
+            current_app.logger.info("{}[{}] edit category {} in camp {}".format(session.get("user_name"), get_user_ip(), category_name, camp_id))
             return redirect("/camp/" + str(camp_id))
         else:
+            current_app.logger.warning("{}[{}] edit category failed".format(session.get("user_name"), get_user_ip()))
             return redirect("/camp/" + str(camp_id))
 
 
@@ -204,10 +212,12 @@ class DeleteCategory(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Delete category failed!"})
+            current_app.logger.info("{}[{}] delete category {} in camp {}".format(session.get("user_name"), get_user_ip(), category.name, camp_id))
             return jsonify({"code": 200})
         else:
+            current_app.logger.warning("{}[{}] delete category failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
@@ -235,10 +245,11 @@ class LeaveCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Leave camp failed!"})
             # clear the camp_id in session
             session["camp_id"] = None
+            current_app.logger.info("{}[{}] leave camp {}".format(session.get("user_name"), get_user_ip(), camp_id))
             return jsonify({"code": 200})
 
 
@@ -332,27 +343,40 @@ class AddAdmin(Resource):
             new_admin = UserModel.query.filter_by(username=new_admin_name).first()
             # if the user is not exist
             if not new_admin:
+                current_app.logger.warning("{}[{}] add admin failed, user {} is not exist".format(
+                                        session.get("user_name"), get_user_ip(), new_admin_name))
                 return jsonify({"code": 400, "message": "The user is not exist!"})
             # get the camp_user model of the new admin
             new_admin_camp_user = CampUserModel.query.filter_by(user_id=new_admin.id, camp_id=camp_id).first()
             # check if the user is not in this camp
             if not new_admin_camp_user:
+                current_app.logger.warning("{}[{}] add admin failed, user {} is not in this camp".format(
+                                        session.get("user_name"), get_user_ip(), new_admin_name))
                 return jsonify({"code": 400, "message": "This user is not in this camp!"})
             # check if the new admin is already an admin
             elif new_admin_camp_user.identity == "Admin":
+                current_app.logger.warning("{}[{}] add admin failed, user {} is already an admin".format(
+                                        session.get("user_name"), get_user_ip(), new_admin_name))
                 return jsonify({"code": 400, "message": "This user is already an admin!"})
             # check if the new admin is the builder
             elif new_admin_camp_user.identity == "Builder":
+                current_app.logger.warning("{}[{}] add admin failed, user {} is the builder".format(
+                                        session.get("user_name"), get_user_ip(), new_admin_name))
                 return jsonify({"code": 400, "message": "You are the builder of this camp!"})
             else:
                 new_admin_camp_user.identity = "Admin"
                 try:
                     db.session.commit()
                 except Exception as e:
-                    print(e)
+                    current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                     return jsonify({"code": 400, "message": "Add admin failed!"})
+                current_app.logger.info("{}[{}] add {} as admin of camp {}".format(session.get("user_name"), get_user_ip(),
+                                                                                  new_admin_name, camp_id))
                 return jsonify({"code": 200})
         else:
+            current_app.logger.info("{}[{}] try to add admin of camp {} without permission".format(session.get("user_name"),
+                                                                                                  get_user_ip(),
+                                                                                                  camp_id))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
@@ -377,21 +401,30 @@ class RemoveAdmin(Resource):
             admin = UserModel.query.filter_by(id=admin_id).first()
             # if the user is not exist
             if not admin:
+                current_app.logger.warning("{}[{}] remove admin failed, user {} is not exist".format(
+                                        session.get("user_name"), get_user_ip(), admin_id))
                 return jsonify({"code": 400, "message": "The user is not exist!"})
             # get the camp_user model of the new admin
             delete_admin_camp_user = CampUserModel.query.filter_by(user_id=admin.id, camp_id=camp_id).first()
             # check if the user is not in this camp
             if not delete_admin_camp_user:
+                current_app.logger.warning("{}[{}] remove admin failed, user {} is not in this camp".format(
+                                        session.get("user_name"), get_user_ip(), admin_id))
                 return jsonify({"code": 400, "message": "This user is not in this camp!"})
             # change the identity of the admin
             delete_admin_camp_user.identity = "Member"
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Remove admin failed!"})
+            current_app.logger.info("{}[{}] remove {} as admin of camp {}".format(session.get("user_name"), get_user_ip(),
+                                                                                 admin.username, camp_id))
             return jsonify({"code": 200})
         else:
+            current_app.logger.info("{}[{}] try to remove admin of camp {} without permission".format(session.get("user_name"),
+                                                                                                     get_user_ip(),
+                                                                                                     camp_id))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
@@ -404,9 +437,13 @@ class UploadBackground(Resource):
         if file:
             # check the file format
             if file.filename.split(".")[-1] not in ["jpg", "png", "jpeg"]:
+                current_app.logger.warning("{}[{}] upload background failed, file format error".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The format of the file is wrong! "})
             # check the file size
             if file.content_length > 1024 * 1024 * 2:
+                current_app.logger.warning("{}[{}] upload background failed, file size error".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The size of the file is too big! "})
 
             # before save the file, check if the camp has a background
@@ -426,8 +463,10 @@ class UploadBackground(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Upload background failed!"})
+            current_app.logger.info("{}[{}] upload background of camp {}".format(session.get("user_name"), get_user_ip(),
+                                                                                 session.get("camp_id")))
             return jsonify({"code": 0})
         else:
             return jsonify({"code": 400, "message": "Please deliver your background image first! "})
@@ -456,22 +495,36 @@ class EditCamp(Resource):
             camp_description = request.form.get("camp_description")
             # check if the camp name is empty
             if not camp_name:
+                current_app.logger.warning("{}[{}] edit camp failed, camp name is empty".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The camp name can't be empty!"})
             # check if the camp description is empty
             if not camp_description:
+                current_app.logger.warning("{}[{}] edit camp failed, camp description is empty".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The camp description can't be empty!"})
             # check the length of the camp name
             if len(camp_name) > 20:
+                current_app.logger.warning("{}[{}] edit camp failed, camp name is too long".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the camp name is too long!"})
             if len(camp_name) < 3:
+                current_app.logger.warning("{}[{}] edit camp failed, camp name is too short".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the camp name is too short!"})
             # check the length of the camp description
             if len(camp_description) > 100:
+                current_app.logger.warning("{}[{}] edit camp failed, camp description is too long".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the camp description is too long!"})
             if len(camp_description) < 3:
+                current_app.logger.warning("{}[{}] edit camp failed, camp description is too short".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the camp description is too short!"})
             # check if the camp name is already exist
             if CampModel.query.filter_by(name=camp_name).first() and camp.name != camp_name:
+                current_app.logger.warning("{}[{}] edit camp failed, camp name is already exist".format(
+                                        session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The camp name is already exist!"})
             # update the camp model
             camp.name = camp_name
@@ -479,8 +532,9 @@ class EditCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Edit camp failed!"})
+            current_app.logger.info("{}[{}] edit camp {}".format(session.get("user_name"), get_user_ip(), camp_id))
             return jsonify({"code": 200})
         else:
             return jsonify({"code": 400, "message": "You don't have the permission!"})
@@ -515,7 +569,7 @@ class DismissCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Dismiss camp failed!"})
 
             # delete the data in the CampModel
@@ -524,11 +578,14 @@ class DismissCamp(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
+                current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Dismiss camp failed!"})
 
+            current_app.logger.info("{}[{}] dismiss camp {}".format(session.get("user_name"), get_user_ip(), camp_id))
             return jsonify({"code": 200})
         else:
+            current_app.logger.warning("{}[{}] dismiss camp failed, no permission".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
 
 
@@ -607,17 +664,27 @@ class MakePost(Resource):
 
         # check if the post title is empty
         if not post_title:
+            current_app.logger.warning("{}[{}] make post failed, post title is empty".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The post title can't be empty!"})
         # check if the post content is empty
         if not post_content:
+            current_app.logger.warning("{}[{}] make post failed, post content is empty".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The post content can't be empty!"})
         # check the length of the post title
         if len(post_title) > 50:
+            current_app.logger.warning("{}[{}] make post failed, post title is too long".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the post title is too long!"})
         if len(post_title) < 3:
+            current_app.logger.warning("{}[{}] make post failed, post title is too short".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the post title is too short!"})
         # check if the category is existed
         if not CategoryModel.query.filter_by(id=category_id).first():
+            current_app.logger.warning("{}[{}] make post failed, category is not existed".format(
+                                        session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The category is not exist!"})
 
         # if the length of the description is over 150, cut it
@@ -638,9 +705,11 @@ class MakePost(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            db.session.rollback()
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             return jsonify({"code": 400, "message": "Make post failed!"})
 
+        current_app.logger.info("{}[{}] make post {}".format(session.get("user_name"), get_user_ip(), post.id))
         return jsonify({"code": 200})
 
 
@@ -845,7 +914,7 @@ class Favorite(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
@@ -855,10 +924,11 @@ class Favorite(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
+        current_app.logger.info("{}[{}] favorite post {}".format(session.get("user_name"), get_user_ip(), post_id))
         return jsonify({"code": 200, "message": "Favorite success.", "status": "success"})
 
 
@@ -883,6 +953,7 @@ class Like(Resource):
             post.like_count -= 1
             db.session.add(post)
             db.session.commit()
+            current_app.logger.info("{}[{}] cancel like post {}".format(session.get("user_name"), get_user_ip(), post_id))
             # return the like number
             return jsonify({"code": 200, "message": "Cancel like", "status": "cancel",
                             "like_count": post.like_count})
@@ -895,7 +966,7 @@ class Like(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
@@ -905,10 +976,11 @@ class Like(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
+        current_app.logger.info("{}[{}] like post {}".format(session.get("user_name"), get_user_ip(), post_id))
         return jsonify({"code": 200, "message": "Like success.", "status": "success",
                         "like_count": post.like_count})
 
@@ -930,10 +1002,11 @@ class DeletePost(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
+        current_app.logger.info("{}[{}] delete post {}".format(session.get("user_name"), get_user_ip(), post_id))
         return jsonify({"code": 200, "message": "Delete success."})
 
 
@@ -968,7 +1041,7 @@ class Comment(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
@@ -981,10 +1054,11 @@ class Comment(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
+        current_app.logger.info("{}[{}] comment post {}".format(session.get("user_name"), get_user_ip(), post_id))
         return jsonify({"code": 200, "message": "Comment success."})
 
 
@@ -1006,7 +1080,7 @@ class DeleteComment(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
@@ -1016,10 +1090,11 @@ class DeleteComment(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             db.session.rollback()
             return jsonify({"code": 500, "message": "Server error."})
 
+        current_app.logger.info("{}[{}] delete comment {}".format(session.get("user_name"), get_user_ip(), comment_id))
         return jsonify({"code": 200, "message": "Delete success."})
 
 
@@ -1032,12 +1107,15 @@ class UploadImage(Resource):
         # get the image from wangEditor
         image = request.files.get("wangeditor-uploaded-image")
         if not image:
+            current_app.logger.error("{}[{}] upload image failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"errno": 400, "message": "Image cannot be empty."})
 
         # check the size of the image
         if image.mimetype not in ["image/jpeg", "image/png", "image/gif", "image/jpg"]:
+            current_app.logger.error("{}[{}] upload image failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"errno": 400, "message": "Image format error."})
         if image.content_length > 1024 * 1024 * 2:
+            current_app.logger.error("{}[{}] upload image failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"errno": 400, "message": "Image size cannot be more than 2M."})
         # check the image format
         # # save the image
@@ -1045,6 +1123,7 @@ class UploadImage(Resource):
         image_name = random_name + "." + image.filename.split(".")[-1]
         image.save(os.path.join(POST_UPLOAD_FOLDER, image_name))
 
+        current_app.logger.info("{}[{}] upload image {}".format(session.get("user_name"), get_user_ip(), image_name))
         return jsonify({"errno": 0, "data": {
             "url": "/static/upload/posts_images/" + image_name,
             "alt": image_name
@@ -1099,6 +1178,7 @@ class EditPost(Resource):
 
             camp_builders = get_all_camp_builder()
             camp_joins = get_all_camp_join()
+            current_app.logger.info("{}[{}] edit post {}".format(session.get("user_name"), get_user_ip(), post_id))
             return render_template("edit.html", camp=camp_dict, categories=categories_list, identity=identity,
                                    camp_builders=camp_builders, camp_joins=camp_joins, page_status="eidt", post=post)
         else:
@@ -1132,17 +1212,22 @@ class EditPosts(Resource):
 
         # check if the post title is empty
         if not post_title:
+            current_app.logger.error("{}[{}] edit post failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The post title can't be empty!"})
         # check if the post content is empty
         if not post_content:
+            current_app.logger.error("{}[{}] edit post failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The post content can't be empty!"})
         # check the length of the post title
         if len(post_title) > 50:
+            current_app.logger.error("{}[{}] edit post failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the post title is too long!"})
         if len(post_title) < 3:
+            current_app.logger.error("{}[{}] edit post failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the post title is too short!"})
         # check if the category is existed
         if not CategoryModel.query.filter_by(id=category_id).first():
+            current_app.logger.error("{}[{}] edit post failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The category is not exist!"})
 
         # if the length of the description is over 150, cut it
@@ -1161,9 +1246,10 @@ class EditPosts(Resource):
         try:
             db.session.commit()
         except Exception as e:
-            print(e)
+            current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
             return jsonify({"code": 400, "message": "Make post failed!"})
 
+        current_app.logger.info("{}[{}] edit post {}".format(session.get("user_name"), get_user_ip(), post_id))
         return jsonify({"code": 200})
 
 

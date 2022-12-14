@@ -6,9 +6,9 @@ from datetime import datetime
 from flask_restful import Resource, Api
 from werkzeug.utils import secure_filename
 
-from controller import handle_error_string, get_all_camp_builder, get_all_camp_join
+from controller import handle_error_string, get_all_camp_builder, get_all_camp_join, get_user_ip
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, g, session, jsonify, Response, current_app
 from flask_mail import Message
 from models import UserModel, EmailCaptchaModel, ChangePasswordCaptchaModel, FavoritePostModel, PostModel, LikePostModel
 from extensions import db, mail
@@ -35,6 +35,7 @@ def output_html(data, code, headers=None):
 
 class Login(Resource):
     def get(self):
+        current_app.logger.info("IP: {} is trying to log in.".format(get_user_ip()))
         return render_template("login.html")
 
     def post(self):
@@ -50,23 +51,27 @@ class Login(Resource):
                 # save in session
                 session['user_id'] = user.id
                 session['sort'] = "popularity"
+                session["user_name"] = user.username
                 # remember me
                 rememberme = request.form.getlist("remember")
                 if "rememberme" in rememberme:
                     session['remember'] = "true"
                 else:
                     session['remember'] = "false"
-                print("text")
+                current_app.logger.info("IP: {}, USERNAME: {} logged in.".format(get_user_ip(), user.username))
                 return redirect("/")
             else:
+                current_app.logger.info("IP: {} failed to log in.".format(get_user_ip()))
                 return render_template("login.html", error="Email or password error!")
         else:
+            current_app.logger.info("IP: {} failed to log in.".format(get_user_ip()))
             flash("The format of email or password is wrong! ")
             return redirect(url_for("user.login"))
 
 
 class Register(Resource):
     def get(self):
+        current_app.logger.info("IP: {} is trying to register.".format(get_user_ip()))
         return render_template("register.html")
 
     def post(self):
@@ -88,12 +93,15 @@ class Register(Resource):
             except Exception as e:
                 db.session.rollback()
                 print(e)
+                current_app.logger.info("IP: {} failed to register.".format(get_user_ip()))
                 return redirect(url_for("user.register"))
+            current_app.logger.info("IP: {}, USERNAME: {} registered.".format(get_user_ip(), username))
             return redirect(url_for("user.login"))
         else:
             # get the error message form and handle it from json to string
             flash(handle_error_string(form.errors))
             # flash(form.errors)
+            current_app.logger.info("IP: {} failed to register.".format(get_user_ip()))
             return redirect(url_for("user.register"))
 
 
@@ -137,8 +145,10 @@ class GetCaptcha(Resource):
                 captcha_model = EmailCaptchaModel(email=email, captcha=captcha)
                 db.session.add(captcha_model)
                 db.session.commit()
+            current_app.logger.info("IP: {} gets a captcha.".format(get_user_ip()))
             return jsonify({"code": 200})
         else:
+            current_app.logger.info("IP: {} failed to get a captcha.".format(get_user_ip()))
             return jsonify({"code": 400, "message": "Please deliver your e-mail first! "})
 
 
@@ -173,13 +183,16 @@ class EditName(Resource):
         if new_name:
             # check the validation of the name
             if len(new_name) > 20:
+                current_app.logger.info("{}[{}] failed to edit name, because the length of the name is too long.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the name is too long! "})
             if len(new_name) < 4:
+                current_app.logger.info("{}[{}] failed to edit name, because the length of the name is too short.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the name is too short! "})
 
             # check the name is unique
             user = UserModel.query.filter_by(username=new_name).first()
             if user:
+                current_app.logger.info("{}[{}] failed to edit name, because the name is already exist.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The name is already taken! "})
 
             # update the name in the database
@@ -192,8 +205,10 @@ class EditName(Resource):
             except Exception as e:
                 db.session.rollback()
                 raise e
+            current_app.logger.info("{}[{}] edited name.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 200})
         else:
+            current_app.logger.info("{}[{}] failed to edit name, because the name is empty.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "Please deliver your new name first! "})
 
 
@@ -283,6 +298,7 @@ class UploadAvatar(Resource):
             except Exception as e:
                 db.session.rollback()
                 raise e
+            current_app.logger.info("{}[{}] uploaded avatar.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 0})
         else:
             return jsonify({"code": 400, "message": "Please deliver your avatar first! "})
@@ -344,6 +360,7 @@ class GetChangePasswordCaptcha(Resource):
                                                            creat_time=datetime.now())
                 db.session.add(captcha_model)
                 db.session.commit()
+            current_app.logger.info("{}[{}] requested change password captcha.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 200})
         else:
             return jsonify({"code": 400, "message": "We cannot detect your email address! "})
@@ -382,9 +399,12 @@ class EditPassword(Resource):
                 except Exception as e:
                     db.session.rollback()
                     raise e
+                current_app.logger.info("{}[{}] changed password.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 200, "message": "You have changed your password successfully! "})
             else:
                 return jsonify({"code": 400, "message": "The captcha is wrong! "})
+        else:
+            return jsonify({"code": 400, "message": "The captcha is wrong! "})
 
 
 class DeleteAccount(Resource):
@@ -413,6 +433,7 @@ class DeleteAccount(Resource):
             db.session.rollback()
             raise e
         session.clear()
+        current_app.logger.warning("{}[{}] deleted account.".format(session.get("user_name"), get_user_ip()))
         return jsonify({"code": 200, "message": "You have deleted your account successfully! "})
 
 
@@ -422,6 +443,7 @@ class Logout(Resource):
     def get(self):
         # delete the session
         session.clear()
+        current_app.logger.info("{}[{}] logged out.".format(session.get("user_name"), get_user_ip()))
         return redirect(url_for("user.login"))
 
 
