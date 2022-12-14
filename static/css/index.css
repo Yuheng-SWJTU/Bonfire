@@ -127,3 +127,34 @@
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+.cookie{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 50px;
+    background-color: #efefef;
+    border-top-left-radius: 15px;
+    box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+}
+
+.cookie-info{
+    display: flex;
+}
+
+.cookie-btn{
+    padding: 5px 20px;
+    margin-right: 20px;
+    background-color: #67a060;
+    color: white;
+    border-radius: 10px;
+    transition: ease 0.3s;
+}
+
+.cookie-btn:hover{
+    background-color: #60925a;
+}
