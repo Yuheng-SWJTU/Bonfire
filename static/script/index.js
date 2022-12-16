@@ -29,6 +29,8 @@ window.onload = function () {
         // hide the cookie alert with a fade out
         document.getElementById('cookie').style.display = 'none';
     }
+    var random_string = Math.random().toString(36).substr(2, 100);
+    localStorage.setItem('token', random_string);
 }
 
 function got_it(){

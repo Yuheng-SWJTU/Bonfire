@@ -38,6 +38,12 @@ function checkRegisterForm(){
 
 // wait for the web page to load all elements
 $(function () {
-        checkRegisterForm();
+    checkRegisterForm();
+    // if remember me is checked, set the localStorage
+    if ($('input[name="remember"]:checked').val() === 'rememberme') {
+        console.log("remember me is checked");
+        localStorage.setItem('rememberme', 'true');
+        localStorage.setItem('email', $('#email').val());
+        localStorage.setItem('password', $('#password').val());
     }
-)
+})
