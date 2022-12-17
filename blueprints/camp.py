@@ -119,6 +119,7 @@ class AddCategory(Resource):
             # check whether the category name is exist
             category = CategoryModel.query.filter_by(name=category_name, camp_id=camp_id).first()
             if category:
+                current_app.logger.info("The category name is exist")
                 return jsonify({"code": 400, "message": "This category has been added!"})
             # using form to check the category name and color
             form = AddCategoryForm(request.form)
@@ -129,7 +130,6 @@ class AddCategory(Resource):
                 try:
                     db.session.commit()
                 except Exception as e:
-                    print(e)
                     current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                     db.session.rollback()
                     return jsonify({"code": 400, "message": "Add category failed!"})
@@ -177,7 +177,6 @@ class EditCategory(Resource):
             try:
                 db.session.commit()
             except Exception as e:
-                print(e)
                 current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return redirect("/camp/" + str(camp_id))
             current_app.logger.info("{}[{}] edit category {} in camp {}".format(session.get("user_name"), get_user_ip(), category_name, camp_id))
@@ -215,7 +214,7 @@ class DeleteCategory(Resource):
                 current_app.logger.error("{}[{}] {}".format(session.get("user_name"), get_user_ip(), e))
                 return jsonify({"code": 400, "message": "Delete category failed!"})
             current_app.logger.info("{}[{}] delete category {} in camp {}".format(session.get("user_name"), get_user_ip(), category.name, camp_id))
-            return jsonify({"code": 200})
+            return jsonify({"code": 200, "message": "Delete category successfully!"})
         else:
             current_app.logger.warning("{}[{}] delete category failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "You don't have the permission!"})
@@ -229,6 +228,9 @@ class LeaveCamp(Resource):
         user_id = session.get("user_id")
         # get the camp_id from g
         camp_id = session.get("camp_id")
+        if not camp_id:
+            current_app.logger.warning("{}[{}] leave camp failed".format(session.get("user_name"), get_user_ip()))
+            return jsonify({"code": 400, "message": "You don't have the permission!"})
         if user_id:
             camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
             if camp_user:
@@ -441,7 +443,7 @@ class UploadBackground(Resource):
                                         session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The format of the file is wrong! "})
             # check the file size
-            if file.content_length > 1024 * 1024 * 2:
+            if len(file.read()) > 1024 * 1024 * 2:
                 current_app.logger.warning("{}[{}] upload background failed, file size error".format(
                                         session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The size of the file is too big! "})
@@ -893,6 +895,9 @@ class Favorite(Resource):
         # get the post
         post = PostModel.query.filter_by(id=post_id).first()
 
+        if not post:
+            return jsonify({"code": 400, "message": "The post does not exist."})
+
         # check if the user has already favorite this post
         favorite = FavoritePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
         if favorite:
@@ -904,6 +909,7 @@ class Favorite(Resource):
             db.session.add(post)
             db.session.commit()
             # return the favorite number
+            current_app.logger.info("delete favorite")
             return jsonify({"code": 200, "message": "Cancel favorite", "status": "cancel"})
 
         # save the favorite post information in the database
@@ -942,6 +948,8 @@ class Like(Resource):
         post_id = request.form.get("post_id")
         # get the post
         post = PostModel.query.filter_by(id=post_id).first()
+        if not post:
+            return jsonify({"code": 400, "message": "The post does not exist."})
 
         # check if the user has already like this post
         like = LikePostModel.query.filter_by(user_id=user_id, post_id=post_id).first()
@@ -989,12 +997,12 @@ class DeletePost(Resource):
     method_decorators = [login_required]
 
     def post(self):
-        # get the user id
-        user_id = session.get("user_id")
         # get the post id
         post_id = request.form.get("post_id")
         # get the post
         post = PostModel.query.filter_by(id=post_id).first()
+        if not post:
+            return jsonify({"code": 400, "message": "The post does not exist."})
 
         # change the post 'is_delete' to 1
         post.is_delete = 1
@@ -1028,6 +1036,8 @@ class Comment(Resource):
         # the comment_count of the post + 1
         post = PostModel.query.filter_by(id=post_id).first()
 
+        if not post:
+            return jsonify({"code": 400, "message": "The post does not exist."})
         # who is the post's author
         post_author = UserModel.query.filter_by(id=post.user_id).first()
         if post_author:
@@ -1066,12 +1076,12 @@ class DeleteComment(Resource):
     method_decorators = [login_required]
 
     def post(self):
-        # get the user id
-        user_id = session.get("user_id")
         # get the comment id
         comment_id = request.form.get("comment_id")
         # get the comment
         comment = CommentModel.query.filter_by(id=comment_id).first()
+        if not comment:
+            return jsonify({"code": 400, "message": "The comment does not exist."})
 
         # the comment_count of the post - 1
         post = PostModel.query.filter_by(id=comment.post_id).first()
@@ -1102,8 +1112,6 @@ class UploadImage(Resource):
     method_decorators = [login_required]
 
     def post(self):
-        # get the user id
-        user_id = session.get("user_id")
         # get the image from wangEditor
         image = request.files.get("wangeditor-uploaded-image")
         if not image:
@@ -1114,7 +1122,7 @@ class UploadImage(Resource):
         if image.mimetype not in ["image/jpeg", "image/png", "image/gif", "image/jpg"]:
             current_app.logger.error("{}[{}] upload image failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"errno": 400, "message": "Image format error."})
-        if image.content_length > 1024 * 1024 * 2:
+        if (len(image.read())) > 1024 * 1024 * 2:
             current_app.logger.error("{}[{}] upload image failed".format(session.get("user_name"), get_user_ip()))
             return jsonify({"errno": 400, "message": "Image size cannot be more than 2M."})
         # check the image format

@@ -4,7 +4,7 @@ import wtforms
 from wtforms.validators import length, email
 # import models
 from models import EmailCaptchaModel, UserModel, ChangePasswordCaptchaModel, CampModel, CategoryModel
-from flask import session, g
+from flask import g
 # ///////////////////////////////////////////////////////////////////////////
 
 

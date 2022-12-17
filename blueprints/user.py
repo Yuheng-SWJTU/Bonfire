@@ -146,7 +146,7 @@ class GetCaptcha(Resource):
                 db.session.add(captcha_model)
                 db.session.commit()
             current_app.logger.info("IP: {} gets a captcha.".format(get_user_ip()))
-            return jsonify({"code": 200})
+            return jsonify({"code": 200}, {"message": "Successfully send you email!"})
         else:
             current_app.logger.info("IP: {} failed to get a captcha.".format(get_user_ip()))
             return jsonify({"code": 400, "message": "Please deliver your e-mail first! "})
@@ -170,7 +170,7 @@ class Profile(Resource):
             return render_template("profile.html", user=g.user, birthday=g.user.birthday.strftime("%Y-%m-%d"),
                                    status="profile", camp_builders=camp_builders, camp_joins=camp_joins, latest_post=latest_post)
         except Exception as e:
-            print(e)
+            current_app.logger.info("IP: {} failed to get profile. {}".format(get_user_ip(), e))
             return render_template("profile.html", user=g.user,
                                    status="profile", camp_builders=camp_builders, camp_joins=camp_joins, latest_post=latest_post)
 
@@ -220,9 +220,13 @@ class EditDescription(Resource):
         if new_description:
             # check the validation of the description
             if len(new_description) > 200:
+                current_app.logger.info("{}[{}] failed to edit description, because the length of the description is "
+                                        "too long.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the description is too long! "})
 
             if len(new_description) < 4:
+                current_app.logger.info("{}[{}] failed to edit description, because the length of the description is "
+                                        "too short.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The length of the description is too short! "})
 
             # update the description in the database
@@ -233,10 +237,13 @@ class EditDescription(Resource):
             try:
                 db.session.commit()
             except Exception as e:
+                current_app.logger.info("{}[{}] failed to edit description, because the database error.".format(session.get("user_name"), get_user_ip()))
                 db.session.rollback()
                 raise e
+            current_app.logger.info("{}[{}] edited description.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 200})
         else:
+            current_app.logger.info("{}[{}] failed to edit description, because the description is empty.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "Please deliver your new description first! "})
 
 
@@ -258,8 +265,10 @@ class EditProfile(Resource):
         try:
             db.session.commit()
         except Exception as e:
+            current_app.logger.info("{}[{}] failed to edit profile, because the database error.".format(session.get("user_name"), get_user_ip()))
             db.session.rollback()
             raise e
+        current_app.logger.info("{}[{}] edited profile.".format(session.get("user_name"), get_user_ip()))
         return redirect(url_for("user.profile"))
 
 
@@ -272,9 +281,12 @@ class UploadAvatar(Resource):
         if file:
             # check the file format
             if file.filename.split(".")[-1] not in ["jpg", "png", "jpeg"]:
+                current_app.logger.info("{}[{}] failed to upload avatar, because the file format is not supported.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The format of the file is wrong! "})
             # check the file size
-            if file.content_length > 1024 * 1024 * 2:
+            # print(len(file.read()) / 1024 / 1024)
+            if len(file.read()) > 1024 * 1024 * 2:
+                current_app.logger.info("{}[{}] failed to upload avatar, because the file size is too large.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The size of the file is too big! "})
 
             # before upload the file, delete the old file
@@ -296,11 +308,13 @@ class UploadAvatar(Resource):
             try:
                 db.session.commit()
             except Exception as e:
+                current_app.logger.info("{}[{}] failed to upload avatar, because the database error.".format(session.get("user_name"), get_user_ip()))
                 db.session.rollback()
                 raise e
             current_app.logger.info("{}[{}] uploaded avatar.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 0})
         else:
+            current_app.logger.info("{}[{}] failed to upload avatar, because the file is empty.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "Please deliver your avatar first! "})
 
 
@@ -353,6 +367,7 @@ class GetChangePasswordCaptcha(Resource):
                 try:
                     db.session.commit()
                 except Exception as e:
+                    current_app.logger.info("{}[{}] failed to get change password captcha, because the database error.".format(session.get("user_name"), get_user_ip()))
                     db.session.rollback()
                     raise e
             else:
@@ -363,6 +378,7 @@ class GetChangePasswordCaptcha(Resource):
             current_app.logger.info("{}[{}] requested change password captcha.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 200})
         else:
+            current_app.logger.info("{}[{}] failed to request change password captcha, because the email is empty.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "We cannot detect your email address! "})
 
 
@@ -376,12 +392,15 @@ class EditPassword(Resource):
 
         # check the validation of the password
         if len(password) < 6:
+            current_app.logger.info("{}[{}] failed to change password, because the password is too short.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the password is too short! "})
 
         if len(password) > 20:
+            current_app.logger.info("{}[{}] failed to change password, because the password is too long.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The length of the password is too long! "})
 
         if password != password_con:
+            current_app.logger.info("{}[{}] failed to change password, because the password is not consistent.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The password is not consistent! "})
 
         # Use form validation to check the captcha
@@ -397,13 +416,16 @@ class EditPassword(Resource):
                 try:
                     db.session.commit()
                 except Exception as e:
+                    current_app.logger.info("{}[{}] failed to change password, because the database error.".format(session.get("user_name"), get_user_ip()))
                     db.session.rollback()
                     raise e
                 current_app.logger.info("{}[{}] changed password.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 200, "message": "You have changed your password successfully! "})
             else:
+                current_app.logger.info("{}[{}] failed to change password, because the captcha is wrong.".format(session.get("user_name"), get_user_ip()))
                 return jsonify({"code": 400, "message": "The captcha is wrong! "})
         else:
+            current_app.logger.info("{}[{}] failed to change password, because the captcha is wrong.".format(session.get("user_name"), get_user_ip()))
             return jsonify({"code": 400, "message": "The captcha is wrong! "})
 
 
@@ -430,6 +452,7 @@ class DeleteAccount(Resource):
         try:
             db.session.commit()
         except Exception as e:
+            current_app.logger.info("{}[{}] failed to delete account, because the database error.".format(session.get("user_name"), get_user_ip()))
             db.session.rollback()
             raise e
         session.clear()
@@ -560,8 +583,10 @@ class EmailInform(Resource):
         try:
             db.session.commit()
         except Exception as e:
+            current_app.logger.info("{}[{}] failed to update email inform, because the database error.".format(session.get("user_name"), get_user_ip()))
             db.session.rollback()
             raise e
+        current_app.logger.info("{}[{}] updated email inform.".format(session.get("user_name"), get_user_ip()))
         return jsonify({"code": 200, "message": "You have changed your email inform successfully! "})
 
 
