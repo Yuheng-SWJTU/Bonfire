@@ -7025,3 +7025,16 @@ smtplib.SMTPServerDisconnected: Connection unexpectedly closed
 [2022-12-17 20:49:59,514] [INFO] - IP: 127.0.0.1, USERNAME: zzzh logged in.
 [2022-12-17 20:49:59,517] [INFO] - zzzh[127.0.0.1] failed to upload avatar, because the file format is not supported.
 [2022-12-17 20:49:59,520] [INFO] - None[127.0.0.1] logged out.
+[2022-12-17 21:00:43,187] [INFO] - IP: 127.0.0.1 gets a captcha.
+[2022-12-17 21:00:44,333] [INFO] - IP: 127.0.0.1 gets a captcha.
+[2022-12-17 21:00:44,336] [INFO] - IP: 127.0.0.1 failed to get a captcha.
+[2022-12-17 21:00:44,337] [INFO] - IP: 127.0.0.1 failed to get a captcha.
+[2022-12-17 21:00:45,456] [INFO] - IP: 127.0.0.1 gets a captcha.
+[2022-12-18 00:02:50,662] [INFO] - IP: 127.0.0.1, USERNAME: zzzh logged in.
+[2022-12-18 00:02:50,667] [INFO] - zzzh[127.0.0.1] failed to edit description, because the description is empty.
+[2022-12-18 00:02:50,669] [INFO] - zzzh[127.0.0.1] edited description.
+[2022-12-18 00:02:50,671] [INFO] - None[127.0.0.1] logged out.
+[2022-12-18 00:03:09,550] [INFO] - IP: 127.0.0.1, USERNAME: zzzh logged in.
+[2022-12-18 00:03:09,553] [INFO] - zzzh[127.0.0.1] failed to edit description, because the description is empty.
+[2022-12-18 00:03:09,556] [INFO] - zzzh[127.0.0.1] edited description.
+[2022-12-18 00:03:09,557] [INFO] - None[127.0.0.1] logged out.

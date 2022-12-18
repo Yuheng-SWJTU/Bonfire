@@ -1,27 +1,27 @@
-.box-container{
+.box-container {
     display: flex;
     position: absolute;
-    top:46px;
+    top: 46px;
     width: 100vw;
     margin-top: 40px;
     flex-direction: column;
     align-items: center;
 }
 
-.head-container{
+.head-container {
     position: relative;
     width: 90vw;
     border-radius: 20px;
     margin-bottom: 20px;
 }
 
-.head-pho{
+.head-pho {
     display: inherit;
     width: 100%;
     height: auto;
 }
 
-.head-wrapper{
+.head-wrapper {
     position: absolute;
     top: 0;
     left: 0;
@@ -33,31 +33,31 @@
     justify-content: center;
 }
 
-.item-container{
+.item-container {
     display: grid;
     width: 90vw;
     grid-gap: 16px;
     grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
 }
 
-.item{
+.item {
     display: flex;
     position: relative;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 320px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     margin-bottom: 20px;
     transition: ease 0.3s;
 }
 
-.item:hover{
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+.item:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.item-photo{
+.item-photo {
     display: inherit;
     width: 100%;
     height: 40%;
@@ -65,24 +65,24 @@
     background-size: cover;
 }
 
-.item-content{
+.item-content {
     margin-top: 20px;
     width: 80%;
     height: 45%;
 }
 
-.item-content-title{
+.item-content-title {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-.item-content-des{
-    font-size:14px;
+.item-content-des {
+    font-size: 14px;
 }
 
-.item-info{
-    display:flex;
+.item-info {
+    display: flex;
     position: absolute;
     bottom: 0;
     height: 15%;
@@ -91,23 +91,23 @@
     justify-content: space-between;
 }
 
-.circle{
+.circle {
     display: inline-block;
     width: 10px;
     height: 10px;
     border-radius: 5px;
 }
 
-.item-info-people{
+.item-info-people {
     margin-left: 5px;
     font-size: 10px;
 }
 
-.info-people{
+.info-people {
     display: inline;
 }
 
-.item-info-join{
+.item-info-join {
     padding: 3px 20px;
     background-color: #b6a4e6;
     color: white;
@@ -116,45 +116,81 @@
     cursor: pointer;
 }
 
-.item-info-join:hover{
+.item-info-join:hover {
     color: white;
     background-color: #836cdd;
 }
 
-.container-content-title{
+.container-content-title {
     font-size: 20px;
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 20px;
 }
 
-.cookie{
-    position: fixed;
+@media (max-width: 750px) {
+    .cookie {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 50px;
+        background-color: #efefef;
+        border-top-left-radius: 15px;
+        box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+    }
+
+    .cookie-btn-phone {
+        padding: 5px 20px;
+        margin-right: 20px;
+        background-color: #67a060;
+        color: white;
+        border-radius: 10px;
+        transition: ease 0.3s;
+    }
+
+    .cookie-btn{
+        display: none;
+    }
+}
+
+@media (min-width: 751px) {
+    .cookie {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        bottom: 0;
+        right: 0;
+        width: 70%;
+        height: 50px;
+        background-color: #efefef;
+        border-top-left-radius: 15px;
+        box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+    }
+
+    .cookie-btn {
+        padding: 5px 20px;
+        margin-right: 20px;
+        background-color: #67a060;
+        color: white;
+        border-radius: 10px;
+        transition: ease 0.3s;
+    }
+
+    .cookie-btn-phone{
+        display: none;
+    }
+}
+
+.cookie-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    bottom: 0;
-    right: 0;
-    width: 70%;
-    height: 50px;
-    background-color: #efefef;
-    border-top-left-radius: 15px;
-    box-shadow: 0 0 15px rgb(0 0 0 / 20%);
 }
 
-.cookie-info{
-    display: flex;
-}
-
-.cookie-btn{
-    padding: 5px 20px;
-    margin-right: 20px;
-    background-color: #67a060;
-    color: white;
-    border-radius: 10px;
-    transition: ease 0.3s;
-}
-
-.cookie-btn:hover{
+.cookie-btn:hover {
     background-color: #60925a;
 }
