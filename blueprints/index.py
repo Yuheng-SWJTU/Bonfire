@@ -136,8 +136,10 @@ class SearchCamp(Resource):
             # get the search content
             search_content = request.args.get("index_search")
             # get all camps
-            camps = CampModel.query.filter(or_(CampModel.name.like("%" + search_content + "%"),
-                                                     CampModel.description.like("%" + search_content + "%")))
+            camps = CampModel.query.filter(or_
+                                           (CampModel.name.like("%" + search_content + "%"),
+                                            CampModel.description.like("%" + search_content + "%"))
+                                           )
             # Count the people in each camp
             camp_user = CampUserModel.query.all()
             users_in_camp = {}

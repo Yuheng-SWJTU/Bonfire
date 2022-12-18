@@ -20,7 +20,7 @@
     {#end#}
     <div class="box-container">
         <div class="head-container">
-            <img class="head-pho" src="{{ url_for('static', filename='images/container_pho.png') }}">
+            <img class="head-pho" src="{{ url_for('static', filename='images/container_pho.png') }}" alt="the header of the container, and camps can set their own header.">
             <div class="head-wrapper">
                 <h3 style="margin-bottom: 20px; color: white">Find your interests in <b>Bonfire</b></h3>
                 <form class="d-flex" id="index-search-bar" method="get" action="/searchcamp">
@@ -81,7 +81,7 @@
                 </div>
             {% else %}
                 <div style="text-align: center">
-                    <img src="static/images/nothing.png" alt="nothing" style="width: 25%">
+                    <img src="static/images/nothing.png" alt="nothing found here" style="width: 25%">
                 </div>
             {% endif %}
         </div>

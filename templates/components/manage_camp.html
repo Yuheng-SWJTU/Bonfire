@@ -41,10 +41,12 @@
                         <div class="layui-upload">
                             <div class="layui-upload-list">
                                 {% if identity == "Admin" or  identity == "Builder" %}
-                                    <img class="upload-img" id="re_upload_background"
+                                    <img alt="This is the background of Camp."
+                                         class="upload-img" id="re_upload_background"
                                          src="/static/upload/background/{{ camp["camp_background"] }}">
                                 {% else %}
-                                    <img class="upload-img"
+                                    <img alt="This is the background of Camp"
+                                         class="upload-img"
                                          src="/static/upload/background/{{ camp["camp_background"] }}">
                                 {% endif %}
                                 <p id="re_upload_back_text"></p>
@@ -68,7 +70,8 @@
                         <div class="col">
                             <p class="form-info">Builder</p>
                             <div class="builder">
-                                <img class="layui-nav-img" src="/static/upload/avatar/{{ builder["user_avatar"] }}">
+                                <img alt="This is the avatar of user" class="layui-nav-img"
+                                     src="/static/upload/avatar/{{ builder["user_avatar"] }}">
                                 <p>{{ builder["user_name"] }}</p>
                             </div>
                         </div>
@@ -79,7 +82,8 @@
                                     {% for admin in admins %}
                                         <div class="admin-item"
                                              onclick="delete_admin({{ camp["camp_id"] }}, {{ admin["user_id"] }}, '{{ admin["user_name"] }}')">
-                                            <img class="layui-nav-img"
+                                            <img alt="This is the avatar of user."
+                                                 class="layui-nav-img"
                                                  src="/static/upload/avatar/{{ admin["user_avatar"] }}">
                                             <p>{{ admin["user_name"] }}</p>
                                         </div>
@@ -87,7 +91,8 @@
                                 {% else %}
                                     {% for admin in admins %}
                                         <div class="admin-item-normal">
-                                            <img class="layui-nav-img"
+                                            <img alt="This is the avatar of user"
+                                                 class="layui-nav-img"
                                                  src="/static/upload/avatar/{{ admin["user_avatar"] }}">
                                             <p>{{ admin["user_name"] }}</p>
                                         </div>
@@ -119,7 +124,7 @@
                             onclick="edit_camp({{ camp["camp_id"] }})">Save
                     </button>
                 {% endif %}
-                {% if identity == "Builder"%}
+                {% if identity == "Builder" %}
                     <button type="button" class="manage-dismiss-btn"
                             onclick="dismiss_camp({{ camp["camp_id"] }})">Dismiss
                     </button>

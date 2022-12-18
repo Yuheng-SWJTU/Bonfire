@@ -1,4 +1,3 @@
-//prompt层
 function edit_name() {
     layer.prompt({title: 'Edit your username', formType: 0, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
@@ -22,7 +21,6 @@ function edit_name() {
     });
 }
 
-//prompt层
 function edit_description() {
     layer.prompt({title: 'Edit your description', formType: 2, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
