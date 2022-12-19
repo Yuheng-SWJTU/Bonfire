@@ -1,3 +1,6 @@
+/*
+body setting
+ */
 #main-body {
     display: flex;
     padding-left: 0;
@@ -74,6 +77,9 @@
     }
 }
 
+/*
+Set camp name
+ */
 .camp-name {
     font-size: 20px;
     font-weight: bold;
@@ -113,6 +119,9 @@
     margin-right: 10px;
 }
 
+/*
+Set camp info
+ */
 .info-people {
     display: inline;
 }
@@ -134,6 +143,9 @@
     padding-right: 10px;
 }
 
+/*
+Set camp info
+ */
 #search-btn {
     background-color: #886be4 !important;
     display: flex;
@@ -187,6 +199,9 @@
     margin-bottom: 7px;
 }
 
+/*
+Category list
+ */
 #category_list {
     font-weight: bold;
     font-size: 14px;
@@ -233,6 +248,9 @@
     margin-bottom: 0 !important;
 }
 
+/*
+Set list
+ */
 .list-items {
     display: flex;
     white-space: nowrap;
@@ -292,6 +310,9 @@
     visibility: visible;
 }
 
+/*
+delete button
+ */
 #delete-btn {
     visibility: hidden;
     right: 40px;
@@ -342,6 +363,9 @@
     font-size: 20px;
 }
 
+/*
+notice part
+ */
 .notice {
     white-space: nowrap;
     align-items: center;
@@ -398,6 +422,9 @@
     cursor: pointer;
 }
 
+/*
+task list
+ */
 .task-title {
     font-weight: bold;
 }
@@ -414,6 +441,9 @@
     background-color: #eeeeee;
 }
 
+/*
+task list
+ */
 .post-title {
     display: flex;
     align-items: center;
@@ -463,6 +493,9 @@
     }
 }
 
+/*
+like button
+ */
 .like {
     display: flex;
     background-color: #b5a6ec;
@@ -475,6 +508,9 @@
     font-size: 14px;
 }
 
+/*
+comment button
+ */
 .comment {
     display: flex;
     color: #828282;
@@ -482,6 +518,9 @@
     align-items: center;
 }
 
+/*
+favorite button
+ */
 .favorite {
     display: flex;
     color: #828282;
@@ -489,6 +528,9 @@
     align-items: center;
 }
 
+/*
+comment list
+ */
 .add-information {
     display: inline-block;
     font-size: 14px;
@@ -500,6 +542,9 @@
     margin-bottom: 10px;
 }
 
+/*
+comment list
+ */
 .list-item-link {
     /*background-color: #0a53be;*/
     position: absolute;

@@ -1,3 +1,6 @@
+/*
+Base setting
+ */
 html{
     scroll-behavior:smooth;
 }
@@ -66,6 +69,9 @@ input {
     outline: none;
 }
 
+/*
+Header
+ */
 .navi-logo{
     height: 46px;
     margin-left: 10px;
@@ -125,6 +131,9 @@ input {
     box-shadow: none;
 }
 
+/*
+Footer
+ */
 .form-info{
     font-size: 14px;
     color: #a4a4a4;
@@ -152,6 +161,9 @@ input {
     background-color: gray;
 }
 
+/*
+Button
+ */
 .shrink-btn {
     margin-left: 20px;
     background-color: #ffffff;

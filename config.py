@@ -1,9 +1,6 @@
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
-from controller import get_user_ip
-from models import UserModel
-from flask import session
 
 # link to the database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///bonfire.sqlite3'

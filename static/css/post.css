@@ -1,3 +1,6 @@
+/*
+set post title area
+ */
 .post-page-title {
     font-weight: bold;
     margin-top: 40px;
@@ -10,6 +13,9 @@
     margin-bottom: 5px;
 }
 
+/*
+set post form
+ */
 .post-form-input:focus {
     box-shadow: none;
 }
@@ -83,6 +89,9 @@
     border-right-color: transparent;
 }
 
+/*
+set category
+ */
 .choose-category{
     margin-bottom: 130px;
 }

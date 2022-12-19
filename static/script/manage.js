@@ -94,6 +94,7 @@ function delete_admin(camp_id, admin_id, admin_name) {
 }
 
 function edit_camp(camp_id){
+    // using ajax to send the request
     $.ajax({
         url: "/camp/edit_camp",
         method: "POST",
@@ -118,6 +119,7 @@ function edit_camp(camp_id){
 }
 
 function dismiss_camp(camp_id) {
+    // using ajax to send the request
     layer.confirm('You are going to dismiss the camp<br><br>All resources in the camp will be deleted<br><br>This operation cannot be restored!', {
         title: "WARNING",
         btn: ['Dismiss', 'Cancel'] //按钮
@@ -147,6 +149,7 @@ function dismiss_camp(camp_id) {
 }
 
 function checkEditCampForm() {
+    // check the camp name
     jQuery.validator.addMethod("itemPass", function (value, element) {
         var reg = /^\w+$/;
         return this.optional(element) || (reg.test(value));

@@ -15,6 +15,9 @@
     }
 }
 
+/*
+set manage title
+ */
 .manage-title {
     font-size: 24px;
     font-weight: bold;
@@ -22,6 +25,9 @@
     margin-bottom: 30px;
 }
 
+/*
+
+ */
 @media (max-width: 750px) {
     .manage-input {
         box-shadow: none !important;
@@ -63,6 +69,9 @@
     }
 }
 
+/*
+set manage input
+ */
 @media (min-width: 751px) {
     .manage-input {
         box-shadow: none !important;
@@ -104,6 +113,9 @@
     }
 }
 
+/*
+set manage button
+ */
 .builder {
     display: flex;
     border-style: solid;
@@ -131,6 +143,9 @@
     background-color: white;
 }
 
+/*
+set manage button
+ */
 .no_admin{
     display: flex;
     border-style: solid;

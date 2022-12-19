@@ -1,4 +1,5 @@
 function edit_name() {
+    // Prompt the user to enter the new name
     layer.prompt({title: 'Edit your username', formType: 0, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
         $.ajax({
@@ -22,6 +23,7 @@ function edit_name() {
 }
 
 function edit_description() {
+    // Prompt the user to enter the new name
     layer.prompt({title: 'Edit your description', formType: 2, btn: ['Confirm']}, function (text, index) {
         layer.close(index);
         $.ajax({
@@ -45,6 +47,7 @@ function edit_description() {
 }
 
 function delete_account() {
+    // Prompt the user to enter the new name
     layer.confirm('You are deleting your account!<br>This operation cannot be restored!', {
         title: "WARNING",
         btn: ['Delete', 'Cancel'] //按钮
@@ -228,6 +231,7 @@ function checkChangePasswordForm() {
 }
 
 function confirm_pswd() {
+    // get the value of the password
     $.ajax({
         url: "/user/edit_password",
         method: "POST",

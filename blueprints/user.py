@@ -34,6 +34,11 @@ def output_html(data, code, headers=None):
 
 
 class Login(Resource):
+    """
+    show the login page
+
+    """
+
     def get(self):
         current_app.logger.info("IP: {} is trying to log in.".format(get_user_ip()))
         return render_template("login.html")
@@ -70,6 +75,11 @@ class Login(Resource):
 
 
 class Register(Resource):
+    """
+    show the register page
+
+    """
+
     def get(self):
         current_app.logger.info("IP: {} is trying to register.".format(get_user_ip()))
         return render_template("register.html")
@@ -106,6 +116,10 @@ class Register(Resource):
 
 
 class GetCaptcha(Resource):
+    """
+    get the captcha
+    """
+
     def post(self):
         # GET request
         email = request.form.get("email")
@@ -153,6 +167,11 @@ class GetCaptcha(Resource):
 
 
 class Profile(Resource):
+    """
+    show the profile page
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -176,6 +195,11 @@ class Profile(Resource):
 
 
 class EditName(Resource):
+    """
+    edit the username
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -213,6 +237,11 @@ class EditName(Resource):
 
 
 class EditDescription(Resource):
+    """
+    edit the description
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -248,6 +277,11 @@ class EditDescription(Resource):
 
 
 class EditProfile(Resource):
+    """
+    edit the profile
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -273,6 +307,11 @@ class EditProfile(Resource):
 
 
 class UploadAvatar(Resource):
+    """
+    upload the avatar
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -319,6 +358,11 @@ class UploadAvatar(Resource):
 
 
 class Privacy(Resource):
+    """
+    edit the privacy
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -332,6 +376,11 @@ class Privacy(Resource):
 
 
 class GetChangePasswordCaptcha(Resource):
+    """
+    get the captcha of change password
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -383,6 +432,11 @@ class GetChangePasswordCaptcha(Resource):
 
 
 class EditPassword(Resource):
+    """
+    edit the password
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -430,6 +484,11 @@ class EditPassword(Resource):
 
 
 class DeleteAccount(Resource):
+    """
+    delete the account
+
+    """
+
     method_decorators = [login_required]
 
     def delete(self):
@@ -461,6 +520,11 @@ class DeleteAccount(Resource):
 
 
 class Logout(Resource):
+    """
+    logout
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -471,6 +535,11 @@ class Logout(Resource):
 
 
 class FavoriteContent(Resource):
+    """
+    favorite the content
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -505,6 +574,11 @@ class FavoriteContent(Resource):
 
 
 class LikeContent(Resource):
+    """
+    like the content
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -539,6 +613,11 @@ class LikeContent(Resource):
 
 
 class MyPost(Resource):
+    """
+    my post
+
+    """
+
     method_decorators = [login_required]
 
     def get(self):
@@ -566,7 +645,13 @@ class MyPost(Resource):
 
         return render_template("lists.html", status="myposts", posts=posts, user=g.user, camp_builders=camp_builders, camp_joins=camp_joins)
 
+
 class EmailInform(Resource):
+    """
+    email inform
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):

@@ -1,10 +1,9 @@
-from flask import Flask, g, session, render_template, current_app
+from flask import Flask, g, session, render_template
 from blueprints import user_bp, index_bp, camp_bp
 import config
 from flask_migrate import Migrate
 from extensions import db, mail, api
 from models import UserModel
-from controller import get_user_ip
 from config import init_log
 
 app = Flask(__name__)

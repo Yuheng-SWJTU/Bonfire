@@ -1,27 +1,12 @@
-# from itsdangerous import TimedSerializer as Serializer
-# from itsdangerous import BadSignature, SignatureExpired
-# from config import SECRET_KEY
-#
-#
-# # 生成token, 有效时间为600min
-# def generate_auth_token(user_id, expiration=36000):
-#     s = Serializer(SECRET_KEY, expires_in=expiration)
-#     return s.dumps({'user_id': user_id})
-import datetime
-
 from flask import session, request
 from flask_mail import Message
-from sqlalchemy import or_, extract
-from datetime import timezone, timedelta
+from sqlalchemy import or_
 from extensions import mail
-
 from models import CampUserModel, CampModel
 
 
-# handle the string
-# from {'captcha': ['Captcha Error! '], 'email': ['This email has been registered!']}
-# to two sentences which can break a line in html
 def handle_error_string(error):
+    # handle error string
     error_string = ""
     for key in error:
         error_string += error[key][0]
@@ -29,6 +14,7 @@ def handle_error_string(error):
 
 
 def get_all_camp_builder():
+    # get all camps which identity is "Builder"
     user_id = session.get("user_id")
     if user_id:
         camp_user = CampUserModel.query.filter_by(user_id=user_id, identity="Builder").all()
@@ -46,6 +32,7 @@ def get_all_camp_builder():
 
 
 def get_all_camp_join():
+    # get all camps which identity is "Join"
     user_id = session.get("user_id")
     if user_id:
         # get all camps which identity is "Member" and identity is "Admin"
@@ -106,6 +93,7 @@ def save_all_notice_in_dict(post_model, camp_id):
 
 
 def save_all_posts_in_dict(post_model):
+    # get all posts which is not deleted
 
     posts = []
     post_dict = {}

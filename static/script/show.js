@@ -1,4 +1,5 @@
 function favorite(post_id){
+    // using ajax to send the request
     $.ajax({
         url: "/camp/favorite",
         method: "POST",
@@ -25,6 +26,7 @@ function favorite(post_id){
 }
 
 function like(post_id){
+    // using ajax to send the request
     $.ajax({
         url: "/camp/like",
         method: "POST",
@@ -53,6 +55,7 @@ function like(post_id){
 }
 
 function delete_post(post_id, camp_id){
+    // using ajax to send the request
     $.ajax({
         url: "/camp/delete_post",
         method: "POST",
@@ -75,6 +78,7 @@ function delete_post(post_id, camp_id){
 }
 
 function comment(post_id){
+    // using ajax to send the request
     var content = $("#comment_input").val();
     $.ajax({
         url: "/camp/comment",
@@ -99,6 +103,7 @@ function comment(post_id){
 }
 
 function delete_comment(comment_id){
+    // using ajax to send the request
     $.ajax({
         url: "/camp/delete_comment",
         method: "POST",

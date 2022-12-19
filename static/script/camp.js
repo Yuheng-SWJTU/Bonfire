@@ -65,6 +65,7 @@ function leave_camp() {
 }
 
 function popularity() {
+    // using ajax to send the request
     $.ajax({
             url: "/camp/change_sort",
             method: "POST",
@@ -86,6 +87,7 @@ function popularity() {
 }
 
 function postdate(){
+    // using ajax to send the request
     $.ajax({
             url: "/camp/change_sort",
             method: "POST",

@@ -1,22 +1,17 @@
 import os
 import uuid
 from datetime import datetime
-
 from flask import Blueprint, render_template, request, redirect, session, jsonify, Response, current_app
 from flask_restful import Resource, Api
 import json
-
 from werkzeug.utils import secure_filename
-
 from config import BACKGROUND_UPLOAD_FOLDER, POST_UPLOAD_FOLDER
-
 from models import CampModel, CampUserModel, CategoryModel, UserModel, PostModel, FavoritePostModel, LikePostModel, \
     CommentModel
 from extensions import db
 from .form import AddCategoryForm
 from controller import get_all_camp_builder, get_all_camp_join, get_all_posts, save_all_notice_in_dict, \
     save_all_posts_in_dict, send_comment_notification, get_user_ip
-
 from decoration import login_required, check_category
 
 # the information of the blueprint
@@ -34,6 +29,10 @@ def output_html(data, code, headers=None):
 
 
 class Camp(Resource):
+    """
+    Show the camp page
+    """
+
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id):
@@ -89,6 +88,7 @@ class Camp(Resource):
             post.username = user.username
             post.user_avatar = user.avatar
 
+        # get all posts in this camp
         notices_list = save_all_notice_in_dict(PostModel, camp_id)
         posts_list = save_all_posts_in_dict(posts)
 
@@ -98,12 +98,17 @@ class Camp(Resource):
 
 
 class AddCategory(Resource):
+    """
+    Add a category in the camp
+    """
+
     method_decorators = [login_required]
 
     def post(self):
         # get the user identity
         user_id = session.get("user_id")
         camp_id = request.form.get("camp_id")
+        # get the camp information
         if user_id:
             camp_user = CampUserModel.query.filter_by(user_id=user_id, camp_id=camp_id).first()
             if camp_user:
@@ -145,6 +150,10 @@ class AddCategory(Resource):
 
 
 class EditCategory(Resource):
+    """
+    Edit the category in the camp
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -187,6 +196,11 @@ class EditCategory(Resource):
 
 
 class DeleteCategory(Resource):
+    """
+    Delete the category in the camp
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -221,6 +235,11 @@ class DeleteCategory(Resource):
 
 
 class LeaveCamp(Resource):
+    """
+    Leave the camp
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -256,6 +275,11 @@ class LeaveCamp(Resource):
 
 
 class ManageCamp(Resource):
+    """
+    Manage the camp
+
+    """
+
     method_decorators = [login_required, check_category]
 
     def get(self, camp_id):
@@ -324,6 +348,11 @@ class ManageCamp(Resource):
 
 
 class AddAdmin(Resource):
+    """
+    Add admin
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -383,6 +412,11 @@ class AddAdmin(Resource):
 
 
 class RemoveAdmin(Resource):
+    """
+    Remove admin
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -431,6 +465,11 @@ class RemoveAdmin(Resource):
 
 
 class UploadBackground(Resource):
+    """
+    Upload background
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -475,6 +514,11 @@ class UploadBackground(Resource):
 
 
 class EditCamp(Resource):
+    """
+    Edit camp
+
+    """
+
     method_decorators = [login_required]
 
     def post(self):
@@ -543,6 +587,10 @@ class EditCamp(Resource):
 
 
 class DismissCamp(Resource):
+    """
+    Dismiss camp
+    """
+
     method_decorators = [login_required]
 
     def post(self):

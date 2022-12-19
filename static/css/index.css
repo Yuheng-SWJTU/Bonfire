@@ -1,3 +1,6 @@
+/*
+box container
+ */
 .box-container {
     display: flex;
     position: absolute;
@@ -15,12 +18,18 @@
     margin-bottom: 20px;
 }
 
+/*
+head photo
+ */
 .head-pho {
     display: inherit;
     width: 100%;
     height: auto;
 }
 
+/*
+head info
+ */
 .head-wrapper {
     position: absolute;
     top: 0;
@@ -40,6 +49,9 @@
     grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
 }
 
+/*
+item
+ */
 .item {
     display: flex;
     position: relative;

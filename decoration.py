@@ -1,10 +1,7 @@
-from models import CategoryModel, CampModel, CampUserModel, PostModel, UserModel
-
+from models import CategoryModel, PostModel
 from flask import session
-from flask_mail import Message
 from flask import g, redirect, url_for
-from extensions import db, mail
-import datetime
+from extensions import db
 from functools import wraps
 
 

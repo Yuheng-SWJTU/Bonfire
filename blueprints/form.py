@@ -95,6 +95,11 @@ class BuildCampForm(wtforms.Form):
 
 
 class AddCategoryForm(wtforms.Form):
+    """
+    When user add a category, the form will be sent to this validator.
+
+    """
+
     category_name = wtforms.StringField(validators=[length(min=1, max=20)])
 
     def check_name(self, field):
@@ -105,6 +110,10 @@ class AddCategoryForm(wtforms.Form):
 
 
 class AddPostForm(wtforms.Form):
+    """
+    When user add a post, the form will be sent to this validator.
+    """
+
     post_title = wtforms.StringField(validators=[length(min=1, max=20)])
     post_content = wtforms.StringField(validators=[length(min=1, max=1000)])
 
@@ -120,6 +129,10 @@ class AddPostForm(wtforms.Form):
 
 
 class CommentForm(wtforms.Form):
+    """
+    When user add a comment, the form will be sent to this validator.
+    """
+
     comment_content = wtforms.StringField(validators=[length(min=1, max=1000)])
 
     def check_content_length(self, field):
@@ -131,6 +144,11 @@ class CommentForm(wtforms.Form):
 
 
 class SearchForm(wtforms.Form):
+    """
+    When user search, the form will be sent to this validator.、
+
+    """
+
     search_content = wtforms.StringField(validators=[length(min=1, max=20)])
 
     def check_content_length(self, field):
@@ -142,6 +160,11 @@ class SearchForm(wtforms.Form):
 
 
 class ChangeProfileForm(wtforms.Form):
+    """
+    When user change profile, the form will be sent to this validator.
+
+    """
+
     username = wtforms.StringField(validators=[length(min=3, max=20)])
     email = wtforms.StringField(validators=[email()])
     description = wtforms.StringField(validators=[length(min=1, max=200)])
@@ -167,6 +190,10 @@ class ChangeProfileForm(wtforms.Form):
 
 
 class ChangeCampForm(wtforms.Form):
+    """
+    When user change camp, the form will be sent to this validator.
+    """
+
     camp_name = wtforms.StringField(validators=[length(min=1, max=20)])
     description = wtforms.StringField(validators=[length(min=1, max=200)])
 
@@ -185,6 +212,10 @@ class ChangeCampForm(wtforms.Form):
 
 
 class ChangeCategoryForm(wtforms.Form):
+    """
+    When user change category, the form will be sent to this validator.
+    """
+
     category_name = wtforms.StringField(validators=[length(min=1, max=20)])
 
     def check_name(self, field):
@@ -195,6 +226,10 @@ class ChangeCategoryForm(wtforms.Form):
 
 
 class ChangePostForm(wtforms.Form):
+    """
+    When user change post, the form will be sent to this validator.
+    """
+
     post_title = wtforms.StringField(validators=[length(min=1, max=20)])
     post_content = wtforms.StringField(validators=[length(min=1, max=1000)])
 
@@ -210,6 +245,10 @@ class ChangePostForm(wtforms.Form):
 
 
 class ChangePasswordForm(wtforms.Form):
+    """
+    When user change password, the form will be sent to this validator.
+    """
+
     old_password = wtforms.PasswordField(validators=[length(min=6, max=20)])
     new_password = wtforms.PasswordField(validators=[length(min=6, max=20)])
     new_password_again = wtforms.PasswordField(validators=[length(min=6, max=20)])
@@ -234,6 +273,11 @@ class ChangePasswordForm(wtforms.Form):
 
 
 class ChangeUsernameForm(wtforms.Form):
+    """
+    When user change username, the form will be sent to this validator.
+
+    """
+
     username = wtforms.StringField(validators=[length(min=1, max=20)])
     password = wtforms.PasswordField(validators=[length(min=6, max=20)])
 

@@ -1,3 +1,6 @@
+/*
+set the container
+ */
 @media screen and (max-width: 750px) {
     .center {
         width: 90vw;
@@ -16,6 +19,9 @@
     }
 }
 
+/*
+set the profile title
+ */
 .profile-title{
     display: flex;
     font-size: 14px;
@@ -44,6 +50,9 @@
     background-color: #dcdcdc;
 }
 
+/*
+set the profile content
+ */
 .profile-container{
     position: relative;
     width: 100%;
@@ -76,6 +85,9 @@
     align-items: center;
 }
 
+/*
+set the avatar
+ */
 .profile-img{
     width: 80px;
     height: 80px;
@@ -104,6 +116,9 @@
     padding-top: 10px;
 }
 
+/*
+set the profile info
+ */
 .profile-info-area{
     width: 80%;
     margin-left: 15px;
@@ -123,6 +138,9 @@
     color: #888888;
 }
 
+/*
+set the profile info content
+ */
 .profile-info-button{
     width: 80px;
     margin-right: 15px;
@@ -141,6 +159,9 @@
     margin-top: 40px;
 }
 
+/*
+set the profile info content
+ */
 .profile-basic-info-area{
     display: flex;
     width: 100%;
@@ -174,6 +195,9 @@
     padding-left: 30px;
 }
 
+/*
+set the profile info content
+ */
 .profile-basic-info-right{
     width: 50%;
     padding-right: 30px;
@@ -216,6 +240,9 @@
     color: #696969;
 }
 
+/*
+set activity
+ */
 .my-activity{
     padding-left: 30px;
     padding-right: 30px;

@@ -1,3 +1,6 @@
+/*
+set the top button
+ */
 .top-btn {
     display: flex;
     position: absolute;
@@ -20,6 +23,9 @@
     box-shadow: 1px 1px 4px rgb(0 0 0 / 30%);
 }
 
+/*
+set the show area
+ */
 .show-title-area {
     position: relative;
     width: 100%;
@@ -41,6 +47,9 @@
     color: #888888;
 }
 
+/*
+set the avatar
+ */
 .avatar-img {
     width: 40px;
     height: 40px;
@@ -57,6 +66,9 @@
     font-weight: bold;
 }
 
+/*
+set the comment area
+ */
 .comment-input-box {
     position: relative;
     width: 100%;
@@ -188,6 +200,9 @@
     transition: ease 0.3s;
 }
 
+/*
+set the delete button
+ */
 .delete-comment:hover{
     background-color: #cccccc;
 }
